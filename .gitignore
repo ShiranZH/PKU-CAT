@@ -1,0 +1,5 @@
+*.pyc
+*/.DS_store
+.vscode
+*/__pycache__
+*/db.sqlite3
