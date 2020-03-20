@@ -1,13 +1,6 @@
-<<<<<<< HEAD
 *.pyc
 */.DS_store
 .vscode
 */__pycache__
 */db.sqlite3
-=======
-*.pyc
-*/.DS_store
-.vscode
-*/__pycache__
-*/db.sqlite3
->>>>>>> 1a0da2ae2634c796a81eaebca6c7525d88a90c92
+.vs
