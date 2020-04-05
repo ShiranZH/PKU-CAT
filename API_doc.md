@@ -5,6 +5,63 @@ by TYJ, ZHD
 
 ## 相关数据结构
 
+### 猫咪
+
+``` json
+Cat = {
+    "name": string,
+    "catID": number,
+    "avatar": url (string)
+}
+```
+
+### 猫咪档案
+
+``` json
+Archive = {
+    "name": string,
+    "photos": [
+        url (string),
+    ],
+    "introduction": string,
+    "relatedCats": [{
+            "relatedCat": Cat,
+            "relation": string
+        }]
+}
+```
+
+### 用户
+
+``` json
+User = {
+    "name": string,
+    "userID": number,
+}
+```
+
+### 用户档案
+
+``` json
+UserProfile = {
+    "user": User,
+    "avatar": url (string),
+    "mail": string,
+    "whatsup": string
+}
+```
+
+### 饲养员申请
+
+``` json
+Feeder_application = {
+    "applicationID": number,
+    "user": User,
+    "apply_info": string,
+    "cat": Cat
+}
+```
+
 ### 动态
 
 ``` json
@@ -27,51 +84,6 @@ PublisherInfo = {
     "avatar": url (string)
 }
 
-```
-
-### 猫咪
-
-``` json
-Cat = {
-    "name": string,
-    "catID": number
-}
-```
-
-### 猫咪档案
-
-``` json
-Archive = {
-    "name": string,
-    "photos": [
-        url (string),
-    ],
-    "introduction": string,
-    "relatedCats": [{
-            "relatedCat": Cat,
-            "relation": string
-        }],
-}
-```
-
-### 用户
-
-``` json
-User = {
-    "name": string,
-    "userID": number,
-}
-```
-
-### 用户档案
-
-``` json
-UserProfile = {
-    "user": User,
-    "avatar": url (string),
-    "mail": string,
-    "whatsup": string
-}
 ```
 
 ## Codes
@@ -112,9 +124,25 @@ CODE = {
     }
 }
 
+// 用户无权限
+response.body = {
+    "code": 400,
+    "data": {
+        "msg": "not authorized"
+    }
+}
+
+// 用户未登录
+response.body = {
+    "code": 400,
+    "data": {
+        "msg": "user not logged in"
+    }
+}
+
 // 方法错误：
 {
-    "code": 700,
+    "code": 600,
     "data": {
         "msg": "wrong method"
     }
@@ -122,7 +150,7 @@ CODE = {
 
 // 参数错误：
 {
-    "code": 300,
+    "code": 700,
     "data": {
         "msg": "wrong parameter"
     }
@@ -139,20 +167,12 @@ CODE = {
 #### Login 登陆
 
 uri: /login  
-request method: GET
+request method: POST
 
 ``` json
 request.body = {
     "username": string,
     "password": string
-}
-
-// 登陆成功：
-response.body = {
-    "code": 200,
-    "data": {
-        "msg": "success"
-    }
 }
 
 // 登陆失败：
@@ -167,11 +187,11 @@ response.body = {
 #### Register 注册
 
 uri: /register
-request method: GET
+request method: POST
 
 ``` json
 request.body = {
-    "email": "1600012607"(string, pku邮箱名，不包括@pku.edu.cn)
+    "email": "1600012607" (string, pku邮箱名，不包括@pku.edu.cn)
 }
 
 
@@ -182,7 +202,6 @@ response.body = {
         "msg": "email address already registered"
     }
 }
-
 ```
 
 #### Register_validation 注册验证
@@ -196,15 +215,55 @@ request.body = {
     "password": "pkucat2020" (string)
 }
 
-// 成功注册：
+// 用户名重复：
+response.body = {
+    "code": 300,
+    "data": {
+        "msg": "duplicate username"
+    }
+}
+```
+
+#### Logout 注销
+
+uri: /logout
+request method: POST
+
+``` json
+request.body = { }
+```
+
+#### UserProfile 查看个人信息
+
+uri: /userProfile
+request method: GET
+
+``` json
+request.body = { }
+
+// 成功返回
 response.body = {
     "code": 200,
     "data": {
-        "msg": "success"
+        "msg": "success",
+        "profile": Userprofile
     }
 }
+```
 
-// 用户名重复：
+#### UserProfile_modify 修改个人信息
+
+uri: /userProfile/modify
+request method: PUT
+
+``` json
+request.body = {
+    "avatar": image,
+    "whatsup": string,
+    "username": string
+}
+
+// 用户名重复
 response.body = {
     "code": 300,
     "data": {
@@ -214,18 +273,171 @@ response.body = {
 
 ```
 
-#### Logout 注销
+#### Feeder_apply 申请成为饲养员
 
-uri: /logout
-request method: GET
+uri: /feeder/apply
+request method: POST
 
 ``` json
 request.body = {
-
+    "catID": number,
+    "apply_info": string
 }
 
+// 已成为饲养员
+response.body = {
+    "code": 300,
+    "data": {
+        "msg": "already been feeder"
+    }
+}
+
+```
+
+#### Feeder_list 查看申请列表
+
+uri: /feeder/list
+request method: GET
+
+``` json
+request.body = { }
+
+// 成功返回
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success",
+        "applications": [
+            Feeder_application,
+        ]
+    }
+}
+```
+
+#### Feeder_accept 同意饲养员申请
+
+uri: /feeder/accept
+request method: POST
+
+``` json
+request.body = {
+    "applicationID": number
+}
 ```
 
 ### 动态相关
 
 ### 猫咪相关
+
+#### Archive_list 查看猫咪档案列表
+
+uri: /archive/list
+request method: GET
+
+``` json
+request.body = { }
+
+// 成功返回
+resonse.body = {
+    "code": 200,
+    "data": {
+        "msg": "success",
+        "catList": [
+            Cat,
+        ]
+    }
+}
+```
+
+#### Archive_detail 查看猫咪档案详情
+
+uri: /archive/detail
+request method: GET
+
+``` json
+request.body = {
+    "catID": number
+}
+
+// 成功返回
+resonse.body = {
+    "code": 200,
+    "data": {
+        "msg": "success",
+        "archive": Archive
+    }
+}
+```
+
+#### Archive_modify 修改猫咪档案
+
+uri: /archive/modify
+request method: PUT
+
+``` json
+request.body = {
+    "catID": number,
+    "introcudtion": string,
+    "addPhotos": [
+        image,
+    ],
+    "deleteImages": [
+        url (string),
+    ],
+    "relatedCats": [{
+            "relatedCat": Cat,
+            "relation": string
+        }]
+}
+```
+
+#### Archive_add 添加猫咪档案
+
+uri: /archive/add
+request method: POST
+
+``` json
+request.body = {
+    "catName": string,
+    "introduction": string,
+    "photos": [
+        image,
+    ],
+    "relatedCats": [{
+            "relatedCat": Cat,
+            "relation": string
+        }]
+}
+
+// 成功添加
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success",
+        "catID": number
+    }
+}
+```
+
+#### Archive_search 搜索猫咪
+
+uri: /archive/search
+request method: GET
+
+``` json
+request.body = {
+    "keyword": string
+}
+
+// 搜索结果
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success",
+        "results": [
+            Cat,
+        ]
+    }
+}
+
+```
