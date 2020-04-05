@@ -1,3 +1,5 @@
+[TOC]
+
 # API Document for PKU-CAT
 
 by TYJ, ZHD  
@@ -98,7 +100,7 @@ request method: GET
 
 ``` text
 request.body = {
-    "email": string: pku邮箱名（不包括@pku.edu.cn）
+    "email": "1600012607"(string, pku邮箱名，不包括@pku.edu.cn)
 }
 
 
@@ -119,8 +121,8 @@ request method: POST
 
 ``` text
 request.body = {
-    "username": string,
-    "password": string
+    "username": "pkucat" (string),
+    "password": "pkucat2020" (string)
 }
 
 成功注册：
@@ -140,3 +142,13 @@ response.body = {
 }
 
 ```
+
+### Logout 注销
+
+uri: /logout
+request method: GET
+
+``` text
+request.body = {
+    
+}
