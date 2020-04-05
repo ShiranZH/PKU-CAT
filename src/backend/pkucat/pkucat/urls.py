@@ -20,3 +20,5 @@ urlpatterns = [
     path('test/hello/', include('demo.urls')),
     path('admin/', admin.site.urls),
 ]
+
+handler404 = "demo.views.cat_not_found"
