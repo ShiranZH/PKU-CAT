@@ -76,7 +76,7 @@ Post = {
     ],
     "commentList": CommentList,
     "favor": {
-        "self": number, // 1表示自己点赞了
+        "self": number,     // 1表示自己点赞了
         "favorCnt": number,
     }
 }
@@ -90,27 +90,31 @@ PublisherInfo = {
 
 ### 评论列表
 
-```
+``` json
 CommentList = {
-	"rootType": string, // cat or post
-	"rootID", number,
+    "rootType": string,     // cat or post
+    "rootID", number,
     "totalCount": number,
     "downloadCount": number,
     "begin": number,
-    "comments": [Comment, ...],
+    "comments": [
+        Comment,
+    ]
 }
 ```
 
 ### 评论
 
-```
+``` json
 // 暂时没有考虑评论嵌套
 Comment = {
-	"commentID": number,
-	"user": User,
-    "text": string,
+    "commentID": number,
+    "user": User,
+    "text": string
 }
 ```
+
+---
 
 ## Codes
 
@@ -183,6 +187,8 @@ response.body = {
 }
 
 ```
+
+---
 
 ## APIs
 
@@ -265,8 +271,6 @@ uri: /userProfile
 request method: GET
 
 ``` json
-request.body = { }
-
 // 成功返回
 response.body = {
     "code": 200,
@@ -326,8 +330,6 @@ uri: /feeder/list
 request method: GET
 
 ``` json
-request.body = { }
-
 // 成功返回
 response.body = {
     "code": 200,
@@ -361,7 +363,7 @@ request method: POST
 
 ``` json
 request.body = {
-	"post": Post,
+    "post": Post,
 }
 
 // 成功
@@ -422,12 +424,14 @@ num默认为10，begin默认为1，表示从第一条动态开始，comments默�
 
 request method: GET
 
-```
+``` json
 response = {
-	"code": 200,
+    "code": 200,
     "data": {
         "downloadCount": number,
-        "data": [Post,...]
+        "data": [
+            Post,
+        ]
     }
 }
 ```
@@ -442,12 +446,14 @@ comments默认为10，表示顺便下载10条最新评论
 
 request method: GET
 
-```
+``` json
 response = {
-	"code": 200,
+    "code": 200,
     "data": {
         "downloadCount": number,
-        "data": [Post,...]
+        "data": [
+            Post,
+        ]
     }
 }
 ```
@@ -455,12 +461,11 @@ response = {
 #### 请求动态评论
 
 uri: /comments?type=post&root-id=123&num=10&begin=10
-
 request method: GET
 
-```
+``` json
 response = {
-	"code": 200,
+    "code": 200,
     "data": {
         "commentList": CommentList
     }
@@ -470,23 +475,16 @@ response = {
 #### 动态点赞
 
 uri: /post/favor
-
 request method: POST
 
-```
+``` json
 request.body = {
-    "postID": number,
+    "postID": number
 }
 
+// 已点赞
 response = {
-	"code": 200,
-    "data": {
-        "msg": "favor successfully",
-    }
-}
-
-response = {
-	"code": 300,
+    "code": 300,
     "data": {
         "msg": "favor exists",
     }
@@ -495,35 +493,34 @@ response = {
 
 #### 评论动态
 
-uri: /comment
-
+uri: /post/comment
 request method: POST
 
-```
+``` json
 request.body = {
     "rootType": string,
     "rootID": number,
-    "userID": "number",
+    "userID": number,
     "text": string,
 }
 
+// 评论成功
 response = {
-	"code": 200,
+    "code": 200,
     "data": {
         "msg": "comment successfully",
         "commentID": number,
     }
 }
 
+// 动态不存在
 response = {
-	"code": 300,
+    "code": 300,
     "data": {
         "msg": "post not exists",
     }
 }
 ```
-
-
 
 ### 猫咪相关
 
@@ -533,8 +530,6 @@ uri: /archive/list
 request method: GET
 
 ``` json
-request.body = { }
-
 // 成功返回
 resonse.body = {
     "code": 200,
@@ -549,14 +544,10 @@ resonse.body = {
 
 #### Archive_detail 查看猫咪档案详情
 
-uri: /archive/detail
+uri: /archive/detail?catid=10
 request method: GET
 
 ``` json
-request.body = {
-    "catID": number
-}
-
 // 成功返回
 resonse.body = {
     "code": 200,
@@ -619,14 +610,10 @@ response.body = {
 
 #### Archive_search 搜索猫咪
 
-uri: /archive/search
+uri: /archive/search?keyword="大威"
 request method: GET
 
 ``` json
-request.body = {
-    "keyword": string
-}
-
 // 搜索结果
 response.body = {
     "code": 200,
@@ -637,5 +624,4 @@ response.body = {
         ]
     }
 }
-
 ```
