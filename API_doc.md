@@ -66,16 +66,19 @@ Feeder_application = {
 
 ``` json
 Post = {
+    // 这里的postID在创建post时无效
+    "postID": number,
     "publisher": PublisherInfo,
     "time": "2020-04-05 16:02" (string),
     "text": string,
     "multimediaContent": [
         url (string),
     ],
-    "commentList": [
-        string,
-    ],
-    "favorCnt": int,
+    "commentList": CommentList,
+    "favor": {
+        "self": number, // 1表示自己点赞了
+        "favorCnt": number,
+    }
 }
 
 PublisherInfo = {
@@ -83,7 +86,30 @@ PublisherInfo = {
     "username": string,
     "avatar": url (string)
 }
+```
 
+### 评论列表
+
+```
+CommentList = {
+	"rootType": string, // cat or post
+	"rootID", number,
+    "totalCount": number,
+    "downloadCount": number,
+    "begin": number,
+    "comments": [Comment, ...],
+}
+```
+
+### 评论
+
+```
+// 暂时没有考虑评论嵌套
+Comment = {
+	"commentID": number,
+	"user": User,
+    "text": string,
+}
 ```
 
 ## Codes
@@ -326,6 +352,178 @@ request.body = {
 ```
 
 ### 动态相关
+
+#### 发布动态
+
+uri: /post
+
+request method: POST
+
+``` json
+request.body = {
+	"post": Post,
+}
+
+// 成功
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "create post successfully",
+        "postID": number,
+    }
+}
+
+// 失败
+response.body = {
+    "code": 700,
+    "data": {
+        "msg": "wrong parameter",
+    }
+}
+```
+
+#### 删除动态
+
+uri: /post?id=123
+
+request method: DELETE
+
+```json
+// 成功
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "delete post successfully"
+    }
+}
+
+// 失败: 动态不存在
+response.body = {
+    "code": 300,
+    "data": {
+        "msg": "post not exists",
+    }
+}
+
+// 失败: 没有权限
+response.body = {
+    "code": 400,
+    "data": {
+        "msg": "user permission error",
+    }
+}
+```
+
+#### 请求动态列表（时间顺序）
+
+uri: /posts?num=10&begin=10&comments=10
+
+num默认为10，begin默认为1，表示从第一条动态开始，comments默认为10，表示顺便下载10条最新评论
+
+request method: GET
+
+```
+response = {
+	"code": 200,
+    "data": {
+        "downloadCount": number,
+        "data": [Post,...]
+    }
+}
+```
+
+#### 查找动态
+
+uri: /posts/search?cat-id=123&user-id=123&keyword=大威&comments=10
+
+cat-id表示猫咪的id，user-id表示用户id，keyword表示关键词，这三个参数至少有一个不为空，都为空返回结果同`请求动态列表（时间顺序）`
+
+comments默认为10，表示顺便下载10条最新评论
+
+request method: GET
+
+```
+response = {
+	"code": 200,
+    "data": {
+        "downloadCount": number,
+        "data": [Post,...]
+    }
+}
+```
+
+#### 请求动态评论
+
+uri: /comments?type=post&root-id=123&num=10&begin=10
+
+request method: GET
+
+```
+response = {
+	"code": 200,
+    "data": {
+        "commentList": CommentList
+    }
+}
+```
+
+#### 动态点赞
+
+uri: /post/favor
+
+request method: POST
+
+```
+request.body = {
+    "postID": number,
+}
+
+response = {
+	"code": 200,
+    "data": {
+        "msg": "favor successfully",
+    }
+}
+
+response = {
+	"code": 300,
+    "data": {
+        "msg": "favor exists",
+    }
+}
+```
+
+#### 评论动态
+
+uri: /comment
+
+request method: POST
+
+```
+request.body = {
+    "rootType": string,
+    "rootID": number,
+    "userID": "number",
+    "text": string,
+}
+
+response = {
+	"code": 200,
+    "data": {
+        "msg": "comment successfully",
+        "commentID": number,
+    }
+}
+
+response = {
+	"code": 300,
+    "data": {
+        "msg": "post not exists",
+    }
+}
+```
+
+
 
 ### 猫咪相关
 
