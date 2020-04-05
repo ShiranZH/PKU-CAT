@@ -96,7 +96,7 @@ CommentList = {
     "rootID", number,
     "totalCount": number,
     "downloadCount": number,
-    "begin": number,
+    "start": number,
     "comments": [
         Comment,
     ]
@@ -198,8 +198,7 @@ response.body = {
 
 #### Login 登陆
 
-uri: /login  
-request method: POST
+POST /login
 
 ``` json
 request.body = {
@@ -218,8 +217,7 @@ response.body = {
 
 #### Register 注册
 
-uri: /register
-request method: POST
+POST /register
 
 ``` json
 request.body = {
@@ -238,13 +236,13 @@ response.body = {
 
 #### Register_validation 注册验证
 
-uri: /register/validation
-request method: POST
+POST /register/validation
 
 ``` json
 request.body = {
     "username": "pkucat" (string),
-    "password": "pkucat2020" (string)
+    "password": "pkucat2020" (string),
+    "verificationCode": "666666" (string),
 }
 
 // 用户名重复：
@@ -254,12 +252,19 @@ response.body = {
         "msg": "duplicate username"
     }
 }
+
+// 验证码错误：
+response.body = {
+    "code": 400,
+    "data": {
+        "msg": "verification code error"
+    }
+}
 ```
 
 #### Logout 注销
 
-uri: /logout
-request method: POST
+POST /logout
 
 ``` json
 request.body = { }
@@ -267,8 +272,7 @@ request.body = { }
 
 #### UserProfile 查看个人信息
 
-uri: /userProfile
-request method: GET
+GET /userprofile
 
 ``` json
 // 成功返回
@@ -283,8 +287,7 @@ response.body = {
 
 #### UserProfile_modify 修改个人信息
 
-uri: /userProfile/modify
-request method: PUT
+PUT /userprofile
 
 ``` json
 request.body = {
@@ -300,13 +303,11 @@ response.body = {
         "msg": "duplicate username"
     }
 }
-
 ```
 
 #### Feeder_apply 申请成为饲养员
 
-uri: /feeder/apply
-request method: POST
+POST /feeder/apply
 
 ``` json
 request.body = {
@@ -321,13 +322,11 @@ response.body = {
         "msg": "already been feeder"
     }
 }
-
 ```
 
-#### Feeder_list 查看申请列表
+#### Feeder_list 查看饲养员列表
 
-uri: /feeder/list
-request method: GET
+GET /feeders
 
 ``` json
 // 成功返回
@@ -335,21 +334,65 @@ response.body = {
     "code": 200,
     "data": {
         "msg": "success",
-        "applications": [
-            Feeder_application,
+        "feeders": [
+            User,
         ]
     }
 }
 ```
 
-#### Feeder_accept 同意饲养员申请
+#### Feeder_apply_list 查看申请列表
 
-uri: /feeder/accept
-request method: POST
+GET /feeder/applys
+
+``` json
+// 成功
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success",
+        "applies": [
+            {
+                "applyID": number,
+                "catID": number,
+    			"apply_info": string,
+            }
+        ]
+    }
+}
+```
+#### Feeder_agree 同意饲养员申请
+
+POST /feeders
 
 ``` json
 request.body = {
-    "applicationID": number
+    "applyID": number,
+}
+
+// 失败
+response.body = {
+    "code": 300,
+    "data": {
+        "msg": "wrong parameter",
+    }
+}
+```
+#### Feeder_refuse 拒绝饲养员申请
+
+DELETE /feeder/apply
+
+``` json
+request.body = {
+    "applyID": number,
+}
+
+// 失败
+response.body = {
+    "code": 300,
+    "data": {
+        "msg": "wrong parameter",
+    }
 }
 ```
 
@@ -357,22 +400,11 @@ request.body = {
 
 #### 发布动态
 
-uri: /post
-
-request method: POST
+POST /post
 
 ``` json
 request.body = {
     "post": Post,
-}
-
-// 成功
-response.body = {
-    "code": 200,
-    "data": {
-        "msg": "create post successfully",
-        "postID": number,
-    }
 }
 
 // 失败
@@ -386,9 +418,7 @@ response.body = {
 
 #### 删除动态
 
-uri: /post?id=123
-
-request method: DELETE
+DELETE /post?id=123
 
 ```json
 // 成功
@@ -398,31 +428,13 @@ response.body = {
         "msg": "delete post successfully"
     }
 }
-
-// 失败: 动态不存在
-response.body = {
-    "code": 300,
-    "data": {
-        "msg": "post not exists",
-    }
-}
-
-// 失败: 没有权限
-response.body = {
-    "code": 400,
-    "data": {
-        "msg": "user permission error",
-    }
-}
 ```
 
 #### 请求动态列表（时间顺序）
 
-uri: /posts?num=10&begin=10&comments=10
+GET /posts?limit=10&start=10&comments=10
 
-num默认为10，begin默认为1，表示从第一条动态开始，comments默认为10，表示顺便下载10条最新评论
-
-request method: GET
+limit默认为10，start默认为1，表示从第一条动态开始，comments默认为10，表示下载10条最新评论
 
 ``` json
 response = {
@@ -438,13 +450,11 @@ response = {
 
 #### 查找动态
 
-uri: /posts/search?cat-id=123&user-id=123&keyword=大威&comments=10
+GET /posts/search?catid=123&userid=123&keyword=大威&comments=10
 
 cat-id表示猫咪的id，user-id表示用户id，keyword表示关键词，这三个参数至少有一个不为空，都为空返回结果同`请求动态列表（时间顺序）`
 
 comments默认为10，表示顺便下载10条最新评论
-
-request method: GET
 
 ``` json
 response = {
@@ -460,8 +470,7 @@ response = {
 
 #### 请求动态评论
 
-uri: /comments?type=post&root-id=123&num=10&begin=10
-request method: GET
+GET /comments?type=post&root-id=123&limit=10&start=10
 
 ``` json
 response = {
@@ -474,43 +483,32 @@ response = {
 
 #### 动态点赞
 
-uri: /post/favor
-request method: POST
+PUT /post/favor
 
 ``` json
 request.body = {
     "postID": number
 }
+```
 
-// 已点赞
-response = {
-    "code": 300,
-    "data": {
-        "msg": "favor exists",
-    }
+#### 取消点赞
+
+DELETE /post/favor
+
+``` json
+request.body = {
+    "postID": number
 }
 ```
 
 #### 评论动态
 
-uri: /post/comment
-request method: POST
+POST /post/comment
 
 ``` json
 request.body = {
-    "rootType": string,
-    "rootID": number,
-    "userID": number,
+    "postID": number,
     "text": string,
-}
-
-// 评论成功
-response = {
-    "code": 200,
-    "data": {
-        "msg": "comment successfully",
-        "commentID": number,
-    }
 }
 
 // 动态不存在
@@ -526,8 +524,7 @@ response = {
 
 #### Archive_list 查看猫咪档案列表
 
-uri: /archive/list
-request method: GET
+GET /archives
 
 ``` json
 // 成功返回
@@ -544,8 +541,7 @@ resonse.body = {
 
 #### Archive_detail 查看猫咪档案详情
 
-uri: /archive/detail?catid=10
-request method: GET
+GET /archive?catid=10
 
 ``` json
 // 成功返回
@@ -560,8 +556,7 @@ resonse.body = {
 
 #### Archive_modify 修改猫咪档案
 
-uri: /archive/modify
-request method: PUT
+PUT /archive
 
 ``` json
 request.body = {
@@ -582,8 +577,7 @@ request.body = {
 
 #### Archive_add 添加猫咪档案
 
-uri: /archive/add
-request method: POST
+POST /archive
 
 ``` json
 request.body = {
@@ -610,8 +604,7 @@ response.body = {
 
 #### Archive_search 搜索猫咪
 
-uri: /archive/search?keyword="大威"
-request method: GET
+GET /archive?keyword="大威"
 
 ``` json
 // 搜索结果
@@ -625,3 +618,4 @@ response.body = {
     }
 }
 ```
+
