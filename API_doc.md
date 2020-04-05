@@ -1,9 +1,78 @@
-[TOC]
-
 # API Document for PKU-CAT
 
 by TYJ, ZHD  
 2020/04/05
+
+## 相关数据结构
+
+### 动态
+
+``` json
+Post = {
+    "publisher": PublisherInfo,
+    "time": "2020-04-05 16:02" (string),
+    "text": string,
+    "multimediaContent": [
+        url (string),
+    ],
+    "commentList": [
+        string,
+    ],
+    "favorCnt": int,
+}
+
+PublisherInfo = {
+    "userID": number,
+    "username": string,
+    "avatar": url (string)
+}
+
+```
+
+### 猫咪
+
+``` json
+Cat = {
+    "name": string,
+    "catID": number
+}
+```
+
+### 猫咪档案
+
+``` json
+Archive = {
+    "name": string,
+    "photos": [
+        url (string),
+    ],
+    "introduction": string,
+    "relatedCats": [{
+            "relatedCat": Cat,
+            "relation": string
+        }],
+}
+```
+
+### 用户
+
+``` json
+User = {
+    "name": string,
+    "userID": number,
+}
+```
+
+### 用户档案
+
+``` json
+UserProfile = {
+    "user": User,
+    "avatar": url (string),
+    "mail": string,
+    "whatsup": string
+}
+```
 
 ## Codes
 
@@ -25,8 +94,8 @@ CODE = {
 服务器响应body的基本数据格式  
 其中data为json
 
-``` text
-通用：
+``` json
+// 通用：
 {
     "code": xxx,
     "data": {
@@ -35,7 +104,7 @@ CODE = {
     }
 }
 
-成功：
+// 成功：
 {
     "code": 200,
     "data": {
@@ -43,7 +112,7 @@ CODE = {
     }
 }
 
-方法错误：
+// 方法错误：
 {
     "code": 700,
     "data": {
@@ -51,7 +120,7 @@ CODE = {
     }
 }
 
-参数错误：
+// 参数错误：
 {
     "code": 300,
     "data": {
@@ -65,18 +134,20 @@ CODE = {
 
 每个接口的具体设计
 
-### Login 登陆
+### 用户相关
+
+#### Login 登陆
 
 uri: /login  
 request method: GET
 
-``` text
+``` json
 request.body = {
     "username": string,
     "password": string
 }
 
-登陆成功：
+// 登陆成功：
 response.body = {
     "code": 200,
     "data": {
@@ -84,7 +155,7 @@ response.body = {
     }
 }
 
-登陆失败：
+// 登陆失败：
 response.body = {
     "code": 300,
     "data": {
@@ -93,18 +164,18 @@ response.body = {
 }
 ```
 
-### Register 注册
+#### Register 注册
 
 uri: /register
 request method: GET
 
-``` text
+``` json
 request.body = {
     "email": "1600012607"(string, pku邮箱名，不包括@pku.edu.cn)
 }
 
 
-邮件已注册：
+// 邮件已注册：
 response.body = {
     "code": 300,
     "data": {
@@ -114,18 +185,18 @@ response.body = {
 
 ```
 
-### Register_validation 注册验证
+#### Register_validation 注册验证
 
 uri: /register/validation
 request method: POST
 
-``` text
+``` json
 request.body = {
     "username": "pkucat" (string),
     "password": "pkucat2020" (string)
 }
 
-成功注册：
+// 成功注册：
 response.body = {
     "code": 200,
     "data": {
@@ -133,7 +204,7 @@ response.body = {
     }
 }
 
-用户名重复：
+// 用户名重复：
 response.body = {
     "code": 300,
     "data": {
@@ -143,12 +214,18 @@ response.body = {
 
 ```
 
-### Logout 注销
+#### Logout 注销
 
 uri: /logout
 request method: GET
 
-``` text
+``` json
 request.body = {
-    
+
 }
+
+```
+
+### 动态相关
+
+### 猫咪相关
