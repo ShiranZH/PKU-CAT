@@ -194,11 +194,36 @@ response.body = {
 
 每个接口的具体设计
 
+### URI概览
+
+```
+/user
+	/user/login
+    /user/register
+        /user/register/validation
+    /user/logout
+    /user/profile
+
+/feeder
+	/feeders
+	/feeder/apply
+	/feeder/applys
+	
+/post
+	/posts
+	/post/favor
+	/post/comment
+	/post/comments
+
+/archive
+	/archives
+```
+
 ### 用户相关
 
 #### Login 登陆
 
-POST /login
+POST /user/login
 
 ``` json
 request.body = {
@@ -217,7 +242,7 @@ response.body = {
 
 #### Register 注册
 
-POST /register
+POST /user/register
 
 ``` json
 request.body = {
@@ -236,7 +261,7 @@ response.body = {
 
 #### Register_validation 注册验证
 
-POST /register/validation
+POST /user/register/validation
 
 ``` json
 request.body = {
@@ -264,7 +289,7 @@ response.body = {
 
 #### Logout 注销
 
-POST /logout
+POST /user/logout
 
 ``` json
 request.body = { }
@@ -272,7 +297,7 @@ request.body = { }
 
 #### UserProfile 查看个人信息
 
-GET /userprofile
+GET /user/profile
 
 ``` json
 // 成功返回
@@ -287,7 +312,7 @@ response.body = {
 
 #### UserProfile_modify 修改个人信息
 
-PUT /userprofile
+PUT /user/profile
 
 ``` json
 request.body = {
@@ -470,7 +495,7 @@ response = {
 
 #### 请求动态评论
 
-GET /comments?type=post&root-id=123&limit=10&start=10
+GET /post/comments?type=post&root-id=123&limit=10&start=10
 
 ``` json
 response = {
