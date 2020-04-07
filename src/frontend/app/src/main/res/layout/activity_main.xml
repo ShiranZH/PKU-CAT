@@ -15,7 +15,7 @@
         android:layout_marginEnd="132dp"
         android:layout_marginRight="132dp"
         android:layout_marginBottom="172dp"
-        android:text="Miao~~"
+        android:text="Miao~~~"
         android:textColor="@android:color/holo_red_light"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
