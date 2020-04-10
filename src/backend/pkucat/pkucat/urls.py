@@ -17,8 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('test/hello/', include('demo.urls')),
+    path('demo', include('demo.urls')),
+    path('user', include('user.urls')),
+    path('user/', include('user.urls')),
     path('admin/', admin.site.urls),
 ]
 
-handler404 = "demo.views.cat_not_found"
+handler404 = "user.views.cat_not_found"
