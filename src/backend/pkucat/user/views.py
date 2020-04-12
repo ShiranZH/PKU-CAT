@@ -3,11 +3,6 @@ from django.http import HttpResponse, JsonResponse
 from demo.config import CODE
 
 
-def cat_not_found(request, exception):
-    next_url = request.path_info
-    return HttpResponse('404 '+str(next_url)+str(CODE))
-
-
 def register_validation(request):
     return HttpResponse('register_validation')
 
