@@ -21,6 +21,10 @@ class User(django.contrib.auth.models.User):
     avatar = models.CharField(max_length=128, blank=True)
     whatsup = models.CharField(max_length=128, blank=True)
     pku_mail = models.EmailField(unique=True)
+    
+    class Meta:
+        verbose_name = '用户'
+        verbose_name_plural = '用户'
 
 '''
 验证码类
@@ -45,6 +49,10 @@ class Verification(models.Model):
     update_date = models.DateTimeField()
 
     clear_date = timezone.now()
+
+    class Meta:
+        verbose_name = '验证码'
+        verbose_name_plural = '验证码'
 
     def get_verification_code(pku_mail):
         if Verification.objects.filter(pku_mail=pku_mail).exists():

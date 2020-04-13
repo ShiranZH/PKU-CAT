@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import django.contrib.admin
+
 from pkucat.email_setting import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -131,3 +133,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+django.contrib.admin.AdminSite.site_header = "燕园吸猫助手后台管理"
+django.contrib.admin.AdminSite.index_title = '站点管理'
+django.contrib.admin.AdminSite.site_title = '燕园吸猫助手'
