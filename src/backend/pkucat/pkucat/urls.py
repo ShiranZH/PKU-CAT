@@ -15,10 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from post import views
 
 urlpatterns = [
     path('test/hello/', include('demo.urls')),
     path('admin/', admin.site.urls),
+    path('post/', include('post.urls_post')),
+    path('posts/', include('post.urls_posts')),
 ]
 
 handler404 = "demo.views.cat_not_found"
