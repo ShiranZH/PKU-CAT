@@ -7,8 +7,8 @@
 """
 
 from django.db import models
-from .user.models import User
-from .archive.models import Cat
+from user.models import User
+# from archive.models import Cat
 
 
 class Feed(models.Model):
@@ -21,13 +21,13 @@ class Feed(models.Model):
         User,
         on_delete = models.CASCADE
     )
-    cat = models.ForeignKey(
-        Cat,
-        on_delete = models.CASCADE
-    )
+    # cat = models.ForeignKey(
+    #     Cat,
+    #     on_delete = models.CASCADE
+    # )
 
-    class Meta:
-        unique_together = ('feeder', 'cat')
+    # class Meta:
+    #     unique_together = ('feeder', 'cat')
 
 
 class Application_Feeder(models.Model):
@@ -40,10 +40,10 @@ class Application_Feeder(models.Model):
         User,
         on_delete = models.CASCADE
     )
-    cat = models.ForeignKey(
-        Cat,
-        on_delete = models.CASCADE
-    )
+    # cat = models.ForeignKey(
+    #     Cat,
+    #     on_delete = models.CASCADE
+    # )
 
-    class Meta:
-        unique_together = ('feeder', 'cat')
+    # class Meta:
+    #     unique_together = ('feeder', 'cat')
