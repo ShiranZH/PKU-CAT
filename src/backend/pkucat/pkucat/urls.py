@@ -11,6 +11,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('post/', include('post.urls')),
     path('posts/', include('post.urls')),
+    path('archive/', include('archive.urls')),
 ]
 
 def cat_not_found(request, exception):
