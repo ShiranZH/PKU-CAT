@@ -9,8 +9,8 @@ urlpatterns = [
     path('pku/cat/helper/', admin.site.urls),
     path('test/hello/', include('demo.urls')),
     path('admin/', admin.site.urls),
-    path('post/', include('post.urls_post')),
-    path('posts/', include('post.urls_posts')),
+    path('post/', include('post.urls')),
+    path('posts/', include('post.urls')),
 ]
 
 def cat_not_found(request, exception):

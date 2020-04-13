@@ -7,7 +7,7 @@ def index(request):
 def demo(request):
     return HttpResponse('Post Response')
 
-def posts(request):
+def post(request):
     if request.method == 'GET':
         num = request.GET.get('limit', default=10)
         start = request.GET.get('start', default=1)
@@ -23,15 +23,6 @@ def posts(request):
             } 
         }
         return HttpResponse(response)
-    response = {
-        "code": 600,
-        "data": {
-            "msg": "wrong method"
-        } 
-    }
-    return HttpResponse(response)
-
-def post(request):
     if request.method == 'POST':
         info = request.POST.get('post')
         response = {
@@ -41,7 +32,7 @@ def post(request):
             }
         }
         return HttpResponse(response)
-    elif request.method == 'DELETE':
+    if request.method == 'DELETE':
         post_id = request.DELETE.get('id')
         response = {
             "code": 200,
