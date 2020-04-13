@@ -7,4 +7,3 @@
 .idea
 uwsgi.ini
 email_setting.py
-setting.py

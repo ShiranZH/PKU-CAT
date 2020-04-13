@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'demo',
     'user',
+    'feeder',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
