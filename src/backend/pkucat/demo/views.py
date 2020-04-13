@@ -6,4 +6,7 @@ def demo(request):
 
 
 def cat_not_found(request, exception):
-    return render(request, 'demo/404.html', status=404)
+    
+    next_url = request.path_info
+    return HttpResponse(str(next_url))
+    # return render(request, 'demo/404.html', status=404)
