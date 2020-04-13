@@ -112,7 +112,7 @@ def comments(request):
     }
     return HttpResponse(response)
 
-    def favor(request):
+def favor(request):
     if request.method == 'PUT':
         try:
             id = request.PUT.get('postID')
@@ -155,7 +155,7 @@ def comments(request):
     }
     return HttpResponse(response)
 
-    def comment(request):
+def comment(request):
     if request.method == 'POST':
         try:
             postID = request.POST.get('postID')
