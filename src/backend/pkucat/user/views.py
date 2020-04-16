@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
- 
+import django.contrib.auth as auth
 
 from demo.config import CODE
 from .models import Verification, User
@@ -94,10 +94,58 @@ def register(request):
     return JsonResponse(response)
 
 def login(request):
-    return HttpResponse('login')
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        if username is None or password is None:
+            code = CODE['parameter_error']
+            msg = 'wrong parameter'
+        elif not User.objects.filter(username=username).exists():
+            code = CODE['parameter_error']
+            msg = 'wrong parameter'
+        else:
+            user = auth.authenticate(username=username, password=password)
+            if user is None:
+                code = CODE['parameter_error']
+                msg = 'username or password error'
+            elif request.user.is_authenticated:
+                if request.user.id != user.id:
+                    code = CODE['user_error']
+                    msg = 'error'
+                else:
+                    code = CODE['success']
+                    msg = 'success'
+            else:
+                auth.login(request, user)
+                code = CODE['success']
+                msg = 'success'
+    else:
+        code = CODE['method_error']
+        msg = 'wrong method'
+
+    response = {
+        'code': code,
+        'data': {
+            'msg':msg
+        }
+    }
+    return JsonResponse(response)
 
 def logout(request):
-    return HttpResponse('logout')
+    if request.method == 'POST':
+        auth.logout(request)
+        code = CODE['success']
+        msg = 'success'
+    else:
+        code = CODE['method_error']
+        msg = 'wrong method'
+    response = {
+        'code': code,
+        'data': {
+            'msg':msg
+        }
+    }
+    return JsonResponse(response)
 
 def profile(request):
     return HttpResponse('profile')
