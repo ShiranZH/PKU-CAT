@@ -5,4 +5,5 @@
 */db.sqlite3
 .vs
 .idea
-*/uwsgi.ini
+uwsgi.ini
+email_setting.py
