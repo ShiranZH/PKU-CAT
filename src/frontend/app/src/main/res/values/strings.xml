@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">pkucat</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">User Name</string>
+    <string name="nav_header_subtitle">student.id@pku.edu.cn</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_archive">Archive</string>
+    <string name="menu_post">Post</string>
+    <string name="menu_recognition">Recognition</string>
+    <string name="menu_setting">Setting</string>
+
+    <string name="sole_archive">Sole Archive</string>
+    <string name="sole_post">Sole Post</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
