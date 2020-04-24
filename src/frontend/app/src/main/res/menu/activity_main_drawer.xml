@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -22,3 +23,29 @@
             android:title="@string/menu_setting" />
     </group>
 </menu>
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_archive"
+            android:icon="@drawable/ic_menu_archive"
+            android:title="@string/menu_archive" />
+        <item
+            android:id="@+id/nav_post"
+            android:icon="@drawable/ic_menu_post"
+            android:title="@string/menu_post" />
+        <item
+            android:id="@+id/nav_recognition"
+            android:icon="@drawable/ic_menu_recognition"
+            android:title="@string/menu_recognition" />
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/ic_menu_setting"
+            android:title="@string/menu_setting" />
+    </group>
+</menu>
+>>>>>>> e2d708ed7687c459bea18b7d72b70579e7b4d609

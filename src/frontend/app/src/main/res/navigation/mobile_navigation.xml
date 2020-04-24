@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -53,4 +54,81 @@
         android:name="com.example.pkucat.ui.setting.SettingFragment"
         android:label="@string/menu_setting"
         tools:layout="@layout/fragment_setting" />
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_archive">
+
+    <fragment
+        android:id="@+id/nav_archive"
+        android:name="com.example.pkucat.ui.archive.ArchiveFragment"
+        android:label="@string/menu_archive"
+        tools:layout="@layout/fragment_archive">
+
+        <action
+            android:id="@+id/action_ArchiveFragment_to_SoleArchiveFragment"
+            app:destination="@id/nav_sole_archive" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_sole_archive"
+        android:name="com.example.pkucat.ui.archive.SoleArchiveFragment"
+        android:label="@string/sole_archive"
+        tools:layout="@layout/fragment_sole_archive">
+        <action
+            android:id="@+id/action_SoleArchiveFragment_to_ArhicveFragment"
+            app:destination="@id/nav_archive" />
+
+        <argument
+            android:name="myArg"
+            app:argType="string" />
+    </fragment>
+
+
+    <activity
+        android:id="@+id/nav_post"
+        android:name="com.example.pkucat.ui.post.PostActivity"
+        android:label="@string/menu_post"
+        tools:layout="@layout/activity_post"/>
+
+    <!--
+    <fragment
+        android:id="@+id/nav_post"
+        android:name="com.example.pkucat.ui.post.PostFragment"
+        android:label="@string/menu_post"
+        tools:layout="@layout/fragment_post">
+
+        <action
+            android:id="@+id/action_PostFragment_to_SolePostFragment"
+            app:destination="@id/nav_sole_post" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_sole_post"
+        android:name="com.example.pkucat.ui.post.SolePostFragment"
+        android:label="@string/sole_post"
+        tools:layout="@layout/fragment_sole_post">
+    <action
+        android:id="@+id/action_SolePostFragment_to_PostFragment"
+        app:destination="@id/nav_post" />
+
+    <argument
+        android:name="myArg"
+        app:argType="string" />
+    </fragment>
+    -->
+
+    <fragment
+        android:id="@+id/nav_recognition"
+        android:name="com.example.pkucat.ui.recognition.RecognitionFragment"
+        android:label="@string/menu_recognition"
+        tools:layout="@layout/fragment_recognition" />
+
+    <fragment
+        android:id="@+id/nav_setting"
+        android:name="com.example.pkucat.ui.setting.SettingFragment"
+        android:label="@string/menu_setting"
+        tools:layout="@layout/fragment_setting" />
+>>>>>>> e2d708ed7687c459bea18b7d72b70579e7b4d609
 </navigation>
