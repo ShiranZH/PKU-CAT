@@ -11,6 +11,7 @@
     <string name="menu_post">Post</string>
     <string name="menu_recognition">Recognition</string>
     <string name="menu_setting">Setting</string>
+    <string name="menu_manage">Manage</string>
 
     <string name="sole_archive">Sole Archive</string>
     <string name="sole_post">Sole Post</string>

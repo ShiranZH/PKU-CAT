@@ -10,7 +10,8 @@
         android:name="com.example.pkucat.ui.archive.ArchiveActivity"
         android:label="@string/menu_archive"
         tools:layout="@layout/activity_archive">
-    </activity>    <activity
+    </activity>
+    <activity
         android:id="@+id/nav_post"
         android:name="com.example.pkucat.ui.post.PostActivity"
         android:label="@string/menu_post"
@@ -53,4 +54,10 @@
         android:name="com.example.pkucat.ui.setting.SettingFragment"
         android:label="@string/menu_setting"
         tools:layout="@layout/fragment_setting" />
+
+    <activity
+        android:id="@+id/nav_manage"
+        android:name="com.example.pkucat.ui.manage.ManageActivity"
+        android:label="@string/menu_manage"
+        tools:layout="@layout/activity_manage"/>
 </navigation>
