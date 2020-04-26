@@ -29,12 +29,12 @@
             app:argType="string" />
     </fragment>
 
-
     <activity
         android:id="@+id/nav_post"
         android:name="com.example.pkucat.ui.post.PostActivity"
         android:label="@string/menu_post"
-        tools:layout="@layout/activity_post"/>
+        tools:layout="@layout/activity_post">
+    </activity>
 
     <!--
     <fragment
