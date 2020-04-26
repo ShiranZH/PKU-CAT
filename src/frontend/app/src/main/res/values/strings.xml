@@ -14,4 +14,26 @@
 
     <string name="sole_archive">Sole Archive</string>
     <string name="sole_post">Sole Post</string>
+    <string name="Photo">photo</string>
+    <string name="b1">编辑个人信息</string>
+    <string name="b2">我的关注</string>
+    <string name="b3">我的动态</string>
+    <string name="b4">权限管理</string>
+    <string name="t1">用户名</string>
+    <string name="t2">邮箱</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="b6">注册</string>
+    <string name="b5">登录</string>
+    <string name="input1">北大邮箱</string>
+    <string name="input2">密码</string>
+    <string name="input3">确认密码</string>
+    <string name="confirm">确认</string>
 </resources>
