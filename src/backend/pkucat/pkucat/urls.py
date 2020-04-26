@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from archive import views
 
 urlpatterns = [
     path('test/hello/', include('demo.urls')),
     path('admin/', admin.site.urls),
+    path('archive/', include('archive.urls')),
 ]
 
 handler404 = "demo.views.cat_not_found"
