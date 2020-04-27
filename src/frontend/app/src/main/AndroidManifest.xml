@@ -9,6 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.archive.SoleArchive"></activity>
+        <activity android:name=".ui.archive.SoleArchiveActivity" />
+        <activity android:name=".ui.archive.ArchiveActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -19,9 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.post.PostActivity">
-        </activity>
+        <activity android:name=".ui.post.PostActivity" />
     </application>
 
 </manifest>

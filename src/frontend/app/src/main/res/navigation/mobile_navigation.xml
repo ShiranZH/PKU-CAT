@@ -3,38 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_archive">
-
-    <fragment
-        android:id="@+id/nav_archive"
-        android:name="com.example.pkucat.ui.archive.ArchiveFragment"
-        android:label="@string/menu_archive"
-        tools:layout="@layout/fragment_archive">
-
-        <action
-            android:id="@+id/action_ArchiveFragment_to_SoleArchiveFragment"
-            app:destination="@id/nav_sole_archive" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_sole_archive"
-        android:name="com.example.pkucat.ui.archive.SoleArchiveFragment"
-        android:label="@string/sole_archive"
-        tools:layout="@layout/fragment_sole_archive">
-        <action
-            android:id="@+id/action_SoleArchiveFragment_to_ArhicveFragment"
-            app:destination="@id/nav_archive" />
-
-        <argument
-            android:name="myArg"
-            app:argType="string" />
-    </fragment>
+    app:startDestination="@+id/nav_setting">
 
     <activity
+        android:id="@+id/nav_archive"
+        android:name="com.example.pkucat.ui.archive.ArchiveActivity"
+        android:label="@string/menu_archive"
+        tools:layout="@layout/activity_archive">
+    </activity>    <activity
         android:id="@+id/nav_post"
         android:name="com.example.pkucat.ui.post.PostActivity"
         android:label="@string/menu_post"
-        tools:layout="@layout/activity_post">
-    </activity>
+        tools:layout="@layout/activity_post"/>
 
     <!--
     <fragment
