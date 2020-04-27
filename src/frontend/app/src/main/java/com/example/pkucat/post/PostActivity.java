@@ -1,19 +1,15 @@
-package com.example.pkucat.ui.post;
+package com.example.pkucat.post;
 
 import android.os.Bundle;
-import android.os.Looper;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.pkucat.R;
-import com.example.pkucat.ui.post.ui.SectionsPagerAdapter;
+import com.example.pkucat.post.list.SectionsPagerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;

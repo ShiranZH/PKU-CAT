@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_archive"
-        android:name="com.example.pkucat.ui.archive.ArchiveFragment"
+        android:name="com.example.pkucat.archive.ArchiveFragment"
         android:label="@string/menu_archive"
         tools:layout="@layout/fragment_archive">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_sole_archive"
-        android:name="com.example.pkucat.ui.archive.SoleArchiveFragment"
+        android:name="com.example.pkucat.archive.SoleArchiveFragment"
         android:label="@string/sole_archive"
         tools:layout="@layout/fragment_sole_archive">
         <action
@@ -31,7 +31,7 @@
 
     <activity
         android:id="@+id/nav_post"
-        android:name="com.example.pkucat.ui.post.PostActivity"
+        android:name="com.example.pkucat.post.PostActivity"
         android:label="@string/menu_post"
         tools:layout="@layout/activity_post">
     </activity>
@@ -39,7 +39,7 @@
     <!--
     <fragment
         android:id="@+id/nav_post"
-        android:name="com.example.pkucat.ui.post.PostFragment"
+        android:name="com.example.pkucat.post.PostFragment"
         android:label="@string/menu_post"
         tools:layout="@layout/fragment_post">
 
@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_sole_post"
-        android:name="com.example.pkucat.ui.post.SolePostFragment"
+        android:name="com.example.pkucat.post.SolePostFragment"
         android:label="@string/sole_post"
         tools:layout="@layout/fragment_sole_post">
     <action
@@ -64,13 +64,13 @@
 
     <fragment
         android:id="@+id/nav_recognition"
-        android:name="com.example.pkucat.ui.recognition.RecognitionFragment"
+        android:name="com.example.pkucat.recognition.RecognitionFragment"
         android:label="@string/menu_recognition"
         tools:layout="@layout/fragment_recognition" />
 
     <fragment
         android:id="@+id/nav_setting"
-        android:name="com.example.pkucat.ui.setting.SettingFragment"
+        android:name="com.example.pkucat.setting.SettingFragment"
         android:label="@string/menu_setting"
         tools:layout="@layout/fragment_setting" />
 </navigation>

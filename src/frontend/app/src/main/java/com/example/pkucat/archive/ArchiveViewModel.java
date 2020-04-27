@@ -1,16 +1,16 @@
-package com.example.pkucat.ui.setting;
+package com.example.pkucat.archive;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SettingViewModel extends ViewModel {
+public class ArchiveViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public SettingViewModel() {
+    public ArchiveViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is setting fragment");
+        mText.setValue("This is archive fragment");
     }
 
     public LiveData<String> getText() {

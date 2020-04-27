@@ -1,4 +1,4 @@
-package com.example.pkucat.ui.archive;
+package com.example.pkucat.recognition;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,16 +14,16 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.pkucat.R;
 
-public class ArchiveFragment extends Fragment {
-    private ArchiveViewModel archiveViewModel;
+public class RecognitionFragment extends Fragment {
+    private RecognitionViewModel recognitionViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        archiveViewModel =
-                ViewModelProviders.of(this).get(ArchiveViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_archive, container, false);
-        final TextView textView = root.findViewById(R.id.text_archive);
-        archiveViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        recognitionViewModel =
+                ViewModelProviders.of(this).get(RecognitionViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_recognition, container, false);
+        final TextView textView = root.findViewById(R.id.text_recognition);
+        recognitionViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

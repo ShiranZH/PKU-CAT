@@ -1,4 +1,4 @@
-package com.example.pkucat.ui.post;
+package com.example.pkucat.post;
 
 import android.net.Uri;
 

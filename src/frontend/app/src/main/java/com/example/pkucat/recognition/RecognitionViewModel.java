@@ -1,4 +1,4 @@
-package com.example.pkucat.ui.recognition;
+package com.example.pkucat.recognition;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

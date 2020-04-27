@@ -1,4 +1,4 @@
-package com.example.pkucat.ui.post.ui;
+package com.example.pkucat.post.list;
 
 import android.content.Context;
 
