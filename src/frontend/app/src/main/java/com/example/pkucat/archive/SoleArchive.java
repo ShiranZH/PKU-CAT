@@ -1,4 +1,4 @@
-package com.example.pkucat.ui.archive;
+package com.example.pkucat.archive;
 
 import android.os.Bundle;
 import android.widget.ImageView;

@@ -1,4 +1,4 @@
-package com.example.pkucat.ui.recognition;
+package com.example.pkucat.recognition;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

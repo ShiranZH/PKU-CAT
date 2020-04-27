@@ -1,4 +1,4 @@
-package com.example.pkucat.ui.post.list;
+package com.example.pkucat.post.list;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pkucat.R;
-import com.example.pkucat.ui.post.PostEntity;
+import com.example.pkucat.post.PostEntity;
 
 import java.util.ArrayList;
 

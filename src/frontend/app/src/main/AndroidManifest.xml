@@ -19,10 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.archive.SoleArchive" />
-        <activity android:name=".ui.archive.SoleArchiveActivity" />
-        <activity android:name=".ui.archive.ArchiveActivity" />
-        <activity android:name=".ui.post.PostActivity" />
+        <activity android:name=".archive.SoleArchive" />
+        <activity android:name=".archive.SoleArchiveActivity" />
+        <activity android:name=".archive.ArchiveActivity" />
+        <activity android:name=".post.PostActivity" />
     </application>
 
 </manifest>

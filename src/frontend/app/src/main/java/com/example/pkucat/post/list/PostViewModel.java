@@ -1,4 +1,4 @@
-package com.example.pkucat.ui.post.list;
+package com.example.pkucat.post.list;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;

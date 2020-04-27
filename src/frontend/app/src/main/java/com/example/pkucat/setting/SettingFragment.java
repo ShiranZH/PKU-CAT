@@ -1,4 +1,4 @@
-package com.example.pkucat.ui.setting;
+package com.example.pkucat.setting;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -1,4 +1,4 @@
-package com.example.pkucat.ui.archive;
+package com.example.pkucat.archive;
 
 import android.content.Context;
 import android.view.LayoutInflater;
