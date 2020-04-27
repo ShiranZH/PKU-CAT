@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.pkucat.R;
 
@@ -46,6 +47,12 @@ public class AdminUserList extends BaseAdapter {
         return 0;
     }
 
+    public void putItem(String name, int level)
+    {
+        userName.add(name);
+        userLevel.add(level);
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -66,6 +73,11 @@ public class AdminUserList extends BaseAdapter {
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        int index=userName.indexOf(name);
+                        userName.remove(index);
+                        userLevel.remove(index);
+                        notifyDataSetChanged();
+                        Toast.makeText(mContext,"删除成功！",Toast.LENGTH_SHORT).show();
                     }
                 });
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener(){

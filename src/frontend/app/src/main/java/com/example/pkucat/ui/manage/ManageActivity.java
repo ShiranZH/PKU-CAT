@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -20,14 +21,16 @@ import com.example.pkucat.R;
 
 public class ManageActivity extends AppCompatActivity {
 
-    private ListView adminUserList;
+    private ListView adminUserListView;
+    private AdminUserList adminUserList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage);
-        adminUserList = findViewById(R.id.admin_user_list);
-        adminUserList.setAdapter(new AdminUserList(this));
+        adminUserListView = findViewById(R.id.admin_user_list);
+        adminUserList = new AdminUserList(this);
+        adminUserListView.setAdapter(adminUserList);
 
     }
 
@@ -39,7 +42,7 @@ public class ManageActivity extends AppCompatActivity {
     }
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        EditText inputName = new EditText(this);
+        final EditText inputName = new EditText(this);
         inputName.setSingleLine(true);
         inputName.setHorizontallyScrolling(true);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -53,6 +56,9 @@ public class ManageActivity extends AppCompatActivity {
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
+                        adminUserList.putItem(inputName.getText().toString(),1);
+                        adminUserList.notifyDataSetChanged();
                         Toast.makeText(ManageActivity.this,"饲养员设置成功！",Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -67,6 +73,8 @@ public class ManageActivity extends AppCompatActivity {
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        adminUserList.putItem(inputName.getText().toString(),2);
+                        adminUserList.notifyDataSetChanged();
                         Toast.makeText(ManageActivity.this,"管理员设置成功！",Toast.LENGTH_SHORT).show();
                     }
                 });
