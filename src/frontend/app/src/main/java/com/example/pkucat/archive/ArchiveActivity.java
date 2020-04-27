@@ -58,4 +58,3 @@ public class ArchiveActivity extends Activity {
         }
     }
 }
-

@@ -24,16 +24,18 @@
             android:hint="   请输入猫咪名称" />
 
         <Button
-                android:id="@+id/searchArchive_button"
-                android:layout_width="50dp"
-                android:layout_height="40dp"
-                android:background="@drawable/shape_archive_search"
-                android:text="搜索"
-                android:textColor="#262626"
-                android:textSize="18dp"/>
+            android:id="@+id/searchArchive_button"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:background="@drawable/shape_archive_search"
+            android:text="搜索"
+            android:textColor="#262626"
+            android:textSize="18sp" />
     </LinearLayout>
+
     <ListView
         android:id="@+id/archive_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 </LinearLayout>
