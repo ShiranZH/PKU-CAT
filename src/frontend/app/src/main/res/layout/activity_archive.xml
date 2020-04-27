@@ -27,7 +27,7 @@
                 android:id="@+id/searchArchive_button"
                 android:layout_width="50dp"
                 android:layout_height="40dp"
-                android:background="@drawable/shape_small"
+                android:background="@drawable/shape_archive_search"
                 android:text="搜索"
                 android:textColor="#262626"
                 android:textSize="18dp"/>

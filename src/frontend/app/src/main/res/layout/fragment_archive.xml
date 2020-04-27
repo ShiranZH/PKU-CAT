@@ -30,7 +30,7 @@
         android:id="@+id/searchArchive_button"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_small"
+        android:background="@drawable/shape_archive_search"
         android:textColor="#262626"
         android:text="点击搜索猫咪档案"
         android:textSize="18dp"/>
