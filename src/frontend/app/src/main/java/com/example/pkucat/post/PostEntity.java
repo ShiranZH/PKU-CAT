@@ -3,7 +3,6 @@ package com.example.pkucat.post;
 import android.net.Uri;
 
 import java.io.Serializable;
-import java.net.URI;
 
 public class PostEntity implements Serializable {
     private String avatarPath;

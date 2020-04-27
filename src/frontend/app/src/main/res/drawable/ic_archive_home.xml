@@ -6,4 +6,8 @@
     <path
         android:fillColor="#FF000000"
         android:pathData="M10,20v-6h4v6h5v-8h3L12,3 2,12h3v8z"/>
+<<<<<<< HEAD
 </vector>
+=======
+</vector>
+>>>>>>> 83944def3133fe71dd3b411dfd50e180705e15de

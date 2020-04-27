@@ -13,4 +13,8 @@
         android:right="5dp"
         android:top="5dp"
         android:bottom="5dp"/>
+<<<<<<< HEAD
 </shape> 
+=======
+</shape>
+>>>>>>> 83944def3133fe71dd3b411dfd50e180705e15de

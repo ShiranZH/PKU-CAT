@@ -29,5 +29,6 @@
             android:text="山岚"
             android:textColor="#000000"
             android:textSize="20sp" />
-    </LinearLayout>>
+    </LinearLayout>
+
 </LinearLayout>
