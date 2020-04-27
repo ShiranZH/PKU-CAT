@@ -33,4 +33,10 @@
         tools:layout="@layout/fragment_setting">
     </fragment>
 
+    <activity
+        android:id="@+id/nav_manage"
+        android:name="com.example.pkucat.manage.ManageActivity"
+        android:label="@string/menu_manage"
+        tools:layout="@layout/activity_manage"/>
+
 </navigation>

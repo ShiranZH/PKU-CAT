@@ -20,9 +20,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".archive.SoleArchive" />
-        <activity android:name=".archive.SoleArchiveActivity" />
         <activity android:name=".archive.ArchiveActivity" />
         <activity android:name=".post.PostActivity" />
+        <activity android:name=".manage.ManageActivity"/>
     </application>
 
 </manifest>

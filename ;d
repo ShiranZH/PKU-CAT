@@ -1,0 +1,35 @@
+* [33mcommit b846c2b35b290b3ab2bb608bc8668c6c900fdeec[m[33m ([m[1;36mHEAD -> [m[1;32mbsdropD[m[33m, [m[1;31morigin/bsdropD[m[33m)[m
+[31m|[m Author: bsdropD <bsdropd@gmail.com>
+[31m|[m Date:   Mon Apr 27 16:23:36 2020 +0800
+[31m|[m 
+[31m|[m     Manage UI completed.
+[31m|[m 
+* [33mcommit 3b690daf77401659674e21b06223d196aec51b15[m
+[31m|[m Author: bsdropD <bsdropd@gmail.com>
+[31m|[m Date:   Mon Apr 27 03:28:59 2020 +0800
+[31m|[m 
+[31m|[m     Manage UI demo completed (Inner logic is not done.)
+[31m|[m 
+* [33mcommit 9049dd9e907c198b865ccfd1e50ba6c10f6d711b[m
+[31m|[m Author: bsdropD <bsdropd@gmail.com>
+[31m|[m Date:   Sun Apr 26 17:53:16 2020 +0800
+[31m|[m 
+[31m|[m     Remove warnings in AndroidManifest.xml
+[31m|[m 
+* [33mcommit 5d734fbf4835b90f4308fc95762d114461df9ca0[m
+[31m|[m Author: bsdropD <bsdropd@gmail.com>
+[31m|[m Date:   Sun Apr 26 17:48:49 2020 +0800
+[31m|[m 
+[31m|[m     In navigation bar, add button "manage"
+[31m|[m 
+* [33mcommit 624e036c4ca754906711f7c9f5564a57552b559d[m
+[31m|[m Author: bsdropD <bsdropd@gmail.com>
+[31m|[m Date:   Sat Apr 25 23:10:52 2020 +0800
+[31m|[m 
+[31m|[m     commit test
+[31m|[m 
+* [33mcommit 9b19ef6a1a10ae5cbfe198488e699d0bb2899e47[m[33m ([m[1;31morigin/chengyi[m[33m)[m
+  Author: YiCheng98 <yicheng@pku.edu.cn>
+  Date:   Fri Apr 24 19:47:44 2020 +0800
+  
+      preliminary implementation of archive function, including ListView of 3 example cats and archive search
