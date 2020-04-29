@@ -12,8 +12,8 @@
 
     <string name="menu_post">Post</string>
     <string name="sole_post">Sole Post</string>
-    <string name="tab_text_1">Post</string>
-    <string name="tab_text_2">Star</string>
+    <string name="post_tab_1">Post</string>
+    <string name="post_tab_2">Star</string>
 
     <string name="menu_recognition">Recognition</string>
     <string name="menu_setting">Setting</string>
