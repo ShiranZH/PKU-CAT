@@ -10,7 +10,7 @@ public class RecognitionViewModel extends ViewModel {
 
     public RecognitionViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is recogntion fragment");
+        mText.setValue("Function recognition is to be implemented!");
     }
 
     public LiveData<String> getText() {

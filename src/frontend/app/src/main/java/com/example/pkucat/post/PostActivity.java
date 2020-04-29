@@ -79,8 +79,8 @@ public class PostActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // 返回键
         switch (item.getItemId()) {
+            // 返回键
             case android.R.id.home:
                 this.finish(); // back button
                 return true;
