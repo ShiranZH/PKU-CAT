@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+from post import views
 
 urlpatterns = [
     path('demo', include('demo.urls')),
@@ -9,8 +10,9 @@ urlpatterns = [
     path('pku/cat/helper/', admin.site.urls),
     path('test/hello/', include('demo.urls')),
     path('admin/', admin.site.urls),
+    path('posts/', views.posts),
+    path('posts/search/', views.search),
     path('post/', include('post.urls')),
-    path('posts/', include('post.urls')),
     path('archive/', include('archive.urls')),
 ]
 

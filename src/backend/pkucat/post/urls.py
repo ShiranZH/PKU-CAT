@@ -9,5 +9,4 @@ urlpatterns = [
     path('comments/', views.comments),
     path('favor/', views.favor),
     path('comment/', views.comment),
-    path('search/', views.search),
 ]
