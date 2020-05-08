@@ -31,36 +31,31 @@ class UserTests(TestCase):
         response = response.json()
         self.assertEqual(response['code'], CODE['parameter_error'])
 
-        response = self.client.post('/user/register', {'email': "pkuzhd"})
-        self.assertEqual(type(response), JsonResponse)
-        response = response.json()
-        self.assertEqual(response['code'], CODE['parameter_error'])
-
-        response = self.client.post('/user/register', {'email': "pkuzhd@126.com"})
+        response = self.client.post('/user/register', {'email': "pkuzhd@pku.edu.cn"})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['parameter_error'])
 
         # 邮箱已注册
-        response = self.client.post('/user/register', {'email': "pkucathelper@pku.edu.cn"})
+        response = self.client.post('/user/register', {'email': "pkucathelper"})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['database_error'])
 
         # 成功
-        response = self.client.post('/user/register', {'email': "pkuzhd@pku.edu.cn"})
+        response = self.client.post('/user/register', {'email': "pkuzhd"})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
 
         # 成功
-        response = self.client.post('/user/register', {'email': "1600012621@pku.edu.cn"})
+        response = self.client.post('/user/register', {'email': "1600012621"})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
 
         # 30s内重复请求
-        response = self.client.post('/user/register', {'email': "pkuzhd@pku.edu.cn"})
+        response = self.client.post('/user/register', {'email': "pkuzhd"})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['user_error'])
@@ -69,7 +64,7 @@ class UserTests(TestCase):
 
         # 参数错误-无用户名
         response = self.client.post('/user/register_validation', 
-            {'password':'123456', 'email': "pkuzhd@pku.edu.cn",
+            {'password':'123456', 'email': "pkuzhd",
              'verificationCode':verification_code})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
@@ -77,7 +72,7 @@ class UserTests(TestCase):
 
         # 参数错误-无密码
         response = self.client.post('/user/register_validation', 
-            {'username':'pkuzhd', 'email': "pkuzhd@pku.edu.cn",
+            {'username':'pkuzhd', 'email': "pkuzhd",
              'verificationCode':verification_code})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
@@ -93,7 +88,7 @@ class UserTests(TestCase):
 
         # 参数错误-无验证码
         response = self.client.post('/user/register_validation', 
-            {'username':'pkuzhd', 'password':'123456', 'email': "pkuzhd@pku.edu.cn"})
+            {'username':'pkuzhd', 'password':'123456', 'email': "pkuzhd"})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['parameter_error'])
@@ -101,7 +96,7 @@ class UserTests(TestCase):
         # 参数错误-验证码错误
         wrong_code = int(verification_code)-1 if int(verification_code)>500000 else int(verification_code)+1
         response = self.client.post('/user/register_validation', 
-            {'username':'pkuzhd', 'password':'123456', 'email': "pkuzhd@pku.edu.cn",
+            {'username':'pkuzhd', 'password':'123456', 'email': "pkuzhd",
              'verificationCode':wrong_code})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
@@ -109,15 +104,23 @@ class UserTests(TestCase):
 
         # 用户名重复
         response = self.client.post('/user/register_validation', 
-            {'username':'pkucathelper', 'password':'123456', 'email': "pkuzhd@pku.edu.cn",
+            {'username':'pkucathelper', 'password':'123456', 'email': "pkuzhd",
              'verificationCode':verification_code})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['database_error'])
 
-        # 成功
+        # 邮箱格式错误
         response = self.client.post('/user/register_validation', 
             {'username':'pkuzhd', 'password':'123456', 'email': "pkuzhd@pku.edu.cn",
+             'verificationCode':verification_code})
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['parameter_error'])
+
+        # 成功
+        response = self.client.post('/user/register_validation', 
+            {'username':'pkuzhd', 'password':'123456', 'email': "pkuzhd",
              'verificationCode':verification_code})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
@@ -127,7 +130,7 @@ class UserTests(TestCase):
 
         # 成功
         response = self.client.post('/user/register_validation', 
-            {'username':'pkuzhd', 'password':'123456', 'email': "1600012621@pku.edu.cn",
+            {'username':'pkuzhd', 'password':'123456', 'email': "1600012621",
              'verificationCode':verification_code})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
@@ -171,19 +174,19 @@ class UserTests(TestCase):
         self.assertEqual(response['code'], CODE['parameter_error'])
 
         # 成功
-        response = self.client.post('/user/login', {'username':'pkuzhd', 'password':'123456'})
+        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':'123456'})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
 
         # 重复请求登录
-        response = self.client.post('/user/login', {'username':'pkuzhd', 'password':'123456'})
+        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':'123456'})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
 
         # 请求另外一个账户登录
-        response = self.client.post('/user/login', {'username':'zhd', 'password':'123456'})
+        response = self.client.post('/user/login', {'email':'1600012621', 'password':'123456'})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['user_error'])
@@ -215,7 +218,7 @@ class UserTests(TestCase):
         self.assertEqual(response['code'], CODE['success'])
 
         # 登录
-        response = self.client.post('/user/login', {'username':'pkuzhd', 'password':'123456'})
+        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':'123456'})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
@@ -227,7 +230,54 @@ class UserTests(TestCase):
         self.assertEqual(response['code'], CODE['success'])
 
         # 另外一个账户登录
-        response = self.client.post('/user/login', {'username':'zhd', 'password':'123456'})
+        response = self.client.post('/user/login', {'email':'1600012621', 'password':'123456'})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
+
+    # def test_profile(self):
+    #     User.objects.create_user(username='pkuzhd', password='123456', pku_mail='pkuzhd@pku.edu.cn')
+    #     User.objects.create_user(username='zhd', password='123456', pku_mail='1600012621@pku.edu.cn')
+
+    #     # 未登录
+    #     response = self.client.get('/user/profile')
+    #     self.assertEqual(type(response), JsonResponse)
+    #     response = response.json()
+    #     self.assertEqual(response['code'], CODE['user_error'])
+
+    #     # 登录
+    #     response = self.client.post('/user/login', {'username':'pkuzhd', 'password':'123456'})
+    #     self.assertEqual(type(response), JsonResponse)
+    #     response = response.json()
+    #     self.assertEqual(response['code'], CODE['success'])
+
+    #     # 登录
+    #     response = self.client.post('/user/login', {'username':'pkuzhd', 'password':'123456'})
+    #     self.assertEqual(type(response), JsonResponse)
+    #     response = response.json()
+    #     self.assertEqual(response['code'], CODE['success'])
+
+    #     files = {'fileasva': [open('/home/zhd/PKU-CAT/README.md','rb')], 'asb':'asdasd'}
+
+    #     # 方法错误
+    #     # response = self.client.post('/user/profile')
+    #     # self.assertEqual(type(response), JsonResponse)
+    #     # response = response.json()
+    #     # self.assertEqual(response['code'], CODE['method_error'])
+
+    #     # response = self.client.delete('/user/profile')
+    #     # self.assertEqual(type(response), JsonResponse)
+    #     # response = response.json()
+    #     # self.assertEqual(response['code'], CODE['method_error'])
+
+    #     # # 成功
+    #     # response = self.client.get('/user/profile')
+    #     # self.assertEqual(type(response), JsonResponse)
+    #     # response = response.json()
+    #     # self.assertEqual(response['code'], CODE['success'])
+
+    #     # response = self.client.put('/user/profile', files)
+    #     # response = self.client.post('/user/profile', files)
+    #     # self.assertEqual(type(response), JsonResponse)
+    #     # response = response.json()
+    #     # self.assertEqual(response['code'], CODE['success'])
