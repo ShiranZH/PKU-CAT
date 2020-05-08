@@ -217,7 +217,40 @@ response.body = {
 
 /archive
 	/archives
+	
+/file
 ```
+
+### 上传文件
+
+POST /file
+
+```json
+request.body = {
+    "picture": [file1, file2, ...],
+    "video": [file3, file4, ...]
+}
+
+// 上传成功：
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success",
+        "picture": [url1, url2, ...],
+        "video": [url1, url2, ...],
+    }
+}
+
+// 上传失败：
+response.body = {
+    "code": 700,
+    "data": {
+        "msg": "parameter error",
+    }
+}
+```
+
+
 
 ### 用户相关
 
