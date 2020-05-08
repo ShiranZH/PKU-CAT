@@ -178,17 +178,41 @@ def profile(request):
             user_profile['whatsup'] = user.whatsup
             code = CODE['success']
             msg = 'success'
-            msg = str(request.headers)
         elif request.method == 'PUT':
-            username = request.GET
-            
-            # put = QueryDict(request.body)
-            # put_str = list(put.items())[0][0] #将获取的QueryDict对象转换为str 类型
-            # put_dict = eval(put_str) #将str类型转换为字典类型
-            # id = put_dict.get("id")  #获取传递参数
+            PUT = QueryDict(request.body)
 
-            # code = CODE['success']
-            # msg = "success" + str(put['username'])
+            username = PUT.get('username')
+            avatar = PUT.get('avatar')
+            whatsup = PUT.get('whatsup')
+
+            if username or avatar or whatsup:
+                msg = ""
+                if username:
+                    if not User.objects.filter(username=username).exists():
+                        user.username = username
+                    elif username != user.username:
+                        code = CODE['parameter_error']
+                        msg += "duplicate username/"
+                
+                if avatar:
+                    if file.exists_file(avatar):
+                        user.avatar = avatar
+                    else:
+                        code = CODE['parameter_error']
+                        msg += "unexisted avatar/"
+                
+                if whatsup:
+                    user.whatsup = whatsup
+
+                if not msg:
+                    user.save()
+                    code = CODE['success']
+                    msg = "success"
+                else:
+                    msg = msg[:-1]
+            else:
+                code = CODE['parameter_error']
+                msg = 'parameter error'
         else:
             code = CODE['method_error']
             msg = 'wrong method'
@@ -196,7 +220,7 @@ def profile(request):
     response = {
         'code': code,
         'data': {
-            'msg':msg,
+            'msg': msg,
             'profile': user_profile,
         }
     }
