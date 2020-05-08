@@ -132,3 +132,102 @@ class UserTests(TestCase):
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['database_error'])
+
+    def test_login(self):
+        User.objects.create_user(username='pkuzhd', password='123456', pku_mail='pkuzhd@pku.edu.cn')
+        User.objects.create_user(username='zhd', password='123456', pku_mail='1600012621@pku.edu.cn')
+
+        # 方法错误
+        response = self.client.get('/user/login')
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['method_error'])
+
+        response = self.client.put('/user/login')
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['method_error'])
+
+        response = self.client.delete('/user/login')
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['method_error'])
+
+        # 参数错误
+        response = self.client.post('/user/login', {'password':'123456'})
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['parameter_error'])
+
+        response = self.client.post('/user/login', {'username':'pkuzhd'})
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['parameter_error'])
+
+        # 账户或密码错误
+        response = self.client.post('/user/login', {'username':'pkuzhd', 'password':'1234567'})
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['parameter_error'])
+
+        # 成功
+        response = self.client.post('/user/login', {'username':'pkuzhd', 'password':'123456'})
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['success'])
+
+        # 重复请求登录
+        response = self.client.post('/user/login', {'username':'pkuzhd', 'password':'123456'})
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['success'])
+
+        # 请求另外一个账户登录
+        response = self.client.post('/user/login', {'username':'zhd', 'password':'123456'})
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['user_error'])
+
+    def test_logout(self):
+        User.objects.create_user(username='pkuzhd', password='123456', pku_mail='pkuzhd@pku.edu.cn')
+        User.objects.create_user(username='zhd', password='123456', pku_mail='1600012621@pku.edu.cn')
+
+        # 方法错误
+        response = self.client.get('/user/logout')
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['method_error'])
+
+        response = self.client.put('/user/logout')
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['method_error'])
+
+        response = self.client.delete('/user/logout')
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['method_error'])
+
+        # 成功
+        response = self.client.post('/user/logout')
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['success'])
+
+        # 登录
+        response = self.client.post('/user/login', {'username':'pkuzhd', 'password':'123456'})
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['success'])
+
+        # 注销
+        response = self.client.post('/user/logout')
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['success'])
+
+        # 另外一个账户登录
+        response = self.client.post('/user/login', {'username':'zhd', 'password':'123456'})
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['success'])

@@ -260,7 +260,7 @@ POST /user/login
 
 ``` json
 request.body = {
-    "username": string,
+    "email": "1600012607" (string, pku邮箱名，不包括@pku.edu.cn)
     "password": string
 }
 
@@ -268,7 +268,7 @@ request.body = {
 response.body = {
     "code": 300,
     "data": {
-        "msg": "username error" / "password error"
+        "msg": "email error" / "password error"
     }
 }
 ```
