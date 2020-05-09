@@ -170,17 +170,23 @@ def profile(request):
         code = CODE['user_error']
         msg = "not authorized"
     else:
-        user = User.objects.get(id=request.user.id)
         if request.method == 'GET':
-            user_profile['user'] = {'name':user.username, "userID":user.id}
-            user_profile['avatar'] = user.avatar if user.avatar != '' else 'static/user/avatar_default.jpg'
-            user_profile['mail'] = user.pku_mail 
-            user_profile['whatsup'] = user.whatsup
-            code = CODE['success']
-            msg = 'success'
+            user_id = request.GET.get("userID") if request.GET.get("userID") else request.user.id
+            if User.objects.filter(id=user_id).exists():
+                user = User.objects.get(id=user_id)
+                user_profile['user'] = {'name':user.username, "userID":user.id}
+                user_profile['avatar'] = user.avatar if user.avatar != '' else '/static/user/avatar_default.jpg'
+                user_profile['mail'] = user.pku_mail 
+                user_profile['whatsup'] = user.whatsup
+                code = CODE['success']
+                msg = 'success'
+            else:
+                code = CODE['database_error']
+                msg = 'user does not exist'
         elif request.method == 'PUT':
+            user = User.objects.get(id=request.user.id)
+            
             PUT = QueryDict(request.body)
-
             username = PUT.get('username')
             avatar = PUT.get('avatar')
             whatsup = PUT.get('whatsup')
