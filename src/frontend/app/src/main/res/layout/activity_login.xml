@@ -32,7 +32,7 @@
             android:autofillHints=""
             android:drawableBottom="@android:drawable/button_onoff_indicator_off"
             android:ems="10"
-            android:hint="@string/input1"
+            android:hint="@string/t1"
             android:inputType="textEmailAddress"
             android:textSize="18sp" />
 

@@ -10,6 +10,8 @@ import android.widget.Button;
 
 import com.example.pkucat.R;
 
+import org.json.JSONObject;
+
 public class LoginActivity extends Activity {
 
     @Override
@@ -23,6 +25,15 @@ public class LoginActivity extends Activity {
             public void onClick(View v) {
                 Intent tostart = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(tostart);
+            }
+        });
+
+        // login
+        final Button button5 = findViewById(R.id.button5);
+        button5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }

@@ -72,7 +72,8 @@
             android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/b1" />
+            android:text="@string/b1"
+            android:textSize="24sp" />
 
         <Space
             android:layout_width="match_parent"
@@ -82,13 +83,15 @@
             android:id="@+id/button3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/b3" />
+            android:text="@string/b3"
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/b2" />
+            android:text="@string/b2"
+            android:textSize="24sp" />
 
         <Space
             android:layout_width="match_parent"
@@ -98,7 +101,8 @@
             android:id="@+id/button4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/b4" />
+            android:text="@string/b4"
+            android:textSize="24sp" />
 
     </LinearLayout>
 
