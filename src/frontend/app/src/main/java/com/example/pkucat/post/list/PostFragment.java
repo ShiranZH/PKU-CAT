@@ -49,6 +49,7 @@ public class PostFragment extends Fragment {
             System.out.println(index);
         }
         postViewModel.setIndex(index);
+        // TODO: 下拉刷新，上拉加载
     }
 
     @Nullable
@@ -66,6 +67,7 @@ public class PostFragment extends Fragment {
         });
         return root;
         */
+        // TODO: 搜索功能
         initData();
         initRecyclerView();
         return view;
@@ -73,7 +75,7 @@ public class PostFragment extends Fragment {
 
     private void initData() {
         postEntities = new ArrayList<>();
-        // 获取动态
+        // TODO: 获取动态
         for (int i = 0; i < 15; i++) {
             PostEntity postEntity = new PostEntity();
             postEntity.setAvatarPath("Avatar");

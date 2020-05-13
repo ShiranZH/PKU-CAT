@@ -23,6 +23,7 @@ import java.util.ArrayList;
 public class PostEditActivity extends AppCompatActivity {
 
     private static final int MAX_SELECT_PIC_NUM = 9;
+    private Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +41,11 @@ public class PostEditActivity extends AppCompatActivity {
 
         ImageView mImageView = findViewById(R.id.post_edit_pic);
         Intent intent = getIntent();
-        String imagePath = intent.getStringExtra("Image Path");
-        //Uri imageUri = Uri.fromFile(new File(imagePath));
-        //mImageView.setImageURI(imageUri);
+        String imagePath = intent.getStringExtra("ImagePath");
+        if (imagePath != null) {
+            imageUri = Uri.parse(imagePath);
+            mImageView.setImageURI(imageUri);
+        }
     }
 
     @Override

@@ -11,5 +11,4 @@
         android:title="设置管理员"
         app:showAsAction="never" />
 
-
 </menu>

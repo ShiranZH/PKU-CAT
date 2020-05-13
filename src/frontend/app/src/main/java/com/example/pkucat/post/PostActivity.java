@@ -1,38 +1,26 @@
 package com.example.pkucat.post;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.ContentUris;
-import android.content.Context;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.StrictMode;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.pkucat.R;
+import com.example.pkucat.manage.ManageActivity;
 import com.example.pkucat.post.edit.PostEditActivity;
 import com.example.pkucat.post.list.SectionsPagerAdapter;
 import com.google.android.material.snackbar.Snackbar;
@@ -42,8 +30,6 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -56,7 +42,9 @@ public class PostActivity extends AppCompatActivity {
     private static final int CHOOSE_PHOTO = 1;
     private static final int TAKE_PHOTO = 2;
     private static final int RECORD_VIDEO = 3;
-    private String imagePath;
+    private String imagePath = "";
+
+    private static final int MENU_SEARCH = 17; // id of this menu item
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,8 +186,12 @@ public class PostActivity extends AppCompatActivity {
         }
         switch (requestCode) {
             case CHOOSE_PHOTO:
-                System.out.println(data);
-                imagePath = "";
+                Uri imageUri = data.getData();
+                if (imageUri != null) {
+                    imagePath = imageUri.toString();
+                } else {
+                    imagePath = "";
+                }
                 break;
             case TAKE_PHOTO:
                 break;
@@ -233,5 +225,50 @@ public class PostActivity extends AppCompatActivity {
         itemIcon.setImageResource(iconResourceId);
         return itemBuilder.setContentView(itemIcon).build();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.post_list_menu, menu);
+        //添加标题栏的搜索按钮
+        MenuItem item=menu.add(0, MENU_SEARCH, 0, "Search");
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        item.setIcon(R.drawable.ic_post_search);//设置图标
+
+
+        MenuItem.OnMenuItemClickListener listener=new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case MENU_SEARCH:
+                        final EditText inputName = new EditText(PostActivity.this);
+                        inputName.setSingleLine(true);
+                        inputName.setHorizontallyScrolling(true);
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+                        // Toast.makeText(PostActivity.this, "您点击了搜索按钮", Toast.LENGTH_SHORT).show();
+                        builder.setTitle("搜索动态");
+                        inputName.setHint("请输入用户名");
+                        builder.setView(inputName);
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("搜索", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(PostActivity.this,"搜索成功！",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        builder.setNegativeButton("取消", null);
+                        builder.show();
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        };
+        item.setOnMenuItemClickListener(listener);//添加监听事件
+        return true;
+    }
+
+
 }
 
