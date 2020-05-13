@@ -217,7 +217,40 @@ response.body = {
 
 /archive
 	/archives
+	
+/file
 ```
+
+### 上传文件
+
+POST /file
+
+```json
+request.body = {
+    "picture": [file1, file2, ...],
+    "video": [file3, file4, ...]
+}
+
+// 上传成功：
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success",
+        "picture": [url1, url2, ...],
+        "video": [url1, url2, ...],
+    }
+}
+
+// 上传失败：
+response.body = {
+    "code": 700,
+    "data": {
+        "msg": "parameter error",
+    }
+}
+```
+
+
 
 ### 用户相关
 
@@ -227,7 +260,7 @@ POST /user/login
 
 ``` json
 request.body = {
-    "username": string,
+    "email": "1600012607" (string, pku邮箱名，不包括@pku.edu.cn)
     "password": string
 }
 
@@ -235,7 +268,7 @@ request.body = {
 response.body = {
     "code": 300,
     "data": {
-        "msg": "username error" / "password error"
+        "msg": "email error" / "password error"
     }
 }
 ```
