@@ -15,6 +15,7 @@ import file
 def register_validation(request):
     code = -1
     msg = ''
+    user_profile = {}
     if request.method == 'POST':
         email = request.POST.get('email')
         username = request.POST.get('username')
@@ -38,8 +39,14 @@ def register_validation(request):
                     code = CODE['database_error']
                     msg = "duplicate username"
                 else:
-                    User.objects.create_user(username=username, password=password,
+                    user = User.objects.create_user(username=username, password=password,
                                             pku_mail=email)
+                    auth.login(request, user)
+                    user = User.objects.get(id=user_id)
+                    user_profile['user'] = {'name':user.username, "userID":user.id}
+                    user_profile['avatar'] = user.avatar if user.avatar != '' else '/static/user/avatar_default.jpg'
+                    user_profile['mail'] = user.pku_mail 
+                    user_profile['whatsup'] = user.whatsup
                     code = CODE['success']
                     msg = 'success'
             except ValidationError:
@@ -52,7 +59,8 @@ def register_validation(request):
     response = {
         'code': code,
         'data': {
-            'msg':msg
+            'msg':msg,
+            "profile": user_profile,
         }
     }
     return JsonResponse(response)
@@ -102,6 +110,7 @@ def register(request):
 def login(request):
     code = -1
     msg = ''
+    user_profile = {}
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -128,6 +137,11 @@ def login(request):
                         msg = 'success'
                 else:
                     auth.login(request, user)
+                    user = User.objects.get(id=user_id)
+                    user_profile['user'] = {'name':user.username, "userID":user.id}
+                    user_profile['avatar'] = user.avatar if user.avatar != '' else '/static/user/avatar_default.jpg'
+                    user_profile['mail'] = user.pku_mail 
+                    user_profile['whatsup'] = user.whatsup
                     code = CODE['success']
                     msg = 'success'
     else:
@@ -137,7 +151,8 @@ def login(request):
     response = {
         'code': code,
         'data': {
-            'msg':msg
+            'msg':msg,
+            "profile": user_profile,
         }
     }
     return JsonResponse(response)

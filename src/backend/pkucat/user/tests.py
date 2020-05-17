@@ -128,7 +128,7 @@ class UserTests(TestCase):
 
         verification_code = Verification.objects.get(pku_mail='1600012621@pku.edu.cn').verification_code
 
-        # 成功
+        # 用户名已存在
         response = self.client.post('/user/register_validation', 
             {'username':'pkuzhd', 'password':'123456', 'email': "1600012621",
              'verificationCode':verification_code})
@@ -235,49 +235,47 @@ class UserTests(TestCase):
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
 
-    # def test_profile(self):
-    #     User.objects.create_user(username='pkuzhd', password='123456', pku_mail='pkuzhd@pku.edu.cn')
-    #     User.objects.create_user(username='zhd', password='123456', pku_mail='1600012621@pku.edu.cn')
+    def test_profile(self):
+        User.objects.create_user(username='pkuzhd', password='123456', pku_mail='pkuzhd@pku.edu.cn')
+        User.objects.create_user(username='zhd', password='123456', pku_mail='1600012621@pku.edu.cn')
 
-    #     # 未登录
-    #     response = self.client.get('/user/profile')
-    #     self.assertEqual(type(response), JsonResponse)
-    #     response = response.json()
-    #     self.assertEqual(response['code'], CODE['user_error'])
+        # 未登录
+        response = self.client.get('/user/profile')
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['user_error'])
 
-    #     # 登录
-    #     response = self.client.post('/user/login', {'username':'pkuzhd', 'password':'123456'})
-    #     self.assertEqual(type(response), JsonResponse)
-    #     response = response.json()
-    #     self.assertEqual(response['code'], CODE['success'])
+        # 登录
+        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':'123456'})
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['success'])
 
-    #     # 登录
-    #     response = self.client.post('/user/login', {'username':'pkuzhd', 'password':'123456'})
-    #     self.assertEqual(type(response), JsonResponse)
-    #     response = response.json()
-    #     self.assertEqual(response['code'], CODE['success'])
+        # 登录
+        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':'123456'})
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['success'])
 
-    #     files = {'fileasva': [open('/home/zhd/PKU-CAT/README.md','rb')], 'asb':'asdasd'}
+        # 方法错误
+        response = self.client.post('/user/profile')
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['method_error'])
 
-    #     # 方法错误
-    #     # response = self.client.post('/user/profile')
-    #     # self.assertEqual(type(response), JsonResponse)
-    #     # response = response.json()
-    #     # self.assertEqual(response['code'], CODE['method_error'])
+        response = self.client.delete('/user/profile')
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['method_error'])
 
-    #     # response = self.client.delete('/user/profile')
-    #     # self.assertEqual(type(response), JsonResponse)
-    #     # response = response.json()
-    #     # self.assertEqual(response['code'], CODE['method_error'])
+        # 成功
+        response = self.client.get('/user/profile')
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['success'])
 
-    #     # # 成功
-    #     # response = self.client.get('/user/profile')
-    #     # self.assertEqual(type(response), JsonResponse)
-    #     # response = response.json()
-    #     # self.assertEqual(response['code'], CODE['success'])
-
-    #     # response = self.client.put('/user/profile', files)
-    #     # response = self.client.post('/user/profile', files)
-    #     # self.assertEqual(type(response), JsonResponse)
-    #     # response = response.json()
-    #     # self.assertEqual(response['code'], CODE['success'])
+        # 修改
+        response = self.client.put('/user/profile', {"avatar": '/static/user/avatar_default.jpg'})
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['success'])
