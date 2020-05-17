@@ -3,15 +3,16 @@ package com.example.pkucat.post;
 import android.net.Uri;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class PostEntity implements Serializable {
     private String avatarPath;
     private String userName;
     private String postTime;
     private String postContent;
-    private String imagePath;
+    private ArrayList<String> imagePath;
 
-    public PostEntity(String avatarPath, String userName, String postTime, String postContent, String imagePath) {
+    public PostEntity(String avatarPath, String userName, String postTime, String postContent, ArrayList<String> imagePath) {
         this.avatarPath = avatarPath;
         this.userName = userName;
         this.postTime = postTime;
@@ -20,6 +21,11 @@ public class PostEntity implements Serializable {
     }
 
     public PostEntity() {
+        this.avatarPath = "";
+        this.userName = "";
+        this.postTime = "";
+        this.postContent = "";
+        this.imagePath = new ArrayList<>();
     }
 
     public Uri getAvatarPath() {
@@ -51,10 +57,11 @@ public class PostEntity implements Serializable {
         this.postContent = postContent;
     }
 
-    public String getImagePath() {
+    public ArrayList<String> getImagePath() {
         return imagePath;
     }
-    public void setImagePath(String imagePath) {
+    public int getImageNum() {return imagePath.size();}
+    public void setImagePath(ArrayList<String> imagePath) {
         this.imagePath = imagePath;
     }
 

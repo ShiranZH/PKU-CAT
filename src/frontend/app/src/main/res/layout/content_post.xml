@@ -76,6 +76,19 @@
 
     </androidx.viewpager.widget.ViewPager>
 
+    <me.relex.circleindicator.CircleIndicator
+        android:id="@+id/post_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_content"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/post_comment_list"
         android:layout_width="match_parent"

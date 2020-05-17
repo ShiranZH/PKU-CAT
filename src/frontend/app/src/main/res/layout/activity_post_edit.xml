@@ -7,22 +7,19 @@
     android:orientation="vertical"
     tools:context=".post.edit.PostEditActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="105dp"
-        android:layout_marginTop="35dp"
-        android:layout_marginEnd="105dp"
-        android:text="Here is Edit Post Page!"
+    <EditText
+        android:id="@+id/post_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:padding="10dp"
+        android:gravity="top"
+        android:hint="Edit whatever you want!"
         android:textSize="15sp" />
 
-    <ImageView
-        android:id="@+id/post_edit_pic"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="105dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="105dp"
-        android:layout_marginBottom="352dp"
-        app:srcCompat="@drawable/demo" />
+    <GridView
+        android:id="@+id/post_edit_pic_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="3" />
+
 </LinearLayout>

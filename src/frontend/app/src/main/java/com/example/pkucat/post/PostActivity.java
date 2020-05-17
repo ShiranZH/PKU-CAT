@@ -235,7 +235,6 @@ public class PostActivity extends AppCompatActivity {
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         item.setIcon(R.drawable.ic_post_search);//设置图标
 
-
         MenuItem.OnMenuItemClickListener listener=new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -249,7 +248,6 @@ public class PostActivity extends AppCompatActivity {
                         builder.setTitle("搜索动态");
                         inputName.setHint("请输入用户名");
                         builder.setView(inputName);
-                        builder.setCancelable(false);
                         builder.setPositiveButton("搜索", new DialogInterface.OnClickListener(){
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

@@ -18,6 +18,7 @@ import com.example.pkucat.R;
 import com.example.pkucat.post.PostEntity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class PostFragment extends Fragment {
 
@@ -82,7 +83,7 @@ public class PostFragment extends Fragment {
             postEntity.setUserName("User"+i);
             postEntity.setPostTime("Time");
             postEntity.setPostContent("Post"+i);
-            postEntity.setImagePath("Image Path!");
+            //postEntity.setImagePath(new ArrayList<String>(){{add("content://com.android.providers.media.documents/document/image%3A29");}});
             postEntities.add(postEntity);
         }
     }
