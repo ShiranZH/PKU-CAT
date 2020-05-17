@@ -1,5 +1,6 @@
 package com.example.pkucat.post.list;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.pkucat.R;
 import com.example.pkucat.post.PostEntity;
+import com.sackcentury.shinebuttonlib.ShineButton;
 
 import java.util.ArrayList;
 
@@ -47,7 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.mUserName.setText(data.getUserName());
         holder.mPostTime.setText(data.getPostTime());
         holder.mPostContent.setText(data.getPostContent());
-        holder.mAvaterPath.setImageURI(data.getAvatarPath());
+        //holder.mAvatarPath.setImageURI(data.getAvatarPath());
 
         for (int i = 0; i < data.getImageNum(); i++) {
             view = LayoutInflater.from(context).inflate(R.layout.content_post_image, null);
@@ -72,7 +74,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void destroyItem(ViewGroup container, int position,
                                     Object object) {
                 // TODO Auto-generated method stub
-                container.removeView(viewList.get(position));
+                container.removeView(viewList.get(position % (data.getImageNum())));
             }
 
             @Override
@@ -80,7 +82,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 // TODO Auto-generated method stub
                 view = LayoutInflater.from(context).inflate(R.layout.content_post_image, container, false);
                 ImageView imageView = view.findViewById(R.id.post_image);
-                imageView.setImageURI(Uri.parse(data.getImagePath().get(position)));
+                //imageView.setImageURI(Uri.parse(data.getImagePath().get(position)));
+                imageView.setBackgroundResource(data.getImagePath().get(position));
                 container.addView(view);
                 return view;
             }
@@ -90,7 +93,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.mIndicator.setViewPager(holder.mPostImage);
 
         // optional
-        pagerAdapter.registerDataSetObserver(holder.mIndicator.getDataSetObserver());
+        //pagerAdapter.registerDataSetObserver(holder.mIndicator.getDataSetObserver());
     }
 
     @Override
@@ -100,18 +103,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView mUserName, mPostTime, mPostContent;
-        private ImageView mAvaterPath;
+        private ImageView mAvatarPath;
         private ViewPager mPostImage;
         private CircleIndicator mIndicator;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            mAvaterPath = itemView.findViewById(R.id.post_user_avatar);
+            mAvatarPath = itemView.findViewById(R.id.post_user_avatar);
             mUserName = itemView.findViewById(R.id.post_user_name);
             mPostTime = itemView.findViewById(R.id.post_time);
             mPostContent = itemView.findViewById(R.id.post_content);
             mPostImage = itemView.findViewById(R.id.post_collection);
             mIndicator = itemView.findViewById(R.id.post_indicator);
+
+            ShineButton btLike = (ShineButton) itemView.findViewById(R.id.bt_like);
+            btLike.init((Activity) context);
+
+            ShineButton btStar = (ShineButton) itemView.findViewById(R.id.bt_star);
+            btStar.init((Activity) context);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -125,7 +134,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public interface OnItemClickListener {
-        /*
+        /**
          * 接口中的点击每一项的实现方法，参数自己定义
          *
          * @param view 点击的item的视图

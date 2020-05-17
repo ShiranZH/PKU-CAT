@@ -246,7 +246,7 @@ public class PostActivity extends AppCompatActivity {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
                         // Toast.makeText(PostActivity.this, "您点击了搜索按钮", Toast.LENGTH_SHORT).show();
                         builder.setTitle("搜索动态");
-                        inputName.setHint("请输入用户名");
+                        inputName.setHint("请输入关键词");
                         builder.setView(inputName);
                         builder.setPositiveButton("搜索", new DialogInterface.OnClickListener(){
                             @Override

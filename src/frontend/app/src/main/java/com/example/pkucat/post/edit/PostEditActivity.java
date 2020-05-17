@@ -84,7 +84,7 @@ public class PostEditActivity extends AppCompatActivity {
                                             imageAdapter = new ImageAdapter(PostEditActivity.this, uriArrayList);
                                             gridView.setAdapter(imageAdapter);
                                             imageAdapter.notifyDataSetChanged();
-                                            Toast.makeText(PostEditActivity.this, position+"删除成功！", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(PostEditActivity.this, "删除成功！", Toast.LENGTH_SHORT).show();
                                         default:
                                             break;
                                     }
