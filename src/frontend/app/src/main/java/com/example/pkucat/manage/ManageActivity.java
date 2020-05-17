@@ -35,46 +35,60 @@ public class ManageActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.manage_menu, menu);
         return true;
     }
-    public boolean onOptionsItemSelected(MenuItem item)
+
+    private int addUser(final String userName, final int level)
     {
+        final String level_name = (level==1)?("饲养员"):("管理员");
+        int errno = 0;
+        String hintMsg = level_name+"设置成功！";
+        if(userName.equals("")){hintMsg = "用户名不能为空！";errno = -1;}
+        else if (adminUserList.contains(userName)){hintMsg = "该用户已有权限！";errno = -1;}
+        else {
+            adminUserList.putItem(userName, level);
+            adminUserList.notifyDataSetChanged();
+        }
+        Toast.makeText(ManageActivity.this,hintMsg,Toast.LENGTH_SHORT).show();
+        return errno;
+    }
+
+    private void addUserWindow(final int level)
+    {
+        final String level_name = (level==1)?("饲养员"):("管理员");
         final EditText inputName = new EditText(this);
+        int errno = 0;
         inputName.setSingleLine(true);
         inputName.setHorizontallyScrolling(true);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("设置"+level_name);
+        inputName.setHint("请输入用户名");
+        builder.setView(inputName);
+        builder.setCancelable(false);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String userName = inputName.getText().toString();
+                addUser(userName, level);
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.show();
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         switch (item.getItemId())
         {
             case R.id.manage_button_add_level1:
-                builder.setTitle("设置饲养员");
-                inputName.setHint("请输入用户名");
-                builder.setView(inputName);
-                builder.setCancelable(false);
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        adminUserList.putItem(inputName.getText().toString(),1);
-                        adminUserList.notifyDataSetChanged();
-                        Toast.makeText(ManageActivity.this,"饲养员设置成功！",Toast.LENGTH_SHORT).show();
-                    }
-                });
-                builder.setNegativeButton("取消", null);
-                builder.show();
-                break;
+                addUserWindow(1);break;
             case R.id.manage_button_add_level2:
-                builder.setTitle("设置管理员");
-                inputName.setHint("请输入用户名");
-                builder.setView(inputName);
-                builder.setCancelable(false);
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        adminUserList.putItem(inputName.getText().toString(),2);
-                        adminUserList.notifyDataSetChanged();
-                        Toast.makeText(ManageActivity.this,"管理员设置成功！",Toast.LENGTH_SHORT).show();
-                    }
-                });
-                builder.setNegativeButton("取消", null);
-                builder.show();
+                addUserWindow(2);break;
+            case R.id.manage_button_sort_by_name:
+                adminUserList.sort_by_name();
+                adminUserList.notifyDataSetChanged();
+                break;
+            case R.id.manage_button_sort_by_level:
+                adminUserList.sort_by_level();
+                adminUserList.notifyDataSetChanged();
                 break;
             default:break;
         }
