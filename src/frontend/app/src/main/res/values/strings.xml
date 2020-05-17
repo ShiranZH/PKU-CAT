@@ -49,4 +49,7 @@
     <string name="昵称">昵称</string>
     <string name="chpw">修改密码</string>
     <string name="logout">退出登录</string>
+    <string name="t3">验证码</string>
+    <string name="t4">\@pku.edu.cn</string>
+    <string name="b7">获取邮件验证码</string>
 </resources>

@@ -2,6 +2,7 @@ package com.example.pkucat.ui.setting;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +31,11 @@ public class SettingFragment extends Fragment {
 
         final TextView textView2 = root.findViewById(R.id.textView2);   // username
         final TextView textView3 = root.findViewById(R.id.textView2);   // mail
+        final ImageView avatar = root.findViewById(R.id.imageView2);
         if(!app.isguest()){
             textView2.setText(app.getUsername());
             textView3.setText(app.getMail());
+
         }
 
 
