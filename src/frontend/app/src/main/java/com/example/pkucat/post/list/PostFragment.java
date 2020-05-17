@@ -22,12 +22,9 @@ import java.util.ArrayList;
 public class PostFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-
-    private PostViewModel postViewModel;
+    private int index = 1;
 
     private View view;
-    public RecyclerView mRecyclerView;
-    private RecyclerViewAdapter mRecyclerViewAdapter;
     private ArrayList<PostEntity> postEntities;
 
     public static PostFragment newInstance(int index) {
@@ -41,14 +38,14 @@ public class PostFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        postViewModel = ViewModelProviders.of(this).get(PostViewModel.class);
-        int index = 1;
+        PostViewModel postViewModel = ViewModelProviders.of(this).get(PostViewModel.class);
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
             // 这里是对不同tab下的界面处理
             System.out.println(index);
         }
         postViewModel.setIndex(index);
+        // TODO: 下拉刷新，上拉加载
     }
 
     @Nullable
@@ -66,6 +63,8 @@ public class PostFragment extends Fragment {
         });
         return root;
         */
+
+        // TODO: 搜索功能
         initData();
         initRecyclerView();
         return view;
@@ -73,26 +72,30 @@ public class PostFragment extends Fragment {
 
     private void initData() {
         postEntities = new ArrayList<>();
-        // 获取动态
-        for (int i = 0; i < 15; i++) {
-            PostEntity postEntity = new PostEntity();
-            postEntity.setAvatarPath("Avatar");
-            postEntity.setUserName("User"+i);
-            postEntity.setPostTime("Time");
-            postEntity.setPostContent("Post"+i);
-            postEntity.setImagePath("Image Path!");
+        // TODO: 获取动态
+        for (int i = 0; i < 5; i++) {
+            PostEntity postEntity = new PostEntity("", "User"+i, "Time", "POST"+i*10, new ArrayList<Integer>());
+            if (i == 0) {
+                if (getArguments() != null && getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                    postEntity.addImagePath(R.drawable.catexp);
+                    postEntity.addImagePath(R.drawable.catexp0);
+                    postEntity.addImagePath(R.drawable.catexp1);
+                    postEntity.addImagePath(R.drawable.catexp2);
+                    postEntity.addImagePath(R.drawable.demo);
+                }
+            }
             postEntities.add(postEntity);
         }
     }
 
     private void initRecyclerView() {
-        mRecyclerView = view.findViewById(R.id.recyclerview_post);
-        mRecyclerViewAdapter = new RecyclerViewAdapter(getActivity(), postEntities);
+        RecyclerView mRecyclerView = view.findViewById(R.id.recyclerview_post);
+        RecyclerViewAdapter mRecyclerViewAdapter = new RecyclerViewAdapter(this.getActivity(), postEntities);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         // layout: vertical, horizontal, ...
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity(), LinearLayoutManager.VERTICAL, false));
         // dividing line
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this.getActivity(), DividerItemDecoration.VERTICAL));
         mRecyclerViewAdapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(View view, PostEntity data) {

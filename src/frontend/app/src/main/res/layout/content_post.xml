@@ -2,9 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/post_user_avatar"
@@ -46,6 +45,35 @@
 
     </LinearLayout>
 
+    <com.sackcentury.shinebuttonlib.ShineButton
+        android:id="@+id/bt_star"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:btn_color="@android:color/darker_gray"
+        app:btn_fill_color="#996699"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:siShape="@raw/star" />
+
+    <com.sackcentury.shinebuttonlib.ShineButton
+        android:id="@+id/bt_like"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:btn_color="@android:color/darker_gray"
+        app:btn_fill_color="#f26d7d"
+        app:enable_flashing="true"
+        app:layout_constraintEnd_toStartOf="@+id/bt_star"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shine_size="40dp"
+        app:siShape="@raw/like" />
+
+
     <TextView
         android:id="@+id/post_content"
         android:layout_width="match_parent"
@@ -64,7 +92,7 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/post_collection"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="300dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -73,13 +101,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_content">
-
     </androidx.viewpager.widget.ViewPager>
+
+    <me.relex.circleindicator.CircleIndicator
+        android:id="@+id/post_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_content"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/post_comment_list"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"

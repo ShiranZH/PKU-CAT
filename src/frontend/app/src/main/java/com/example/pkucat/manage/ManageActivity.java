@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pkucat.R;
@@ -23,6 +24,17 @@ public class ManageActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage);
+
+        // 设置名称
+        setTitle("Feeder Management");
+
+        // 返回键
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         adminUserListView = findViewById(R.id.admin_user_list);
         adminUserList = new AdminUserList(this);
         adminUserListView.setAdapter(adminUserList);
@@ -90,8 +102,15 @@ public class ManageActivity extends AppCompatActivity {
                 adminUserList.sort_by_level();
                 adminUserList.notifyDataSetChanged();
                 break;
+
+            case android.R.id.home:
+                // 返回键
+                this.finish(); // back button
+                return true;
+
             default:break;
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
