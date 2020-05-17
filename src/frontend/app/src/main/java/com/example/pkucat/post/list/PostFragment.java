@@ -18,6 +18,7 @@ import com.example.pkucat.R;
 import com.example.pkucat.post.PostEntity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class PostFragment extends Fragment {
 
@@ -49,6 +50,7 @@ public class PostFragment extends Fragment {
             System.out.println(index);
         }
         postViewModel.setIndex(index);
+        // TODO: 下拉刷新，上拉加载
     }
 
     @Nullable
@@ -66,6 +68,7 @@ public class PostFragment extends Fragment {
         });
         return root;
         */
+        // TODO: 搜索功能
         initData();
         initRecyclerView();
         return view;
@@ -73,14 +76,14 @@ public class PostFragment extends Fragment {
 
     private void initData() {
         postEntities = new ArrayList<>();
-        // 获取动态
+        // TODO: 获取动态
         for (int i = 0; i < 15; i++) {
             PostEntity postEntity = new PostEntity();
             postEntity.setAvatarPath("Avatar");
             postEntity.setUserName("User"+i);
             postEntity.setPostTime("Time");
             postEntity.setPostContent("Post"+i);
-            postEntity.setImagePath("Image Path!");
+            //postEntity.setImagePath(new ArrayList<String>(){{add("content://com.android.providers.media.documents/document/image%3A29");}});
             postEntities.add(postEntity);
         }
     }
