@@ -264,6 +264,15 @@ request.body = {
     "password": string
 }
 
+// 登录成功
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success"，
+		"profile": Userprofile
+    }
+}
+
 // 登陆失败：
 response.body = {
     "code": 300,
@@ -281,6 +290,7 @@ POST /user/register
 request.body = {
     "email": "1600012607" (string, pku邮箱名，不包括@pku.edu.cn)
 }
+
 
 
 // 邮件已注册：
@@ -301,6 +311,15 @@ request.body = {
     "username": "pkucat" (string),
     "password": "pkucat2020" (string),
     "verificationCode": "666666" (string),
+}
+
+// 验证成功（并登录）
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success"，
+		"profile": Userprofile
+    }
 }
 
 // 用户名重复：
@@ -333,11 +352,24 @@ request.body = { }
 GET /user/profile
 
 ``` json
+request.body = {
+    "userID": number, // 可选参数，id为空则查看自己的个人信息
+}
+
 // 成功返回
 response.body = {
     "code": 200,
     "data": {
         "msg": "success",
+        "profile": Userprofile
+    }
+}
+
+// 用户不存在
+response.body = {
+    "code": 300,
+    "data": {
+        "msg": "user does not exist",
         "profile": Userprofile
     }
 }
@@ -677,3 +709,4 @@ response.body = {
 }
 ```
 
+ 
