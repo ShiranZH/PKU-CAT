@@ -4,11 +4,18 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 import django.contrib.auth as auth
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.http import QueryDict
 
 from demo.config import CODE
 from .models import Verification, User
+import file
 
+@csrf_exempt
 def register_validation(request):
+    code = -1
+    msg = ''
+    user_profile = {}
     if request.method == 'POST':
         email = request.POST.get('email')
         username = request.POST.get('username')
@@ -18,12 +25,10 @@ def register_validation(request):
             code = CODE['parameter_error']
             msg = 'wrong parameter'
         else:
+            email += "@pku.edu.cn"
             try:
                 validate_email(email)
-                if email.split('@')[1] != 'pku.edu.cn':
-                    code = CODE['parameter_error']
-                    msg = 'wrong email'
-                elif User.objects.filter(pku_mail=email).exists():
+                if User.objects.filter(pku_mail=email).exists():
                     code = CODE['database_error']
                     msg = 'email already registered'
                 elif str(verification_code) \
@@ -34,8 +39,14 @@ def register_validation(request):
                     code = CODE['database_error']
                     msg = "duplicate username"
                 else:
-                    User.objects.create_user(username=username, password=password,
+                    user = User.objects.create_user(username=username, password=password,
                                             pku_mail=email)
+                    auth.login(request, user)
+                    user = User.objects.get(id=user_id)
+                    user_profile['user'] = {'name':user.username, "userID":user.id}
+                    user_profile['avatar'] = user.avatar if user.avatar != '' else '/static/user/avatar_default.jpg'
+                    user_profile['mail'] = user.pku_mail 
+                    user_profile['whatsup'] = user.whatsup
                     code = CODE['success']
                     msg = 'success'
             except ValidationError:
@@ -48,24 +59,26 @@ def register_validation(request):
     response = {
         'code': code,
         'data': {
-            'msg':msg
+            'msg':msg,
+            "profile": user_profile,
         }
     }
     return JsonResponse(response)
 
+@csrf_exempt
 def register(request):
+    code = -1
+    msg = ''
     if request.method == 'POST':
         email = request.POST.get('email')
         if email is None:
             code = CODE['parameter_error']
             msg = 'wrong email'
         else:
+            email += "@pku.edu.cn"
             try:
                 validate_email(email)
-                if email.split('@')[1] != 'pku.edu.cn':
-                    code = CODE['parameter_error']
-                    msg = 'wrong email'
-                elif User.objects.filter(pku_mail=email).exists():
+                if User.objects.filter(pku_mail=email).exists():
                     code = CODE['database_error']
                     msg = 'email already registered'
                 else:
@@ -93,32 +106,44 @@ def register(request):
     }
     return JsonResponse(response)
 
+@csrf_exempt
 def login(request):
+    code = -1
+    msg = ''
+    user_profile = {}
     if request.method == 'POST':
-        username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
-        if username is None or password is None:
-            code = CODE['parameter_error']
-            msg = 'wrong parameter'
-        elif not User.objects.filter(username=username).exists():
+        if email is None or password is None:
             code = CODE['parameter_error']
             msg = 'wrong parameter'
         else:
-            user = auth.authenticate(username=username, password=password)
-            if user is None:
+            email += "@pku.edu.cn"
+            if not User.objects.filter(pku_mail=email).exists():
                 code = CODE['parameter_error']
-                msg = 'username or password error'
-            elif request.user.is_authenticated:
-                if request.user.id != user.id:
-                    code = CODE['user_error']
-                    msg = 'error'
+                msg = 'wrong parameter'
+            else:
+                username = User.objects.get(pku_mail=email).username
+                user = auth.authenticate(username=username, password=password)
+                if user is None:
+                    code = CODE['parameter_error']
+                    msg = 'email or password error'
+                elif request.user.is_authenticated:
+                    if request.user.id != user.id:
+                        code = CODE['user_error']
+                        msg = 'error'
+                    else:
+                        code = CODE['success']
+                        msg = 'success'
                 else:
+                    auth.login(request, user)
+                    user = User.objects.get(id=user_id)
+                    user_profile['user'] = {'name':user.username, "userID":user.id}
+                    user_profile['avatar'] = user.avatar if user.avatar != '' else '/static/user/avatar_default.jpg'
+                    user_profile['mail'] = user.pku_mail 
+                    user_profile['whatsup'] = user.whatsup
                     code = CODE['success']
                     msg = 'success'
-            else:
-                auth.login(request, user)
-                code = CODE['success']
-                msg = 'success'
     else:
         code = CODE['method_error']
         msg = 'wrong method'
@@ -126,12 +151,16 @@ def login(request):
     response = {
         'code': code,
         'data': {
-            'msg':msg
+            'msg':msg,
+            "profile": user_profile,
         }
     }
     return JsonResponse(response)
 
+@csrf_exempt
 def logout(request):
+    code = -1
+    msg = ''
     if request.method == 'POST':
         auth.logout(request)
         code = CODE['success']
@@ -147,7 +176,74 @@ def logout(request):
     }
     return JsonResponse(response)
 
+@csrf_exempt
 def profile(request):
-    return HttpResponse('profile')
+    code = -1
+    msg = ''
+    user_profile = {}
+    if not request.user.is_authenticated:
+        code = CODE['user_error']
+        msg = "not authorized"
+    else:
+        if request.method == 'GET':
+            user_id = request.GET.get("userID") if request.GET.get("userID") else request.user.id
+            if User.objects.filter(id=user_id).exists():
+                user = User.objects.get(id=user_id)
+                user_profile['user'] = {'name':user.username, "userID":user.id}
+                user_profile['avatar'] = user.avatar if user.avatar != '' else '/static/user/avatar_default.jpg'
+                user_profile['mail'] = user.pku_mail 
+                user_profile['whatsup'] = user.whatsup
+                code = CODE['success']
+                msg = 'success'
+            else:
+                code = CODE['database_error']
+                msg = 'user does not exist'
+        elif request.method == 'PUT':
+            user = User.objects.get(id=request.user.id)
+            
+            PUT = QueryDict(request.body)
+            username = PUT.get('username')
+            avatar = PUT.get('avatar')
+            whatsup = PUT.get('whatsup')
 
+            if username or avatar or whatsup:
+                msg = ""
+                if username:
+                    if not User.objects.filter(username=username).exists():
+                        user.username = username
+                    elif username != user.username:
+                        code = CODE['parameter_error']
+                        msg += "duplicate username/"
+                
+                if avatar:
+                    if file.exists_file(avatar):
+                        user.avatar = avatar
+                    else:
+                        code = CODE['parameter_error']
+                        msg += "unexisted avatar/"
+                
+                if whatsup:
+                    user.whatsup = whatsup
+
+                if not msg:
+                    user.save()
+                    code = CODE['success']
+                    msg = "success"
+                else:
+                    msg = msg[:-1]
+            else:
+                code = CODE['parameter_error']
+                msg = 'parameter error'
+        else:
+            code = CODE['method_error']
+            msg = 'wrong method'
+
+    response = {
+        'code': code,
+        'data': {
+            'msg': msg,
+            'profile': user_profile,
+        }
+    }
+    return JsonResponse(response)
 
