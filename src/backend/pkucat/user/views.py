@@ -42,7 +42,7 @@ def register_validation(request):
                     user = User.objects.create_user(username=username, password=password,
                                             pku_mail=email)
                     auth.login(request, user)
-                    user = User.objects.get(id=user_id)
+                    user = User.objects.get(id=user.id)
                     user_profile['user'] = {'name':user.username, "userID":user.id}
                     user_profile['avatar'] = user.avatar if user.avatar != '' else '/static/user/avatar_default.jpg'
                     user_profile['mail'] = user.pku_mail 
@@ -137,7 +137,7 @@ def login(request):
                         msg = 'success'
                 else:
                     auth.login(request, user)
-                    user = User.objects.get(id=user_id)
+                    user = User.objects.get(id=user.id)
                     user_profile['user'] = {'name':user.username, "userID":user.id}
                     user_profile['avatar'] = user.avatar if user.avatar != '' else '/static/user/avatar_default.jpg'
                     user_profile['mail'] = user.pku_mail 
