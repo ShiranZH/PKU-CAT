@@ -52,4 +52,6 @@
     <string name="t3">验证码</string>
     <string name="t4">\@pku.edu.cn</string>
     <string name="b7">获取邮件验证码</string>
+    <string name="whatsup">签名</string>
+    <string name="abc">login</string>
 </resources>

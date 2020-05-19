@@ -26,14 +26,15 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="122dp"
-        android:layout_height="41dp"
+        android:layout_width="170dp"
+        android:layout_height="56dp"
         android:layout_marginStart="41dp"
         android:layout_marginLeft="41dp"
         android:layout_marginTop="100dp"
         android:autoText="false"
+        android:gravity="center|left"
         android:text="@string/t1"
-        android:textSize="24sp"
+        android:textSize="14sp"
         android:visibility="visible"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="parent"
@@ -41,14 +42,15 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="124dp"
-        android:layout_height="39dp"
+        android:layout_width="169dp"
+        android:layout_height="55dp"
         android:layout_marginStart="39dp"
         android:layout_marginLeft="39dp"
         android:layout_marginTop="70dp"
         android:layout_marginBottom="101dp"
+        android:gravity="center|left"
         android:text="@string/t2"
-        android:textSize="24sp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />

@@ -2,12 +2,16 @@ package com.example.pkucat;
 
 import android.app.Application;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class App extends Application {
     private boolean is_guest;
     private String username;
     private String mail;
     private int permission;
     private String photoUrl;
+    private String whatsup;
     public final String serverIP = "49.235.56.155";
 
     @Override
@@ -16,20 +20,24 @@ public class App extends Application {
         logout();
     }
 
-    public void login_as_user(String username, String pkumail, String url){
+    public void login_as_user(JSONObject profile) throws JSONException {
         is_guest = false;
         permission = 1;
-        mail = pkumail;
-        photoUrl = url;
-        this.username = username;
+        JSONObject user = profile.getJSONObject("user");
+        username = user.getString("name");
+        mail = profile.getString("mail");
+        photoUrl = profile.getString("avatar");
+        whatsup = profile.getString("whatsup");
     }
 
-    public void login_as_admin(String username, String pkumail, String url){
+    public void login_as_admin(JSONObject profile) throws JSONException {
         is_guest = false;
         permission = 2;
-        mail = pkumail;
-        photoUrl = url;
-        this.username = username;
+        JSONObject user = profile.getJSONObject("user");
+        username = user.getString("name");
+        mail = profile.getString("mail");
+        photoUrl = profile.getString("avatar");
+        whatsup = profile.getString("whatsup");
     }
 
     public void logout(){
@@ -58,5 +66,21 @@ public class App extends Application {
 
     public String getPhotoUrl(){
         return photoUrl;
+    }
+
+    public String getWhatsup(){
+        return whatsup;
+    }
+
+    public void setUsername(String newUN){
+        username = newUN;
+    }
+
+    public void setWhatsup(String newWhatsup){
+        whatsup = newWhatsup;
+    }
+
+    public void setPhotoUrl(String url){
+        photoUrl = url;
     }
 }

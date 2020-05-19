@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.pkucat.App;
+import com.example.pkucat.MainActivity;
 import com.example.pkucat.R;
 
 import org.json.JSONException;
@@ -55,22 +56,20 @@ public class LoginActivity extends Activity {
                     request.put("email", email);
                     request.put("password", password);
                     JSONObject response = Client.post(request, new URL("https", app.serverIP, "/user/login"));
-                    if(!response.get("code").equals("200")){
+                    if(!response.getString("code").equals("200")){
                         JSONObject data = new JSONObject(response.get("data").toString());
                         message.setText(data.get("msg").toString());
                         return;
                     }
                     JSONObject data = response.getJSONObject("data");
-                    JSONObject userprofile = response.getJSONObject("profile");
-                    JSONObject user = userprofile.getJSONObject("user");
-                    app.login_as_user(
-                            user.getString("name"), userprofile.getString("mail"),
-                            userprofile.getString("avatar"));
+                    JSONObject userprofile = data.getJSONObject("profile");
+                    app.login_as_user(userprofile);
                 } catch (Exception e) {
                     message.setText("未知错误");
+                    e.printStackTrace();
                     return;
                 }
-                Intent tostart = new Intent(LoginActivity.this, SettingFragment.class);
+                Intent tostart = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(tostart);
             }
         });
