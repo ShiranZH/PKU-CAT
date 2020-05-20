@@ -12,6 +12,7 @@ urlpatterns = [
     path('post/', include('post.urls')),
     path('posts/', include('post.urls')),
     path('archive/', include('archive.urls')),
+    path('feeder/', include('feeder.urls')),
 ]
 
 def cat_not_found(request, exception):

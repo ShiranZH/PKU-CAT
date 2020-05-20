@@ -11,7 +11,11 @@ from django.http import HttpResponse, JsonResponse
 from .models import Feed, ApplicationFeeder
 from demo.config import CODE
 from archive.models import Cat
+from user.models import User
+from django.views.decorators.csrf import csrf_exempt
 
+
+@csrf_exempt
 def feeders(request):
     # 用户已登录
     if request.user.is_authenticated:
@@ -60,7 +64,7 @@ def feeders(request):
         # 其他method，报错
         else:
             response = {
-                'code': CODE['method_error']
+                'code': CODE['method_error'],
                 'data': {
                     'msg': "wrong method"
                 }
@@ -69,7 +73,7 @@ def feeders(request):
     # 用户未登录
     else:
         code = CODE['user_error']
-        msg = "not logged in"
+        msg = "not authorized"
         response = {
             'code': code,
             'data': {
@@ -80,22 +84,24 @@ def feeders(request):
     return JsonResponse(response)
 
 
+@csrf_exempt
 def apply(request):
     # 用户已登录
     if request.user.is_authenticated:
         # POST: 添加申请记录
         if request.method == 'POST':
             catID = request.POST.get('catID')
-            applyInfo = request.POST.get('apply_info')
+            # applyInfo = request.POST.get('apply_info')
             if catID is None or applyInfo is None:
                 code = CODE['parameter_error']
                 msg = "wrong parameters"
             else:
                 userID = request.user.id
                 cat = Cat.objects.filter(id=catID)
+                user = User.objects.get(id=request.user.id)
                 if cat.exists():
                     newApply = ApplicationFeeder.objects.create(
-                        feeder=request.user,
+                        feeder=user,
                         cat=cat
                     )
                     newApply.save()
@@ -145,7 +151,7 @@ def apply(request):
     # 用户未登录
     else:
         code = CODE['user_error']
-        msg = "not logged in"
+        msg = "not authorized"
         response = {
             'code': code,
             'data': {
@@ -156,6 +162,7 @@ def apply(request):
     return JsonResponse(response)
 
 
+@csrf_exempt
 def agree(request):
     # 用户已登录
     if request.user.is_authenticated:
@@ -211,7 +218,7 @@ def agree(request):
     # 用户未登录
     else:
         code = CODE['user_error']
-        msg = "not logged in"
+        msg = "not authorized"
         response = {
             'code': code,
             'data': {
@@ -222,6 +229,7 @@ def agree(request):
     return JsonResponse(response)
 
 
+@csrf_exempt
 def applys(request):
     # 用户已登录
     if request.user.is_authenticated:
@@ -285,7 +293,7 @@ def applys(request):
     # 用户未登录
     else:
         code = CODE['user_error']
-        msg = "not logged in"
+        msg = "not authorized"
         response = {
             'code': code,
             'data': {
