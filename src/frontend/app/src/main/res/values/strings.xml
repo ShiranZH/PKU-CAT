@@ -8,18 +8,50 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_archive">Archive</string>
-    <string name="sole_archive">Sole Archive</string>
-
     <string name="menu_post">Post</string>
-    <string name="sole_post">Sole Post</string>
-    <string name="post_tab_1">Post</string>
-    <string name="post_tab_2">Star</string>
-
     <string name="menu_recognition">Recognition</string>
     <string name="menu_setting">Setting</string>
-    <string name="menu_manage">Manage</string>
 
+    <string name="sole_archive">Sole Archive</string>
+    <string name="sole_post">Sole Post</string>
+    <string name="Photo">photo</string>
+    <string name="b1">编辑个人信息</string>
+    <string name="b2">我的关注</string>
+    <string name="b3">我的动态</string>
+    <string name="b4">权限管理</string>
+    <string name="t1">用户名</string>
+    <string name="t2">邮箱</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="b6">注册</string>
+    <string name="b5">登录</string>
+    <string name="input1">北大邮箱</string>
+    <string name="input2">密码</string>
+    <string name="input3">确认密码</string>
+    <string name="confirm">确认</string>
+    <string name="title_activity_modify_activity">modify</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="photo">头像</string>
+    <string name="昵称">昵称</string>
+    <string name="chpw">修改密码</string>
+    <string name="logout">退出登录</string>
+    <string name="t3">验证码</string>
+    <string name="t4">\@pku.edu.cn</string>
+    <string name="b7">获取邮件验证码</string>
+    <string name="whatsup">签名</string>
+    <string name="abc">login</string>
 </resources>
