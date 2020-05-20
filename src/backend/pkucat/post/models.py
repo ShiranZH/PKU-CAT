@@ -18,7 +18,6 @@ Post: 动态类
     is_video: 多媒体内容类别,True=视频,False=图片,Null=没有多媒体内容
     video: 视频地址(可以为空)
     self_favor: 用户是否为自己点赞,True=点赞
-    favorcnt: 点赞数
 
 外键:
     publisher: 动态发布者, user.models.User类
@@ -31,32 +30,26 @@ class Post(models.Model):
     is_video = models.NullBooleanField(default=None)
     video = models.CharField(max_length=128, null=True)
     self_favor = models.BooleanField(default=False)
-    favorcnt = models.IntegerField(default=0)
 
 '''
 Comment: 评论类
 
 属性:
-    comment_id: 评论序号
     time: 创建时间
     text: 文本
 
 外键:
-    post_id: 评论动态主键, post.models.Post类
-    user: 评论发布者, user.models.User类
+    post: 评论动态主键, post.models.Post类
+    user: 评论发布者主键, user.models.User类
+    parent: 回复评论主键, post.models.Comment类
 
-元数据:
-    unique_together: 动态主键+评论序号联合唯一
 '''
 class Comment(models.Model):
-    comment_id = models.IntegerField(default=0)
-    post_id = models.ForeignKey(Post, on_delete=models.CASCADE) 
+    post = models.ForeignKey(Post, on_delete=models.CASCADE) 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     time = models.DateTimeField(auto_now_add=True)
     text = models.CharField(max_length=500)
-
-    class Meta:
-        unique_together = ("post_id", "comment_id")
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
 
 '''
 Photo: 图片类
@@ -65,8 +58,25 @@ Photo: 图片类
     photo: 图片地址
 
 外键:
-    post_id: 评论动态主键, post.models.Post类
+    post: 评论动态主键, post.models.Post类
 '''
 class Photo(models.Model):
-    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     photo = models.CharField(max_length=128)
+
+'''
+Favor: 点赞记录类
+
+外键:
+    post_id: 评论动态主键, post.models.Post类
+    user: 评论用户主键, user.models.User类
+
+元数据:
+    unique_together: (post, user)联合唯一
+'''
+class Favor(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('post','user')
