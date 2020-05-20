@@ -379,8 +379,8 @@ response.body = {
         "applies": [
             {
                 "applyID": number,
-                "catID": number,
-    			"apply_info": string,
+                "userID": number,
+                "catID": number
             }
         ]
     }
@@ -388,7 +388,7 @@ response.body = {
 ```
 #### Feeder_agree 同意饲养员申请
 
-POST /feeders
+POST /feeder/agree
 
 ``` json
 request.body = {
