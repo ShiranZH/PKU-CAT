@@ -43,35 +43,17 @@ public class modify extends AppCompatActivity {
         chwhatsup = findViewById(R.id.linearLayout6);
         chAvatar = findViewById(R.id.linearLayout4);
 
-
-        username.setText(app.getUsername());
-        whatsup.setText(app.getWhatsup());
-        bmpArrived = new Handler(){
-            public void handleMessage(Message msg){
-                if(msg.what==0x2233) avatar.setImageBitmap(bitmap);
-            }
-        };
-        new Thread(){
-            public void run(){
-                try {
-                    bitmap = Client.getBmp(new URL("https", app.serverIP, app.getPhotoUrl()));
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                if(bitmap != null) bmpArrived.sendEmptyMessage(0x2233);
-            }
-        }.start();
-
         chUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 JSONObject request = new JSONObject();
                 try{
-                    request.put("whatsup", app.getWhatsup());
-                    request.put("avatar", app.getPhotoUrl());
                     request.put("username", "something");
-                    JSONObject response = Client.put(request, new URL("https", app.serverIP, "/user/profile"));
-                    if(response.getString("code").equals("200")) app.setUsername("something");
+                    JSONObject response = Client.put(request, new URL("https", app.serverIP, "/user/profile"), app.cookie);
+                    if(response.getString("code").equals("200")){
+                        app.setUsername("something");
+                        username.setText(app.getUsername());
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -90,10 +72,12 @@ public class modify extends AppCompatActivity {
                 JSONObject request = new JSONObject();
                 try{
                     request.put("whatsup", "something");
-                    request.put("avatar", app.getPhotoUrl());
-                    request.put("username", app.getUsername());
-                    JSONObject response = Client.put(request, new URL("https", app.serverIP, "/user/profile"));
-                    if(response.getString("code").equals("200")) app.setWhatsup("something");
+                    JSONObject response = Client.put(request, new URL("https", app.serverIP, "/user/profile"), app.cookie);
+                    if(response.getString("code").equals("200")){
+                        app.setWhatsup("something");
+                        whatsup.setText(app.getWhatsup());
+                    }
+                    else System.out.println(response.getJSONObject("data").getString("msg"));
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -105,14 +89,39 @@ public class modify extends AppCompatActivity {
             public void onClick(View v) {
                 JSONObject request = new JSONObject();
                 try {
-                    JSONObject response = Client.post(request, new URL("https", app.serverIP, "/user/profile"));
-                    if(response.getString("code").equals("200")) app.logout();
-                    Intent tostart = new Intent(modify.this, MainActivity.class);
-                    startActivity(tostart);
+                    JSONObject response = Client.post(request, new URL("https", app.serverIP, "/user/logout"), app.cookie);
+                    if(response.getString("code").equals("200")) {
+                        app.logout();
+                        Intent tostart = new Intent(modify.this, MainActivity.class);
+                        startActivity(tostart);
+                    }
+                    else System.out.println(response.getJSONObject("data").getString("msg"));
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    public void onResume(){
+        super.onResume();
+
+        username.setText(app.getUsername());
+        whatsup.setText(app.getWhatsup());
+        bmpArrived = new Handler(){
+            public void handleMessage(Message msg){
+                if(msg.what==0x2233) avatar.setImageBitmap(bitmap);
+            }
+        };
+        new Thread(){
+            public void run(){
+                try {
+                    bitmap = Client.getBmp(new URL("https", app.serverIP, app.getPhotoUrl()));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                if(bitmap != null) bmpArrived.sendEmptyMessage(0x2233);
+            }
+        }.start();
     }
 }

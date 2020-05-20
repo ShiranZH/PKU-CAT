@@ -12,6 +12,7 @@ public class App extends Application {
     private int permission;
     private String photoUrl;
     private String whatsup;
+    public String cookie;
     public final String serverIP = "49.235.56.155";
 
     @Override
@@ -42,7 +43,7 @@ public class App extends Application {
 
     public void logout(){
         is_guest = true;
-        username = null;
+        username = "";
         mail = "";
         photoUrl = "";
         permission = 0;

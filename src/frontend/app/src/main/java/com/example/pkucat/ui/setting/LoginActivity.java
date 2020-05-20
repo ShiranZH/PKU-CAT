@@ -55,15 +55,16 @@ public class LoginActivity extends Activity {
                 try {
                     request.put("email", email);
                     request.put("password", password);
-                    JSONObject response = Client.post(request, new URL("https", app.serverIP, "/user/login"));
+                    JSONObject response = Client.post(request, new URL("https", app.serverIP, "/user/login"), null);
                     if(!response.getString("code").equals("200")){
-                        JSONObject data = new JSONObject(response.get("data").toString());
+                        JSONObject data = response.getJSONObject("data");
                         message.setText(data.get("msg").toString());
                         return;
                     }
                     JSONObject data = response.getJSONObject("data");
                     JSONObject userprofile = data.getJSONObject("profile");
                     app.login_as_user(userprofile);
+                    app.cookie = response.getString("cookie");
                 } catch (Exception e) {
                     message.setText("未知错误");
                     e.printStackTrace();

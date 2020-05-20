@@ -50,8 +50,8 @@ public class RegisterActivity extends AppCompatActivity {
                 JSONObject request = new JSONObject();
                 try {
                     request.put("email", email);
-                    JSONObject response = Client.post(request, new URL("https://49.235.56.155/user/register"));
-                    //JSONObject response = Client.post(request, new URL("https", app.serverIP, "/user/register"));
+                    //JSONObject response = Client.post(request, new URL("https://49.235.56.155/user/register"));
+                    JSONObject response = Client.post(request, new URL("https", app.serverIP, "/user/register"), null);
                     if(!response.getString("code").equals("200")){
                         JSONObject data = response.getJSONObject("data");
                         message.setText(data.getString("msg"));
@@ -82,7 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
                     request.put("username", un);
                     request.put("password", password1);
                     request.put("verificationCode", vrfcode);
-                    JSONObject response = Client.post(request, new URL("https", app.serverIP, "user/register/validation"));
+                    JSONObject response = Client.post(request, new URL("https", app.serverIP, "user/register/validation"), null);
                     if(!response.getString("code").equals("200")){
                         JSONObject data = response.getJSONObject("data");
                         message.setText(data.getString("msg"));
@@ -91,6 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
                     JSONObject data = response.getJSONObject("data");
                     JSONObject profile = data.getJSONObject("profile");
                     app.login_as_user(profile);
+                    app.cookie = response.getString("cookie");
                 }catch (Exception e){
                     return;
                 }

@@ -12,6 +12,8 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -49,7 +51,7 @@ final class Client {
         return url.toString();
     }
 
-    public static JSONObject post(JSONObject json, URL dst){
+    public static JSONObject post(JSONObject json, URL dst, final String cookie){
         request = json;
         url = dst;
         Thread t1 = new Thread(){
@@ -58,19 +60,24 @@ final class Client {
                     HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
                     connection.setDoOutput(true);
                     connection.setRequestMethod("POST");
+                    if(null != cookie) connection.setRequestProperty("cookie", cookie);
                     connection.setSSLSocketFactory(SSLSocketClient.getSSLSocketFactory());
                     connection.setHostnameVerifier(SSLSocketClient.getHostnameVerifier());
                     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
                     bw.write(json2Url(request));
-                    System.out.println(json2Url(request));
                     bw.flush();
+                    String response_cookie = connection.getHeaderField("Set-Cookie");
                     StringBuilder strb = new StringBuilder();
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String line;
                     while((line = br.readLine()) != null){
                         strb.append(line);
                     }
+                    connection.disconnect();
                     ret = new JSONObject(strb.toString());
+                    if(null != response_cookie){
+                        ret.put("cookie", response_cookie);
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -85,7 +92,7 @@ final class Client {
         return ret;
     }
 
-    public static JSONObject put(JSONObject json, URL dst){
+    public static JSONObject put(JSONObject json, URL dst, final String cookie){
         request = json;
         url = dst;
         Thread t1 = new Thread(){
@@ -94,6 +101,7 @@ final class Client {
                     HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
                     connection.setDoOutput(true);
                     connection.setRequestMethod("PUT");
+                    if(null != cookie) connection.setRequestProperty("cookie", cookie);
                     connection.setSSLSocketFactory(SSLSocketClient.getSSLSocketFactory());
                     connection.setHostnameVerifier(SSLSocketClient.getHostnameVerifier());
                     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
@@ -105,6 +113,7 @@ final class Client {
                     while((line = br.readLine()) != null){
                         strb.append(line);
                     }
+                    connection.disconnect();
                     ret = new JSONObject(strb.toString());
                 }catch (Exception e){
                     e.printStackTrace();
@@ -130,6 +139,7 @@ final class Client {
             InputStream is = connection.getInputStream();
             ret = BitmapFactory.decodeStream(is);
             is.close();
+            connection.disconnect();
         }catch (Exception e){
             e.printStackTrace();
         }
