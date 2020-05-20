@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.setting.SettingFragment">
+    tools:context=".setting.SettingFragment">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -18,7 +18,7 @@
         android:contentDescription="@string/Photo"
         android:focusable="auto"
         android:focusableInTouchMode="true"
-        android:src="@android:drawable/ic_menu_gallery"
+        android:src="@drawable/ic_menu_gallery"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

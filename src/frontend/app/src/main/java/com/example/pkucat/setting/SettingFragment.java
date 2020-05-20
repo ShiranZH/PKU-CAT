@@ -38,8 +38,8 @@ public class SettingFragment extends Fragment {
         settingViewModel =
                 ViewModelProviders.of(this).get(SettingViewModel.class);
         View root = inflater.inflate(R.layout.fragment_setting, container, false);
-        app = (App)getActivity().getApplication();
 
+        app = (App)getActivity().getApplication();
         username = root.findViewById(R.id.textView2);   // username
         mail = root.findViewById(R.id.textView3);   // mail
         avatar = root.findViewById(R.id.imageView2);
@@ -107,7 +107,7 @@ public class SettingFragment extends Fragment {
     }
 
     public void onResume(){
-        super.onResume();
+        super.onResume();if(true)return;
         if(app.getPermission()<2){
             permissionManage.setVisibility(View.INVISIBLE);
         }
