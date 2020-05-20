@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package com.example.pkucat.ui.setting;
 
 import androidx.lifecycle.LiveData;
@@ -18,24 +17,3 @@ public class SettingViewModel extends ViewModel {
         return mText;
     }
 }
-=======
-package com.example.pkucat.ui.setting;
-
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-
-public class SettingViewModel extends ViewModel {
-
-    private MutableLiveData<String> mText;
-
-    public SettingViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is setting fragment");
-    }
-
-    public LiveData<String> getText() {
-        return mText;
-    }
-}
->>>>>>> e2d708ed7687c459bea18b7d72b70579e7b4d609
