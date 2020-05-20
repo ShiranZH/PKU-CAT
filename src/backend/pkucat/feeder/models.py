@@ -30,7 +30,7 @@ class Feed(models.Model):
     #     unique_together = ('feeder', 'cat')
 
 
-class Application_Feeder(models.Model):
+class ApplicationFeeder(models.Model):
     """
     饲养员申请信息
     feeder：申请成为饲养员的用户，User对象

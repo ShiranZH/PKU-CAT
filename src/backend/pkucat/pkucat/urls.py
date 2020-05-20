@@ -5,6 +5,8 @@ from post import views
 
 urlpatterns = [
     path('demo', include('demo.urls')),
+    path('file', include('file.urls')),
+    path('file/', include('file.urls')),
     path('user', include('user.urls')),
     path('user/', include('user.urls')),
     path('pku/cat/helper/', admin.site.urls),
