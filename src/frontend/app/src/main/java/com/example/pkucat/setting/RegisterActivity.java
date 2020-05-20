@@ -1,4 +1,4 @@
-package com.example.pkucat.ui.setting;
+package com.example.pkucat.setting;
 
 import androidx.appcompat.app.AppCompatActivity;
 

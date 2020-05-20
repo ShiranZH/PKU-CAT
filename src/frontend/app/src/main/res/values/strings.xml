@@ -8,12 +8,17 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_archive">Archive</string>
+    <string name="sole_archive">Sole Archive</string>
+
     <string name="menu_post">Post</string>
+    <string name="sole_post">Sole Post</string>
+    <string name="post_tab_1">Post</string>
+    <string name="post_tab_2">Star</string>
+
     <string name="menu_recognition">Recognition</string>
     <string name="menu_setting">Setting</string>
+    <string name="menu_manage">Manage</string>
 
-    <string name="sole_archive">Sole Archive</string>
-    <string name="sole_post">Sole Post</string>
     <string name="Photo">photo</string>
     <string name="b1">编辑个人信息</string>
     <string name="b2">我的关注</string>
