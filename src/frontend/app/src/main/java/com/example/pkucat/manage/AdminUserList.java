@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.example.pkucat.R;
 
 import java.util.ArrayList;
@@ -32,6 +34,17 @@ public class AdminUserList extends BaseAdapter {
         {
             userName = _userName;
             userLevel = _userLevel;
+        }
+
+        @Override
+        public boolean equals(@Nullable Object obj) {
+            if(obj == null) return false;
+            if(obj instanceof UserInfo)
+            {
+                UserInfo o = (UserInfo) obj;
+                return o.userName.equals(userName);
+            }
+            return false;
         }
     }
     ArrayList<UserInfo> userInfoList;
@@ -65,7 +78,7 @@ public class AdminUserList extends BaseAdapter {
 
     public boolean contains(String name)
     {
-        return userInfoList.contains(name);
+        return userInfoList.contains(new UserInfo(name,1));
     }
 
     public void putItem(String name, int level)
