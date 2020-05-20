@@ -1,7 +1,10 @@
-<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.pkucat">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:allowBackup="true"
@@ -9,10 +12,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ui.archive.SoleArchive"></activity>
-        <activity android:name=".ui.archive.SoleArchiveActivity" />
-        <activity android:name=".ui.archive.ArchiveActivity" />
+        android:requestLegacyExternalStorage="true"
+        android:theme="@style/AppTheme"
+        tools:targetApi="q">
+        <!---
+        xmlns:tools="http://schemas.android.com/tools"
+        android:requestLegacyExternalStorage="true"
+        ools:targetApi="q"
+            解决E/BitmapFactory: Unable to decode stream: java.io.FileNotFoundException:
+            /storage/emulated/0/DCIM/Camera/IMG_20200429_115844.jpg: open failed: EACCES (Permission denied)
+            隐私权变更问题相关，详见
+            https://blog.csdn.net/LXFX1108/article/details/104795138
+            https://developer.android.google.cn/about/versions/10/privacy
+        -->
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -23,35 +35,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.post.PostActivity" />
+        <activity android:name=".archive.SoleArchive" />
+        <activity android:name=".archive.ArchiveActivity" />
+        <activity android:name=".post.PostActivity" />
+        <activity android:name=".post.edit.PostEditActivity" />
+        <activity android:name=".manage.ManageActivity"/>
     </application>
 
-=======
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.pkucat">
-
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ui.post.PostActivity">
-        </activity>
-    </application>
-
->>>>>>> e2d708ed7687c459bea18b7d72b70579e7b4d609
 </manifest>

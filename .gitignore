@@ -1,0 +1,9 @@
+*.pyc
+*/.DS_store
+.vscode
+*/__pycache__
+*/db.sqlite3
+.vs
+.idea
+uwsgi.ini
+email_setting.py
