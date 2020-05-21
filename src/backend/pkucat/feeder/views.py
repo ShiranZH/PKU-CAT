@@ -92,7 +92,7 @@ def apply(request):
         if request.method == 'POST':
             catID = request.POST.get('catID')
             # applyInfo = request.POST.get('apply_info')
-            if catID is None or applyInfo is None:
+            if catID is None:
                 code = CODE['parameter_error']
                 msg = "wrong parameters"
             else:
@@ -102,7 +102,7 @@ def apply(request):
                 if cat.exists():
                     newApply = ApplicationFeeder.objects.create(
                         feeder=user,
-                        cat=cat
+                        cat=cat[0]
                     )
                     newApply.save()
                     code = CODE['success']
@@ -118,7 +118,8 @@ def apply(request):
             }
 
         elif request.method == 'DELETE':
-            applyID = request.DELETE.get('applyID')
+            DELETE = eval(str(request.body, encoding="utf-8"))
+            applyID = DELETE.get('applyID')
             if applyID is None:
                 code = CODE['parameter_error']
                 msg = "wrong parameters"
@@ -179,8 +180,8 @@ def agree(request):
                     application = ApplicationFeeder.objects.filter(id=applyID)
                     if application.exists():
                         newFeed = Feed.objects.create(
-                            feeder = application.feeder,
-                            cat = application.cat
+                            feeder = application[0].feeder,
+                            cat = application[0].cat
                         )
                         newFeed.save()
                         # 删除申请记录
