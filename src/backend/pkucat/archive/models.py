@@ -32,10 +32,7 @@ class Photo(models.Model):
         on_delete=models.CASCADE,
     )
 
-
-
 class Relationship(models.Model):
     archive = models.ForeignKey(Archive, on_delete=models.CASCADE)
     cat = models.ForeignKey(Cat, on_delete=models.CASCADE)
     relation = models.CharField(max_length=100)
-

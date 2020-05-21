@@ -80,7 +80,7 @@ def archive(request):
                 }
                 search_results.append(catInfo)
             response = {
-                "code": 200
+                "code": 200,
                 "data": {
                     "msg": "success",
                     "results": search_results
