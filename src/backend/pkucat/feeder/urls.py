@@ -12,7 +12,7 @@ from . import views
 
 urlpatterns = [
     path('feeders', views.feeders),
-    path('feeder/apply', views.apply),
-    path('feeder/applys', views.applys),
-    path('feeder/agree', views.agree),
+    path('apply', views.apply),
+    path('applys', views.applys),
+    path('agree', views.agree),
 ]
