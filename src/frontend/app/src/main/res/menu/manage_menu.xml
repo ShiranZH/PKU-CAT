@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/manage_button_add_level1"
+        android:title="设置饲养员"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/manage_button_add_level2"
+        android:title="设置管理员"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/manage_button_sort_by_name"
+        android:title="按姓名排序"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/manage_button_sort_by_level"
+        android:title="按权限排序"
+        app:showAsAction="never"/>
+
+</menu>

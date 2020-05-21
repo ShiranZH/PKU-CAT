@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_setting">
+
+    <activity
+        android:id="@+id/nav_archive"
+        android:name="com.example.pkucat.archive.ArchiveActivity"
+        android:label="@string/menu_archive"
+        tools:layout="@layout/activity_archive">
+    </activity>
+
+    <activity
+        android:id="@+id/nav_post"
+        android:name="com.example.pkucat.post.PostActivity"
+        android:label="@string/menu_post"
+        tools:layout="@layout/activity_post">
+    </activity>
+
+    <fragment
+        android:id="@+id/nav_recognition"
+        android:name="com.example.pkucat.recognition.RecognitionFragment"
+        android:label="@string/menu_recognition"
+        tools:layout="@layout/fragment_recognition">
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_setting"
+        android:name="com.example.pkucat.setting.SettingFragment"
+        android:label="@string/menu_setting"
+        tools:layout="@layout/fragment_setting">
+    </fragment>
+
+    <activity
+        android:id="@+id/nav_manage"
+        android:name="com.example.pkucat.manage.ManageActivity"
+        android:label="@string/menu_manage"
+        tools:layout="@layout/activity_manage"/>
+
+</navigation>
