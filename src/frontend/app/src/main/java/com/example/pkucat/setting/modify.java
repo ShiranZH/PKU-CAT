@@ -47,11 +47,16 @@ public class modify extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 JSONObject request = new JSONObject();
+                String input = "something";
+                /*
+                * TODO
+                *  input 应该被设置为用户输入
+                */
                 try{
-                    request.put("username", "something");
+                    request.put("username", input);
                     JSONObject response = Client.put(request, new URL("https", app.serverIP, "/user/profile"), app.cookie);
                     if(response.getString("code").equals("200")){
-                        app.setUsername("something");
+                        app.setUsername(input);
                         username.setText(app.getUsername());
                     }
                 }catch (Exception e){
@@ -70,11 +75,16 @@ public class modify extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 JSONObject request = new JSONObject();
+                String input = "something";
+                /*
+                 * TODO
+                 *  input 应该被设置为用户输入
+                 */
                 try{
-                    request.put("whatsup", "something");
+                    request.put("whatsup", input);
                     JSONObject response = Client.put(request, new URL("https", app.serverIP, "/user/profile"), app.cookie);
                     if(response.getString("code").equals("200")){
-                        app.setWhatsup("something");
+                        app.setWhatsup(input);
                         whatsup.setText(app.getWhatsup());
                     }
                     else System.out.println(response.getJSONObject("data").getString("msg"));

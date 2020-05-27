@@ -71,6 +71,7 @@ public class SettingFragment extends Fragment {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO
             }
         });
 
@@ -79,6 +80,7 @@ public class SettingFragment extends Fragment {
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO
             }
         });
 
