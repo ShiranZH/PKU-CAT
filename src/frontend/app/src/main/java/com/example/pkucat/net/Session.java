@@ -75,7 +75,7 @@ public class Session {
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary="+boundary);
             connection.setSSLSocketFactory(SSLSocketClient.getSSLSocketFactory());
             connection.setHostnameVerifier(SSLSocketClient.getHostnameVerifier());
-            connection.connect();
+            
             
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
             
@@ -111,7 +111,10 @@ public class Session {
             out.write(("\r\n--"+boundary+"--\r\n").getBytes());
             
             out.flush();
+            connection.connect();
             
+            if (connection.getResponseCode() != 200)
+                return null;
             String response_cookie = connection.getHeaderField("Set-Cookie");
             if (response_cookie != null)
                 cookie = response_cookie;
@@ -141,6 +144,9 @@ public class Session {
             connection.setRequestProperty("cookie", cookie);
             connection.setSSLSocketFactory(SSLSocketClient.getSSLSocketFactory());
             connection.setHostnameVerifier(SSLSocketClient.getHostnameVerifier());
+            connection.connect();
+            if (connection.getResponseCode() != 200)
+                return null;
             
             response = IOUtils.toByteArray(connection.getInputStream());
             
@@ -154,7 +160,6 @@ public class Session {
 }
 
 class SSLSocketClient {
-    //获取这个SSLSocketFactory
     public static SSLSocketFactory getSSLSocketFactory() {
         try {
             SSLContext sslContext = SSLContext.getInstance("SSL");
@@ -165,7 +170,6 @@ class SSLSocketClient {
         }
     }
 
-    //获取TrustManager
     private static TrustManager[] getTrustManager() {
         TrustManager[] trustAllCerts = new TrustManager[]{
             new X509TrustManager() {
@@ -177,20 +181,17 @@ class SSLSocketClient {
 
                 @Override
                 public X509Certificate[] getAcceptedIssuers() {
-                    // return null; 或者
-                    return new X509Certificate[]{}; // 空实现
+                    return new X509Certificate[]{};
                 }
             }
         };
         return trustAllCerts;
     }
 
-    //获取HostnameVerifier
     public static HostnameVerifier getHostnameVerifier() {
         HostnameVerifier hostnameVerifier = new HostnameVerifier() {
             @Override
             public boolean verify(String s, SSLSession sslSession) {
-                // true表示信任所有域名
                 return true;
             }
         };
