@@ -49,6 +49,7 @@ class Verification(models.Model):
     pku_mail = models.EmailField(unique=True)
     verification_code = models.CharField(max_length=6)
     update_date = models.DateTimeField()
+    veri_type = models.CharField(max_length=32) # "register" 或者 "password"
 
     clear_date = timezone.now()
 
@@ -56,16 +57,17 @@ class Verification(models.Model):
         verbose_name = '验证码'
         verbose_name_plural = '验证码'
 
-    def get_verification_code(pku_mail):
+    def get_verification_code(pku_mail, veri_type="register"):
         if Verification.objects.filter(pku_mail=pku_mail).exists():
             veri = Verification.objects.get(pku_mail=pku_mail)
             now = timezone.now()
-            if (now-veri.update_date).total_seconds() < 30:
+            if veri_type == veri.veri_type and (now-veri.update_date).total_seconds() < 30:
                 return (-1, -1)
             else:
                 verification_code = random.randint(100000, 999999)
                 veri.verification_code = verification_code
                 veri.update_date = timezone.now()
+                veri.veri_type = veri_type
                 veri.save()
                 return (0, verification_code)  
         else:
@@ -73,6 +75,7 @@ class Verification(models.Model):
             veri = Verification(pku_mail=pku_mail,
                                 verification_code=verification_code,
                                 update_date=timezone.now())
+            veri.veri_type = veri_type
             veri.save()
             return (0, verification_code)                                
 
