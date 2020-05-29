@@ -35,7 +35,7 @@ public class User {
         data.put("password", SHA256.getSHA256(password));
         byte[] ret = session.post(baseUrl + "/user/login", data, null);
         if (ret == null)
-            throw new APIException("404", "网络错误");
+            throw new APIException("404", "缃戠粶閿欒");
         JSONObject retData = new JSONObject(new String(ret));
         if (retData.getInt("code") != 200)
             throw new APIException(retData);
@@ -47,8 +47,16 @@ public class User {
         return profile;
     }
     
-    public void logout() {
-        
+    public void logout() throws APIException {
+        isLogin = false;
+        byte[] ret = session.post(baseUrl + "/user/logout", null, null);
+        if (ret == null)
+            throw new APIException("404", "缃戠粶閿欒");
+        JSONObject retData = new JSONObject(new String(ret));
+        if (retData.getInt("code") != 200)
+        {
+            throw new APIException(retData);
+        }
     }
 }
 
@@ -74,7 +82,6 @@ class SHA256 {
         for (int i = 0; i < bytes.length; i++) {
             temp = Integer.toHexString(bytes[i] & 0xFF);
             if (temp.length() == 1) {
-                // 1得到一位的进行补0操作
                 stringBuffer.append("0");
             }
             stringBuffer.append(temp);
