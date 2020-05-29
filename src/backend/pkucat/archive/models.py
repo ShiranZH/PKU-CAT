@@ -3,7 +3,6 @@ from django.db import models
 # Create your models here.
 class Cat(models.Model):
     name = models.CharField(max_length=30, unique=True)
-    catID = models.AutoField(primary_key=True)
     avatar = models.URLField()
 
 
