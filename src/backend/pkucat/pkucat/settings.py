@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'demo',
     'post',
     'user',
+    'file',
     'feeder',
     'archive',
     'django.contrib.admin',
