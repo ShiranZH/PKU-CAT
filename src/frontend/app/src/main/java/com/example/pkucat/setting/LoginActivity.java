@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.example.pkucat.App;
 import com.example.pkucat.MainActivity;
 import com.example.pkucat.R;
+import com.example.pkucat.net.*;
+import com.example.pkucat.net.Client;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +54,22 @@ public class LoginActivity extends Activity {
                 JSONObject request = new JSONObject();
                 String email = pkumail.getText().toString();
                 String password = pw.getText().toString();
+                Client client = new Client("https", "49.235.56.155", "443");
+                System.out.println(client.user.isLogin());
                 try {
+                    UserProfile profile = client.user.login("pkuzhd", "123456");
+                    System.out.println("登录成功");
+                    System.out.println(profile.username);
+                    System.out.println(profile.userID);
+                    System.out.println(profile.email);
+                    System.out.println(profile.whatsup);
+                    System.out.println(profile.getAvatar());
+                    System.out.println(client.user.isLogin());
+                } catch (APIException e) {
+                    System.out.println(e.getCode());
+                    System.out.println(e.getDescription());
+                }
+                /*try {
                     request.put("email", email);
                     request.put("password", password);
                     JSONObject response = Client.post(request, new URL("https", app.serverIP, "/user/login"), null);
@@ -69,7 +86,7 @@ public class LoginActivity extends Activity {
                     message.setText("未知错误");
                     e.printStackTrace();
                     return;
-                }
+                }*/
                 Intent tostart = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(tostart);
             }
