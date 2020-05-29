@@ -25,23 +25,17 @@ public class UserProfile {
         this.avatar = null;
     }
     
-    UserProfile(JSONObject profile, Session session) {
-        try {
-            this.username = profile.getJSONObject("user").getString("name");
-            this.userID = String.valueOf(profile.getJSONObject("user").getInt("userID"));
-            this.email = profile.getString("email");
-            if (profile.has("whatsup"))
-                this.whatsup = profile.getString("whatsup");
-            else
-                this.whatsup = "";
-            this.avatarUrl = profile.getString("avatar");
-            this.session = session;
-            this.avatar = null;
-        }
-        catch (JSONException e)
-        {
-
-        }
+    UserProfile(JSONObject profile, Session session) throws JSONException {
+        this.username = profile.getJSONObject("user").getString("name");
+        this.userID = String.valueOf(profile.getJSONObject("user").getInt("userID"));
+        this.email = profile.getString("email");
+        if (profile.has("whatsup"))
+            this.whatsup = profile.getString("whatsup");
+        else
+            this.whatsup = "";
+        this.avatarUrl = profile.getString("avatar");
+        this.session = session;
+        this.avatar = null;
     }
     
     public byte[] getAvatar() {

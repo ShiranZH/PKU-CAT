@@ -23,16 +23,32 @@ public class User {
         return isLogin;
     }
     
-    public UserProfile getProfile() {
+    public UserProfile getProfile()  throws APIException {
         return profile;
     }
     
-    public UserProfile getProfile(String userID) {
-        return null;
+    public UserProfile getProfile(String userID) throws APIException  {
+        if (userID.equals(profile.userID))
+            return profile;
+        try {
+            JSONObject data = new JSONObject();
+            data.put("userID", userID);
+            byte[] ret = session.get(baseUrl + "/user/profile", data);
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+            JSONObject profileJSON = retData.getJSONObject("data").getJSONObject("profile");
+            UserProfile userProfile = new UserProfile(profileJSON, session);
+            return userProfile;
+        } catch (JSONException e) {
+            throw new APIException("404", "返回值错误");
+        }
+        catch (APIException e) {
+            throw e;
+        }
     }
 
     public UserProfile login(String email, String password) throws APIException {
-
         try {
             JSONObject data = new JSONObject();
             data.put("email", email);
