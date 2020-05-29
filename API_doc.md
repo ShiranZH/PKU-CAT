@@ -217,7 +217,40 @@ response.body = {
 
 /archive
 	/archives
+	
+/file
 ```
+
+### 上传文件
+
+POST /file
+
+```json
+request.body = {
+    "picture": [file1, file2, ...],
+    "video": [file3, file4, ...]
+}
+
+// 上传成功：
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success",
+        "picture": [url1, url2, ...],
+        "video": [url1, url2, ...],
+    }
+}
+
+// 上传失败：
+response.body = {
+    "code": 700,
+    "data": {
+        "msg": "parameter error",
+    }
+}
+```
+
+
 
 ### 用户相关
 
@@ -231,11 +264,36 @@ request.body = {
     "password": string
 }
 
+// 登录成功
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success"，
+		"profile": Userprofile
+    }
+}
+
+// 在登录状态下登录其他账号
+response.body = {
+    "code": 400,
+    "data": {
+        "msg": "error"
+    }
+}
+
+// 参数错误（缺少邮箱密码、用户不存在）：
+response.body = {
+    "code": 300,
+    "data": {
+        "msg": "wrong parameter"
+    }
+}
+
 // 登陆失败：
 response.body = {
     "code": 300,
     "data": {
-        "msg": "email error" / "password error"
+        "msg": "email or password error"
     }
 }
 ```
@@ -249,12 +307,35 @@ request.body = {
     "email": "1600012607" (string, pku邮箱名，不包括@pku.edu.cn)
 }
 
+// 成功
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success"
+    }
+}
 
-// 邮件已注册：
+// 邮箱已注册：
 response.body = {
     "code": 300,
     "data": {
         "msg": "email address already registered"
+    }
+}
+
+// 30s内重复请求：
+response.body = {
+    "code": 400,
+    "data": {
+        "msg": "repeated acquisition in 30 seconds"
+    }
+}
+
+// 邮箱格式错误：
+response.body = {
+    "code": 700,
+    "data": {
+        "msg": "wrong email"
     }
 }
 ```
@@ -267,7 +348,17 @@ POST /user/register/validation
 request.body = {
     "username": "pkucat" (string),
     "password": "pkucat2020" (string),
+    "email": "1600012607" (string, pku邮箱名，不包括@pku.edu.cn),
     "verificationCode": "666666" (string),
+}
+
+// 验证成功（并登录）
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success"，
+		"profile": Userprofile
+    }
 }
 
 // 用户名重复：
@@ -280,9 +371,25 @@ response.body = {
 
 // 验证码错误：
 response.body = {
-    "code": 400,
+    "code": 700,
     "data": {
-        "msg": "verification code error"
+        "msg": "wrong verification code"
+    }
+}
+
+// 邮箱错误：
+response.body = {
+    "code": 700,
+    "data": {
+        "msg": "wrong email"
+    }
+}
+
+// 邮箱已注册：
+response.body = {
+    "code": 300,
+    "data": {
+        "msg": "email address already registered"
     }
 }
 ```
@@ -293,6 +400,14 @@ POST /user/logout
 
 ``` json
 request.body = { }
+
+// 成功
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success"
+    }
+}
 ```
 
 #### UserProfile 查看个人信息
@@ -300,12 +415,25 @@ request.body = { }
 GET /user/profile
 
 ``` json
+request.body = {
+    "userID": number, // 可选参数，id为空则查看自己的个人信息
+}
+
 // 成功返回
 response.body = {
     "code": 200,
     "data": {
         "msg": "success",
         "profile": Userprofile
+    }
+}
+
+// 用户不存在
+response.body = {
+    "code": 300,
+    "data": {
+        "msg": "user does not exist",
+        "profile": {}
     }
 }
 ```
@@ -315,10 +443,18 @@ response.body = {
 PUT /user/profile
 
 ``` json
-request.body = {
-    "avatar": image,
+request.body = { // 三项至少一个不为空
+    "avatar": string,
     "whatsup": string,
     "username": string
+}
+
+// 成功
+response.body = {
+    "code": 200,
+    "data": {
+        "msg": "success"
+    }
 }
 
 // 用户名重复
@@ -326,6 +462,38 @@ response.body = {
     "code": 300,
     "data": {
         "msg": "duplicate username"
+    }
+}
+
+// 三项均为空
+response.body = {
+    "code": 300,
+    "data": {
+        "msg": "parameter error"
+    }
+}
+
+// 用户名重复
+response.body = {
+    "code": 300,
+    "data": {
+        "msg": "duplicate username"
+    }
+}
+
+// 头像文件不存在
+response.body = {
+    "code": 300,
+    "data": {
+        "msg": "unexisted avatar"
+    }
+}
+
+// 用户名重复且头像文件不存在
+response.body = {
+    "code": 300,
+    "data": {
+        "msg": "duplicate username/unexisted avatar"
     }
 }
 ```
@@ -379,8 +547,8 @@ response.body = {
         "applies": [
             {
                 "applyID": number,
-                "catID": number,
-    			"apply_info": string,
+                "userID": number,
+                "catID": number
             }
         ]
     }
@@ -388,7 +556,7 @@ response.body = {
 ```
 #### Feeder_agree 同意饲养员申请
 
-POST /feeders
+POST /feeder/agree
 
 ``` json
 request.body = {
@@ -644,3 +812,4 @@ response.body = {
 }
 ```
 
+ 
