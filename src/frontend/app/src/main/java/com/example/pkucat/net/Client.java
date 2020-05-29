@@ -29,7 +29,7 @@ public class Client {
     
     public User user;
     
-    Client(String protocol, String serverIP, String host)
+    public Client(String protocol, String serverIP, String host)
     {
         this.protocol = protocol;
         this.serverIP = serverIP;
