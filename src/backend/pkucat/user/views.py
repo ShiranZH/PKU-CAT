@@ -8,8 +8,10 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import QueryDict
 
 from demo.config import CODE
-from .models import Verification, User
+from user.models import Verification, User
 import file
+
+import time
 
 @csrf_exempt
 def register_validation(request):
@@ -124,23 +126,22 @@ def login(request):
                 msg = 'wrong parameter'
             else:
                 username = User.objects.get(pku_mail=email).username
-                user = auth.authenticate(username=username, password=password)
+                user = User.objects.get(pku_mail=email)
+                if user.sha256_password != password:
+                    user = None
+                # user = auth.authenticate(username=username, password=password)
                 if user is None:
                     code = CODE['parameter_error']
                     msg = 'email or password error'
-                elif request.user.is_authenticated:
-                    if request.user.id != user.id:
-                        code = CODE['user_error']
-                        msg = 'error'
-                    else:
-                        code = CODE['success']
-                        msg = 'success'
+                elif request.user.is_authenticated and request.user.id != user.id:
+                    code = CODE['user_error']
+                    msg = 'error'
                 else:
                     auth.login(request, user)
                     user = User.objects.get(id=user.id)
                     user_profile['user'] = {'name':user.username, "userID":user.id}
                     user_profile['avatar'] = user.avatar if user.avatar != '' else '/static/user/avatar_default.jpg'
-                    user_profile['mail'] = user.pku_mail 
+                    user_profile['email'] = user.pku_mail 
                     user_profile['whatsup'] = user.whatsup
                     code = CODE['success']
                     msg = 'success'
@@ -201,7 +202,8 @@ def profile(request):
         elif request.method == 'PUT':
             user = User.objects.get(id=request.user.id)
             
-            PUT = QueryDict(request.body)
+            # PUT = QueryDict(request.body)
+            PUT = eval(str(request.body, encoding="utf-8"))
             username = PUT.get('username')
             avatar = PUT.get('avatar')
             whatsup = PUT.get('whatsup')
@@ -236,8 +238,7 @@ def profile(request):
                 msg = 'parameter error'
         else:
             code = CODE['method_error']
-            msg = 'wrong method'
-
+            msg = 'wrong method' + request.method
     response = {
         'code': code,
         'data': {
@@ -246,4 +247,15 @@ def profile(request):
         }
     }
     return JsonResponse(response)
+import requests
+@csrf_exempt
+def mytest(request):
+    msg = ''
+    msg += "request.method: " + repr(request.method) + '\n'
+    msg += "request.body:   " + repr(request.body) + '\n'
+    msg += "request.GET:    " + repr(request.GET) + '\n'
+    msg += "request.FILES:  " + repr(request.FILES) + '\n'
+    msg += "request.POST:   " + repr(request.POST) + '\n'
+    # hashlib.sha256(bytes("ZHD123",encoding="utf-8")).hexdigest()
 
+    return HttpResponse(msg)

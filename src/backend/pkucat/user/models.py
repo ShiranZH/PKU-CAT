@@ -22,6 +22,7 @@ class User(django.contrib.auth.models.User):
     avatar = models.CharField(max_length=128, blank=True)
     whatsup = models.CharField(max_length=128, blank=True)
     pku_mail = models.EmailField(unique=True)
+    sha256_password = models.CharField(max_length=64, blank=True)
     
     class Meta:
         verbose_name = '用户'

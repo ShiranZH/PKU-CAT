@@ -6,8 +6,8 @@ from .models import User, Verification
 
 
 class UserAdmin(admin.ModelAdmin):
-    fields = ['username', 'pku_mail', 'avatar', 'whatsup', 'is_superuser']
-    list_display = ['username', 'pku_mail', 'is_superuser']
+    fields = ['username', 'pku_mail', 'avatar', 'whatsup', 'is_superuser', "sha256_password"]
+    list_display = ['username', 'pku_mail', 'is_superuser', "sha256_password"]
 
 
 class VerificationAdmin(admin.ModelAdmin):

@@ -2,6 +2,8 @@
 from django.test import TestCase
 from django.http import HttpResponse, JsonResponse
 from .models import Verification, User
+import django.contrib.auth as auth
+import time
 
 from demo.config import CODE
 
@@ -250,13 +252,7 @@ class UserTests(TestCase):
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
-
-        # 登录
-        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':'123456'})
-        self.assertEqual(type(response), JsonResponse)
-        response = response.json()
-        self.assertEqual(response['code'], CODE['success'])
-
+        
         # 方法错误
         response = self.client.post('/user/profile')
         self.assertEqual(type(response), JsonResponse)
@@ -279,3 +275,33 @@ class UserTests(TestCase):
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
+
+#     def test_effiency(self):
+#         User.objects.create_user(username='pkuzhd', password='123456', pku_mail='pkuzhd@pku.edu.cn')
+#         import _thread
+
+#         # 创建两个线程
+#         try:
+#             _thread.start_new_thread( fun, () )
+#             _thread.start_new_thread( fun, () )
+#             _thread.start_new_thread( fun, () )
+#             _thread.start_new_thread( fun, () )
+#             _thread.start_new_thread( fun, () )
+#             _thread.start_new_thread( fun, () )
+#             _thread.start_new_thread( fun, () )
+#             _thread.start_new_thread( fun, () )
+#             _thread.start_new_thread( fun, () )
+#             _thread.start_new_thread( fun, () )
+#         except:
+#             print ("Error: 无法启动线程")
+
+#         while 1:
+#             pass
+
+# def fun():
+#     for i in range(5):
+#         t = time.time()
+#         auth.authenticate(username='pkuzhd', password='123456')
+        
+#         print(time.time()-t)
+        
