@@ -19,11 +19,86 @@ public class User {
         baseUrl = url;
     }
     
+    public void register(String email) throws APIException {
+        try {
+            JSONObject data = new JSONObject();
+            data.put("email", email);
+            byte[] ret = session.post(baseUrl + "/user/register", data, null);
+            if (ret == null)
+                throw new APIException("404", "网络错误");
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+        } catch (JSONException e) {
+            throw new APIException("404", "返回值错误");
+        } catch (APIException e) {
+            throw e;
+        }
+    }
+    
+    public void getPasswordCode(String email) throws APIException {
+        try {
+            JSONObject data = new JSONObject();
+            data.put("email", email);
+            byte[] ret = session.get(baseUrl + "/user/password", data);
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+        } catch (JSONException e) {
+            throw new APIException("404", "返回值错误");
+        } catch (APIException e) {
+            throw e;
+        }
+    }
+    
+    public void setPassword(String email, String password, String code) throws APIException {
+        try {
+            JSONObject data = new JSONObject();
+            data.put("email", email);
+            data.put("password", password);
+            data.put("verificationCode", code);
+            byte[] ret = session.post(baseUrl + "/user/password", data, null);
+            if (ret == null)
+                throw new APIException("404", "网络错误");
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+        } catch (JSONException e) {
+            throw new APIException("404", "返回值错误");
+        } catch (APIException e) {
+            throw e;
+        }
+    }
+    
+    public UserProfile registerValidation(String email,
+            String password, String username, String code) throws APIException {
+        try {
+            JSONObject data = new JSONObject();
+            data.put("email", email);
+            data.put("password", password);
+            data.put("username", username);
+            data.put("verificationCode", code);
+            byte[] ret = session.post(baseUrl + "/user/register_validation", data, null);
+            if (ret == null)
+                throw new APIException("404", "网络错误");
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+            JSONObject profileJSON = retData.getJSONObject("data").getJSONObject("profile");
+            profile = new UserProfile(profileJSON, session);
+            return profile;
+        } catch (JSONException e) {
+            throw new APIException("404", "返回值错误");
+        } catch (APIException e) {
+            throw e;
+        }
+    }
+    
     public boolean isLogin() {
         return isLogin;
     }
     
-    public UserProfile getProfile()  throws APIException {
+    public UserProfile getProfile() throws APIException {
         return profile;
     }
     
@@ -42,8 +117,7 @@ public class User {
             return userProfile;
         } catch (JSONException e) {
             throw new APIException("404", "返回值错误");
-        }
-        catch (APIException e) {
+        } catch (APIException e) {
             throw e;
         }
     }
