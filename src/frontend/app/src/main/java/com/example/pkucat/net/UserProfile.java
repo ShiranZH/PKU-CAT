@@ -1,3 +1,6 @@
+package com.example.pkucat.net;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UserProfile {
@@ -23,16 +26,22 @@ public class UserProfile {
     }
     
     UserProfile(JSONObject profile, Session session) {
-        this.username = profile.getJSONObject("user").getString("name");
-        this.userID = String.valueOf(profile.getJSONObject("user").getInt("userID"));
-        this.email = profile.getString("email");
-        if (profile.has("whatsup"))
-            this.whatsup = profile.getString("whatsup");
-        else
-            this.whatsup = "";
-        this.avatarUrl = profile.getString("avatar");
-        this.session = session;
-        this.avatar = null;
+        try {
+            this.username = profile.getJSONObject("user").getString("name");
+            this.userID = String.valueOf(profile.getJSONObject("user").getInt("userID"));
+            this.email = profile.getString("email");
+            if (profile.has("whatsup"))
+                this.whatsup = profile.getString("whatsup");
+            else
+                this.whatsup = "";
+            this.avatarUrl = profile.getString("avatar");
+            this.session = session;
+            this.avatar = null;
+        }
+        catch (JSONException e)
+        {
+
+        }
     }
     
     public byte[] getAvatar() {

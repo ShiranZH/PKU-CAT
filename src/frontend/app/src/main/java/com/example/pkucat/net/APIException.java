@@ -1,3 +1,5 @@
+package com.example.pkucat.net;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class APIException extends Exception {
@@ -11,8 +13,15 @@ public class APIException extends Exception {
     }
     
     APIException(JSONObject ret) {
-        this.code = String.valueOf(ret.getInt("code"));
-        this.description = ret.getJSONObject("data").getString("msg");
+        try {
+            this.code = String.valueOf(ret.getInt("code"));
+            this.description = ret.getJSONObject("data").getString("msg");
+        }
+        catch (JSONException e)
+        {
+            this.code = "404";
+            this.description = "返回值错误";
+        }
     }
     
     public String getCode() {

@@ -1,3 +1,5 @@
+package com.example.pkucat.net;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -30,32 +32,52 @@ public class User {
     }
 
     public UserProfile login(String email, String password) throws APIException {
-        JSONObject data = new JSONObject();
-        data.put("email", email);
-        data.put("password", SHA256.getSHA256(password));
-        byte[] ret = session.post(baseUrl + "/user/login", data, null);
-        if (ret == null)
-            throw new APIException("404", "网络错误");
-        JSONObject retData = new JSONObject(new String(ret));
-        if (retData.getInt("code") != 200)
-            throw new APIException(retData);
-        JSONObject profileJSON = retData.getJSONObject("data").getJSONObject("profile");
-        
-        profile = new UserProfile(profileJSON, session);
-        isLogin = true;
-        
-        return profile;
+
+        try {
+            JSONObject data = new JSONObject();
+            data.put("email", email);
+            data.put("password", SHA256.getSHA256(password));
+            byte[] ret = session.post(baseUrl + "/user/login", data, null);
+            if (ret == null)
+                throw new APIException("404", "网络错误");
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+            JSONObject profileJSON = retData.getJSONObject("data").getJSONObject("profile");
+
+            profile = new UserProfile(profileJSON, session);
+            isLogin = true;
+
+            return profile;
+        }
+        catch (JSONException e)
+        {
+            throw new APIException("404", "返回值错误");
+        }
+        catch (APIException e)
+        {
+            throw e;
+        }
     }
     
     public void logout() throws APIException {
-        isLogin = false;
-        byte[] ret = session.post(baseUrl + "/user/logout", null, null);
-        if (ret == null)
-            throw new APIException("404", "网络错误");
-        JSONObject retData = new JSONObject(new String(ret));
-        if (retData.getInt("code") != 200)
+        try {
+            isLogin = false;
+            byte[] ret = session.post(baseUrl + "/user/logout", null, null);
+            if (ret == null)
+                throw new APIException("404", "网络错误");
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200) {
+                throw new APIException(retData);
+            }
+        }
+        catch (JSONException e)
         {
-            throw new APIException(retData);
+            throw new APIException("404", "返回值错误");
+        }
+        catch (APIException e)
+        {
+            throw e;
         }
     }
 }
