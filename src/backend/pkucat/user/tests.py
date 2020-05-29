@@ -2,12 +2,20 @@
 from django.test import TestCase
 from django.http import HttpResponse, JsonResponse
 from .models import Verification, User
+import django.contrib.auth as auth
+import time
 
 from demo.config import CODE
+import hashlib
+
+def hash(passwrod):
+    return hashlib.sha256(bytes(passwrod, encoding="utf-8")).hexdigest()
 
 class UserTests(TestCase):
     def test_regiser(self):
-        User.objects.create_user(username='pkucathelper', password='123456', pku_mail='pkucathelper@pku.edu.cn')
+        u = User.objects.create_user(username='pkucathelper', password='123456', pku_mail='pkucathelper@pku.edu.cn')
+        u.sha256_password = hash("123456")
+        u.save()
 
         # 方法错误
         response = self.client.get('/user/register')
@@ -137,8 +145,12 @@ class UserTests(TestCase):
         self.assertEqual(response['code'], CODE['database_error'])
 
     def test_login(self):
-        User.objects.create_user(username='pkuzhd', password='123456', pku_mail='pkuzhd@pku.edu.cn')
-        User.objects.create_user(username='zhd', password='123456', pku_mail='1600012621@pku.edu.cn')
+        u = User.objects.create_user(username='pkuzhd', password='123456', pku_mail='pkuzhd@pku.edu.cn')
+        u.sha256_password = hash("123456")
+        u.save()
+        u = User.objects.create_user(username='zhd', password='123456', pku_mail='1600012621@pku.edu.cn')
+        u.sha256_password = hash("123456")
+        u.save()
 
         # 方法错误
         response = self.client.get('/user/login')
@@ -174,26 +186,30 @@ class UserTests(TestCase):
         self.assertEqual(response['code'], CODE['parameter_error'])
 
         # 成功
-        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':'123456'})
+        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':hash('123456')})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
 
         # 重复请求登录
-        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':'123456'})
+        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':hash('123456')})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
 
         # 请求另外一个账户登录
-        response = self.client.post('/user/login', {'email':'1600012621', 'password':'123456'})
+        response = self.client.post('/user/login', {'email':'1600012621', 'password':hash('123456')})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['user_error'])
 
     def test_logout(self):
-        User.objects.create_user(username='pkuzhd', password='123456', pku_mail='pkuzhd@pku.edu.cn')
-        User.objects.create_user(username='zhd', password='123456', pku_mail='1600012621@pku.edu.cn')
+        u = User.objects.create_user(username='pkuzhd', password='123456', pku_mail='pkuzhd@pku.edu.cn')
+        u.sha256_password = hash("123456")
+        u.save()
+        u = User.objects.create_user(username='zhd', password='123456', pku_mail='1600012621@pku.edu.cn')
+        u.sha256_password = hash("123456")
+        u.save()
 
         # 方法错误
         response = self.client.get('/user/logout')
@@ -218,7 +234,7 @@ class UserTests(TestCase):
         self.assertEqual(response['code'], CODE['success'])
 
         # 登录
-        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':'123456'})
+        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':hash('123456')})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
@@ -230,14 +246,18 @@ class UserTests(TestCase):
         self.assertEqual(response['code'], CODE['success'])
 
         # 另外一个账户登录
-        response = self.client.post('/user/login', {'email':'1600012621', 'password':'123456'})
+        response = self.client.post('/user/login', {'email':'1600012621', 'password':hash('123456')})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
 
     def test_profile(self):
-        User.objects.create_user(username='pkuzhd', password='123456', pku_mail='pkuzhd@pku.edu.cn')
-        User.objects.create_user(username='zhd', password='123456', pku_mail='1600012621@pku.edu.cn')
+        u = User.objects.create_user(username='pkuzhd', password='123456', pku_mail='pkuzhd@pku.edu.cn')
+        u.sha256_password = hash("123456")
+        u.save()
+        u = User.objects.create_user(username='zhd', password='123456', pku_mail='1600012621@pku.edu.cn')
+        u.sha256_password = hash("123456")
+        u.save()
 
         # 未登录
         response = self.client.get('/user/profile')
@@ -246,17 +266,11 @@ class UserTests(TestCase):
         self.assertEqual(response['code'], CODE['user_error'])
 
         # 登录
-        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':'123456'})
+        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':hash('123456')})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
-
-        # 登录
-        response = self.client.post('/user/login', {'email':'pkuzhd', 'password':'123456'})
-        self.assertEqual(type(response), JsonResponse)
-        response = response.json()
-        self.assertEqual(response['code'], CODE['success'])
-
+        
         # 方法错误
         response = self.client.post('/user/profile')
         self.assertEqual(type(response), JsonResponse)
@@ -279,3 +293,14 @@ class UserTests(TestCase):
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
+
+    def test_password(self):
+        u = User.objects.create_user(username='pkuzhd', password='123456', pku_mail='pkuzhd@pku.edu.cn')
+        u.sha256_password = hash("123456")
+        u.save()
+
+        response = self.client.get('/user/password', {"email":"pkuzhd"})
+        self.assertEqual(type(response), JsonResponse)
+        response = response.json()
+        self.assertEqual(response['code'], CODE['success'])
+        pass

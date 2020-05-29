@@ -44,6 +44,7 @@ def upload(request):
                         f.write(video.read())
                     
                 code = CODE['success']
+                msg = "success"
             else:
                 code = CODE['parameter_error']
                 msg = 'parameter error'
