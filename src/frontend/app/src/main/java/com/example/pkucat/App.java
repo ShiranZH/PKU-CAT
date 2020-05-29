@@ -2,6 +2,8 @@ package com.example.pkucat;
 
 import android.app.Application;
 
+import com.example.pkucat.net.Client;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,6 +15,7 @@ public class App extends Application {
     private String photoUrl;
     private String whatsup;
     public String cookie;
+    public Client client ;
     public final String serverIP = "49.235.56.155";
 
     @Override
