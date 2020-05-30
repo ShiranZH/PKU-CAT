@@ -109,14 +109,14 @@ public class SettingFragment extends Fragment {
     }
 
     public void onResume(){
-        super.onResume();if(true)return;
+        super.onResume();
         if(app.getPermission()<2){
             permissionManage.setVisibility(View.INVISIBLE);
         }
         if(!app.isguest()){
             username.setText(app.getUsername());
             mail.setText(app.getMail());
-            new Thread(){
+            /*new Thread(){
                 public void run(){
                     try {
                         bitmap = Client.getBmp(new URL("https", app.serverIP, app.getPhotoUrl()));
@@ -125,7 +125,7 @@ public class SettingFragment extends Fragment {
                     }
                     if(bitmap != null) bmpArrived.sendEmptyMessage(0x2233);
                 }
-            }.start();
+            }.start();*/
         }
         else{
             username.setText(R.string.t1);
