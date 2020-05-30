@@ -94,4 +94,8 @@ public class App extends Application {
     }
 
     public void setMail(String newMail){mail=newMail;}
+
+    public void setIs_guest(boolean is_guest){this.is_guest = is_guest;}
+
+    public void setPermission(int permission){this.permission = permission;}
 }
