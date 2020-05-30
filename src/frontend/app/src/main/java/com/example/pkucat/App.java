@@ -1,8 +1,13 @@
 package com.example.pkucat;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
 
+import androidx.navigation.ActivityNavigator;
+
 import com.example.pkucat.net.Client;
+import com.example.pkucat.net.UserProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,9 +19,10 @@ public class App extends Application {
     private int permission;
     private String photoUrl;
     private String whatsup;
+    private UserProfile profile;
     public String cookie;
-    public Client client ;
-    public final String serverIP = "49.235.56.155";
+    public Client client = new Client("https", "49.235.56.155", "443");
+    public String serverIP = "49.235.56.155";
 
     @Override
     public void onCreate(){
@@ -34,20 +40,19 @@ public class App extends Application {
         whatsup = profile.getString("whatsup");
     }
 
-    public void login_as_admin(JSONObject profile) throws JSONException {
+    public void login_as_admin(UserProfile profile) {
         is_guest = false;
         permission = 2;
-        JSONObject user = profile.getJSONObject("user");
-        username = user.getString("name");
-        mail = profile.getString("mail");
-        photoUrl = profile.getString("avatar");
-        whatsup = profile.getString("whatsup");
+        username = profile.username;
+        mail = profile.email;
+        whatsup = profile.whatsup;
+        this.profile = profile;
     }
 
     public void logout(){
         is_guest = true;
-        username = "";
-        mail = "";
+        username = "guest";
+        mail = "none";
         photoUrl = "";
         permission = 0;
     }
@@ -87,4 +92,6 @@ public class App extends Application {
     public void setPhotoUrl(String url){
         photoUrl = url;
     }
+
+    public void setMail(String newMail){mail=newMail;}
 }
