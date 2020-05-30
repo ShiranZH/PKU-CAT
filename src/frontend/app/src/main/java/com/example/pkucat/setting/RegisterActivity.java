@@ -18,6 +18,8 @@ import com.example.pkucat.R;
 import org.json.JSONObject;
 
 import java.net.URL;
+import com.example.pkucat.net.*;
+import com.example.pkucat.net.Client;
 
 public class RegisterActivity extends AppCompatActivity {
     private App app;
@@ -39,6 +41,8 @@ public class RegisterActivity extends AppCompatActivity {
         vrf = findViewById(R.id.editText7);
         message = findViewById(R.id.textView14);
 
+        final Client client = app.client;
+
         getvrf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,21 +51,15 @@ public class RegisterActivity extends AppCompatActivity {
                     message.setText("请先输入邮箱");
                     return;
                 }
-                JSONObject request = new JSONObject();
                 try {
-                    request.put("email", email);
-                    //JSONObject response = Client.post(request, new URL("https://49.235.56.155/user/register"));
-                    JSONObject response = Client.post(request, new URL("https", app.serverIP, "/user/register"), null);
-                    if(!response.getString("code").equals("200")){
-                        JSONObject data = response.getJSONObject("data");
-                        message.setText(data.getString("msg"));
-                    }
-                    else{
-                        message.setText("验证码已发送至您的邮箱");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    client.user.register(email);
+                    message.setText("验证码已发送至您的邮箱");
                 }
+                catch (APIException e)
+                {
+                    message.setText(e.getDescription());
+                }
+
             }
         });
         confirm.setOnClickListener(new View.OnClickListener() {
@@ -76,27 +74,20 @@ public class RegisterActivity extends AppCompatActivity {
                 String email = pkumail.getText().toString();
                 String un = username.getText().toString();
                 String vrfcode = vrf.getText().toString();
-                JSONObject request = new JSONObject();
-                try{
-                    request.put("email", email);
-                    request.put("username", un);
-                    request.put("password", password1);
-                    request.put("verificationCode", vrfcode);
-                    JSONObject response = Client.post(request, new URL("https", app.serverIP, "user/register/validation"), null);
-                    if(!response.getString("code").equals("200")){
-                        JSONObject data = response.getJSONObject("data");
-                        message.setText(data.getString("msg"));
-                        return;
-                    }
-                    JSONObject data = response.getJSONObject("data");
-                    JSONObject profile = data.getJSONObject("profile");
-                    app.login_as_user(profile);
-                    app.cookie = response.getString("cookie");
-                }catch (Exception e){
-                    return;
+
+                try {
+                    client.user.registerValidation(email,password1,un,vrfcode);
+                    app.setMail(email);
+                    app.setUsername(un);
+                    app.setPermission(0);
+                    app.setIs_guest(false);
+                    Intent tostart = new Intent(RegisterActivity.this, MainActivity.class);
+                    startActivity(tostart);
                 }
-                Intent tostart = new Intent(RegisterActivity.this, MainActivity.class);
-                startActivity(tostart);
+                catch (APIException e)
+                {
+                    message.setText(e.getDescription());
+                }
             }
         });
     }
