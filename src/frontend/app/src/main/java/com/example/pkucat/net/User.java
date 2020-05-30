@@ -86,6 +86,7 @@ public class User {
                 throw new APIException(retData);
             JSONObject profileJSON = retData.getJSONObject("data").getJSONObject("profile");
             profile = new UserProfile(profileJSON, session);
+            isLogin = true;
             return profile;
         } catch (JSONException e) {
             throw new APIException("404", "返回值错误");
