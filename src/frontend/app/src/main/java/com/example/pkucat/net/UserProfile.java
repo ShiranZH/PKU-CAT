@@ -1,5 +1,6 @@
 package com.example.pkucat.net;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,6 +9,8 @@ public class UserProfile {
     public String userID;
     public String email;
     public String whatsup;
+    public boolean isAdmin;
+    public String[] feedCatID;
     
     private Session session;
     private byte[] avatar;
@@ -15,6 +18,7 @@ public class UserProfile {
     
     UserProfile(String username, String userID, 
             String email, String whatsup, String avatarUrl,
+            boolean isAdmin, String[] feedCatID,
             Session session) {
         this.username = username;
         this.userID = userID;
@@ -22,6 +26,8 @@ public class UserProfile {
         this.whatsup = whatsup;
         this.avatarUrl = avatarUrl;
         this.session = session;
+        this.isAdmin = isAdmin;
+        this.feedCatID = feedCatID;
         this.avatar = null;
     }
     
@@ -34,6 +40,16 @@ public class UserProfile {
         else
             this.whatsup = "";
         this.avatarUrl = profile.getString("avatar");
+        this.isAdmin = profile.getBoolean("is_admin");
+        if (profile.has("feed")) {
+            JSONArray catArray = profile.getJSONArray("feed");
+            this.feedCatID = new String[catArray.length()];
+            for (int i = 0; i < catArray.length(); ++i) {
+                this.feedCatID[i] = String.valueOf(catArray.getInt(i));
+            }
+        } else {
+            this.feedCatID = new String[0];
+        }
         this.session = session;
         this.avatar = null;
     }
