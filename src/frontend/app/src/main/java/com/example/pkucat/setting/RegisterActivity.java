@@ -77,10 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 try {
                     client.user.registerValidation(email,password1,un,vrfcode);
-                    app.setMail(email);
-                    app.setUsername(un);
-                    app.setPermission(0);
-                    app.setIs_guest(false);
+                    app.login(un,email,false);
                     Intent tostart = new Intent(RegisterActivity.this, MainActivity.class);
                     startActivity(tostart);
                 }

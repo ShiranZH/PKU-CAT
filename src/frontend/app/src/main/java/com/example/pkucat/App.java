@@ -30,23 +30,13 @@ public class App extends Application {
         logout();
     }
 
-    public void login_as_user(JSONObject profile) throws JSONException {
+    public void login(String username, String mail, boolean isAdmin)
+    {
+        this.username = username;
+        this.mail = mail;
+        if(isAdmin)permission = 2;
+        else permission = 0;
         is_guest = false;
-        permission = 1;
-        JSONObject user = profile.getJSONObject("user");
-        username = user.getString("name");
-        mail = profile.getString("mail");
-        photoUrl = profile.getString("avatar");
-        whatsup = profile.getString("whatsup");
-    }
-
-    public void login_as_admin(UserProfile profile) {
-        is_guest = false;
-        permission = 2;
-        username = profile.username;
-        mail = profile.email;
-        whatsup = profile.whatsup;
-        this.profile = profile;
     }
 
     public void logout(){

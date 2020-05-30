@@ -65,7 +65,8 @@ public class LoginActivity extends Activity {
                     System.out.println(profile.whatsup);
                     System.out.println(profile.getAvatar());
                     System.out.println(client.user.isLogin());
-                    app.login_as_admin(profile);
+                    app.login(profile.username, profile.email, profile.isAdmin);
+                    app.setWhatsup(profile.whatsup);
                 } catch (APIException e) {
                     System.out.println(e.getCode());
                     System.out.println(e.getDescription());
