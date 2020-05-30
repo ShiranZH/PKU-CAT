@@ -69,8 +69,7 @@ public class LoginActivity extends Activity {
                     app.setWhatsup(profile.whatsup);
                     finish();
                 } catch (APIException e) {
-                    System.out.println(e.getCode());
-                    System.out.println(e.getDescription());
+                    message.setText(e.getDescription());
                 }
             }
         });
