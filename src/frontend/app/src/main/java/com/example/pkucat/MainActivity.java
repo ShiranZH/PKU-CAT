@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         app = (App)getApplication();
+        app.setMainActivity(this);
         fill_user_info();
-        if(app.getPermission()==2)show_Manage();
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.

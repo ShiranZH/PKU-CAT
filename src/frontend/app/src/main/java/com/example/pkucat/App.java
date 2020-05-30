@@ -23,11 +23,12 @@ public class App extends Application {
     public String cookie;
     public Client client = new Client("https", "49.235.56.155", "443");
     public String serverIP = "49.235.56.155";
+    private MainActivity mainActivity;
 
     @Override
     public void onCreate(){
         super.onCreate();
-        logout();
+        init();
     }
 
     public void login(String username, String mail, boolean isAdmin)
@@ -37,9 +38,21 @@ public class App extends Application {
         if(isAdmin)permission = 2;
         else permission = 0;
         is_guest = false;
+        if(permission == 2)mainActivity.show_Manage();
+        mainActivity.fill_user_info();
     }
 
     public void logout(){
+        is_guest = true;
+        username = "guest";
+        mail = "none";
+        photoUrl = "";
+        permission = 0;
+        mainActivity.hide_Manage();
+        mainActivity.fill_user_info();
+    }
+
+    public void init(){
         is_guest = true;
         username = "guest";
         mail = "none";
@@ -88,4 +101,6 @@ public class App extends Application {
     public void setIs_guest(boolean is_guest){this.is_guest = is_guest;}
 
     public void setPermission(int permission){this.permission = permission;}
+
+    public void setMainActivity(MainActivity mainActivity){this.mainActivity = mainActivity;}
 }

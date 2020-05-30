@@ -43,6 +43,7 @@ public class LoginActivity extends Activity {
             public void onClick(View v) {
                 Intent tostart = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(tostart);
+                finish();
             }
         });
 
@@ -51,7 +52,6 @@ public class LoginActivity extends Activity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONObject request = new JSONObject();
                 String email = pkumail.getText().toString();
                 String password = pw.getText().toString();
                 Client client = app.client;
@@ -67,12 +67,11 @@ public class LoginActivity extends Activity {
                     System.out.println(client.user.isLogin());
                     app.login(profile.username, profile.email, profile.isAdmin);
                     app.setWhatsup(profile.whatsup);
+                    finish();
                 } catch (APIException e) {
                     System.out.println(e.getCode());
                     System.out.println(e.getDescription());
                 }
-                Intent tostart = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(tostart);
             }
         });
     }

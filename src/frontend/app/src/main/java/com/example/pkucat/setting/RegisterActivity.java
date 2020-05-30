@@ -77,9 +77,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                 try {
                     client.user.registerValidation(email,password1,un,vrfcode);
-                    app.login(un,email,false);
-                    Intent tostart = new Intent(RegisterActivity.this, MainActivity.class);
-                    startActivity(tostart);
+                    app.login(un,email+"@pku.edu.cn",false);
+                    finish();
                 }
                 catch (APIException e)
                 {
