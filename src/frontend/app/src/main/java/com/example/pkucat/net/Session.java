@@ -25,6 +25,11 @@ import java.util.UUID;
 
 public class Session {
     private String cookie = "";
+    public String baseUrl;
+    
+    Session(String url) {
+        baseUrl = url;
+    }
 
     public static String json2Url(JSONObject json) throws JSONException, UnsupportedEncodingException {
         if (null == json) {

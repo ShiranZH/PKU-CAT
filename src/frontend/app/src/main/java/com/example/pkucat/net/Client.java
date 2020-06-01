@@ -36,7 +36,7 @@ public class Client {
         this.host = host;
         this.baseUrl = protocol + "://" + serverIP + ":" + host;
         
-        this.session = new Session();
+        this.session = new Session(baseUrl);
         this.user = new User(session, baseUrl);
     }
 

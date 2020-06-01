@@ -55,8 +55,8 @@ public class UserProfile {
     }
     
     public byte[] getAvatar() {
-        if (avatar != null)
-            return avatar;
-        return null;
+        if (avatar == null)
+            avatar = session.get(session.baseUrl+avatarUrl, null);
+        return avatar;
     }
 }
