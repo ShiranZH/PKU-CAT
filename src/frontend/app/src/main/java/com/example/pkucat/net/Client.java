@@ -21,23 +21,25 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 public class Client {
-    private String serverIP;
-    private String protocol;
+//    private String serverIP;
+//    private String protocol;
+//    private String host;
     private String baseUrl;
-    private String host;
     private Session session;
     
     public User user;
+    public Archive archive;
     
     public Client(String protocol, String serverIP, String host)
     {
-        this.protocol = protocol;
-        this.serverIP = serverIP;
-        this.host = host;
+//        this.protocol = protocol;
+//        this.serverIP = serverIP;
+//        this.host = host;
         this.baseUrl = protocol + "://" + serverIP + ":" + host;
         
         this.session = new Session(baseUrl);
         this.user = new User(session, baseUrl);
+        this.archive = new Archive(session, baseUrl);
     }
 
 }
