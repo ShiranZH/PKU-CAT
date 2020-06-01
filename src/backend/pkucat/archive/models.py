@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class Cat(models.Model):
     name = models.CharField(max_length=30, unique=True)
-    avatar = models.URLField()
+    avatar = models.CharField(max_length=128, blank=True)
 
 
     def __str__(self):
