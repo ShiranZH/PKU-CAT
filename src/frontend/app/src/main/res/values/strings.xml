@@ -59,4 +59,5 @@
     <string name="b7">获取邮件验证码</string>
     <string name="whatsup">签名</string>
     <string name="abc">login</string>
+    <string name="setting_logout">退出登录</string>
 </resources>
