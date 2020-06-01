@@ -31,6 +31,10 @@ class Post(models.Model):
     video = models.CharField(max_length=128, null=True)
     self_favor = models.BooleanField(default=False)
 
+    class Meta:
+        verbose_name = '动态'
+        verbose_name_plural = '动态'
+
 '''
 Comment: 评论类
 
@@ -51,6 +55,10 @@ class Comment(models.Model):
     text = models.CharField(max_length=500)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
 
+    class Meta:
+        verbose_name = '评论'
+        verbose_name_plural = '评论'
+
 '''
 Photo: 图片类
 
@@ -63,6 +71,10 @@ Photo: 图片类
 class Photo(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     photo = models.CharField(max_length=128)
+
+    class Meta:
+        verbose_name = '图片'
+        verbose_name_plural = '图片'
 
 '''
 Favor: 点赞记录类
@@ -79,4 +91,6 @@ class Favor(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('post','user')
+        unique_together = ('post', 'user')
+        verbose_name = '点赞记录'
+        verbose_name_plural = '点赞记录'

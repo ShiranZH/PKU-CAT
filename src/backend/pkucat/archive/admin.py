@@ -1,3 +1,7 @@
 from django.contrib import admin
+from archive.models import *
 
-# Register your models here.
+admin.site.register(Cat)
+admin.site.register(Archive)
+admin.site.register(Photo)
+admin.site.register(Relationship)
