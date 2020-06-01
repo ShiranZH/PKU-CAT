@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+import archive.views as archive_views
 
 urlpatterns = [
     path('demo', include('demo.urls')),
