@@ -35,6 +35,12 @@ gen_response = {
         "data": {
             "msg": "user not exists"
         }
+    },
+    'user_error': {
+        "code": 400,
+        "data": {
+            "msg": "not authorized"
+        }
     }
 }
 
@@ -43,9 +49,15 @@ def demo(request):
 
 def posts(request):
 #动态列表
+
     if request.method == 'GET':
     #请求动态列表，GET /posts/?limit&start
         print('server receive GET', request.get_full_path())
+
+        # 检查登陆状态
+        if not request.user.is_authenticated:
+            return JsonResponse(gen_response["user_error"])
+
         try:
             num = int(request.GET.get('limit', default=10)) #请求动态数量
             start = int(request.GET.get('start', default=-1)) #起始动态id
@@ -59,31 +71,25 @@ def posts(request):
         
         posts = []
         for item in post_list:
-            '''
-            # 加载头像
-            avatar_path = item.publisher.avatar
-            avatar_file = open(avatar_path, "rb")
-            avatar = avatar_file.read()
-            avatar_file.close()
             
-            # 加载图片（一张）
+            # 加载图片（仅多媒体内容为图片时加载一张）
             multimedia = []
             if item.is_video == False:
-                photo = Photo.objects.filter(post=item.post_id)[0]
-                photo_file = open(photo.photo, "rb")
-                multimedia.append(photo_file.read())
-                photo_file.close()
-            '''
+                photo_path = Photo.objects.filter(post=item)[0].photo
+            multimedia.append(photo_path)
+            
             # 判断是否给自己点赞
-            if item.self_favor:
+            user = User.objects.get(id=request.user.id)
+            if Favor.objects.filter(post=item).filter(user=user):
                 self_favor = 1
             else:
                 self_favor = 0
+
             # 一条摘要动态的数据结构
             publisher_info = {
                 'userID': item.publisher.id,
                 'username': item.publisher.username,
-                'avatar': ''
+                'avatar': item.publisher.avatar
             }
             favorcnt = Favor.objects.filter(post=item).count()
             post_info =  {
@@ -91,7 +97,7 @@ def posts(request):
                 'publisher': publisher_info,
                 'time': int(item.time.timestamp()*1000),
                 'text': item.text,
-                'multimediaContent': ['multimedia'],
+                'multimediaContent': multimedia,
                 'favor': {
                     'self': self_favor,
                     'favorCnt': favorcnt
@@ -115,6 +121,11 @@ def post(request):
     if request.method == 'GET':
     #请求动态，GET /post/?postID&comments
         print('server receive GET', request.get_full_path())
+
+        # 检查登陆状态
+        if not request.user.is_authenticated:
+            return JsonResponse(gen_response["user_error"])
+
         try:
             post_id = int(request.GET.get('postID')) #动态id
             comments_num = int(request.GET.get('comments', default=10)) #评论数量
@@ -132,16 +143,11 @@ def post(request):
         comments = Comment.objects.filter(post=post)[:comments_num]
         comment_list = []
         for comment in comments:
-            '''
-            # 加载头像
-            avatar_file = open(comment.user.avatar, "rb") 
-            avatar = avatar_file.read()
-            avatar_file.close()
-            '''
+        
             user = {
                 'userID': comment.user.id,
                 'username': comment.user.username,
-                'avatar': 'avatar'
+                'avatar': comment.user.avatar
             }
             comment_list.append({
                 'commentID': comment.id,
@@ -161,34 +167,28 @@ def post(request):
             'comments': comment_list
         }
 
-        # 加载头像
-        '''
-        avatar_path = post.publisher.avatar
-        avatar_file = open(avatar_path, "rb") 
-        avatar = avatar_file.read()
-        avatar_file.close()
-        '''
         publisher_info = {
             'userID': post.publisher.id,
             'username': post.publisher.username,
-            'avatar': 'avatar'
+            'avatar': post.publisher.avatar
         }
 
-        '''
-        # 加载图片
+        # 加载多媒体内容
         multimedia = []
         if post.is_video == False:
-            photos = Photo.objects.filter(post_id=post.post_id)
-            for photo in photos:
-                file = open(photo.photo, "rb")
-                multimedia.append(file.read())
-                file.close()
-        '''
+            photos = Photo.objects.filter(post=post)
+            for photo_info in photos:
+                multimedia.append(photo_info.photo)
+        elif post.is_video == True:
+            multimedia.append(post.video)
+
         # 判断是否给自己点赞
-        if post.self_favor:
+        user = User.objects.get(id=request.user.id)
+        if Favor.objects.filter(post=post).filter(user=user):
             self_favor = 1
         else:
             self_favor = 0
+
         favorcnt = Favor.objects.filter(post=post).count()
         post_info =  {
             'postID': post.post_id,
@@ -215,6 +215,11 @@ def post(request):
     if request.method == 'POST':
     # 发布动态, POST /post/
         print('server receive POST', request.get_full_path())
+        
+        # 检查登陆状态
+        if not request.user.is_authenticated:
+            return JsonResponse(gen_response["user_error"])
+        
         info = request.POST.get('post')
         info = json.loads(info)
   
@@ -242,23 +247,17 @@ def post(request):
         except:
             post.is_video = None
         if post.is_video:
-            post.video = multimediaContent[0]
+            post.video = info['multimediaContent'][0]
         post.save()
 
         # 存储图片
-        '''
         if post.is_video == False:
-            root = '/home/ubuntu/static/post/{}/'.format(post.post_id)
-            os.mkdir(root)
-            for i, photo in enumerate(post.multimediaContent):
-                file_path = root + "{}.jpg".format(i)
-                with open(file_path, "wb") as f:
-                    f.write(photo)
+            for photo_path in info['multimediaContent']:
                 photo = Photo()
-                photo.photo = file_path
-                photo.post_id = post.post_id
+                photo.photo = photo_path
+                photo.post = post
                 photo.save()
-        '''
+        
         response = {
             "code": 200,
             "data": {
@@ -271,6 +270,11 @@ def post(request):
     if request.method == 'DELETE':
     # 删除动态, DELETE /post/?postID=123
         print('server receive DELETE', request.get_full_path())
+        
+        # 检查登陆状态
+        if not request.user.is_authenticated:
+            return JsonResponse(gen_response["user_error"])
+        
         DELETE = json.loads(request.body)
         try:
             post_id = int(DELETE.get('postID'))
@@ -310,6 +314,11 @@ def search(request):
     if request.method == 'GET':
     # 搜索动态, GET /posts/search/?userID=123
         print('server receive GET', request.get_full_path())
+        
+        # 检查登陆状态
+        if not request.user.is_authenticated:
+            return JsonResponse(gen_response["user_error"])
+        
         try:
             user_id = int(request.GET.get('userID'))
         except:
@@ -335,21 +344,13 @@ def search(request):
         post_list = Post.objects.filter(publisher=publisher)
         posts = []
         for item in post_list:
-            '''
-            # 加载头像
-            avatar_path = item.publisher.avatar
-            avatar_file = open(avatar_path, "rb")
-            avatar = avatar_file.read()
-            avatar_file.close()
             
             # 加载图片（一张）
             multimedia = []
             if item.is_video == False:
-                photo = Photo.objects.filter(post=item.post_id)[0]
-                photo_file = open(photo.photo, "rb")
-                multimedia.append(photo_file.read())
-                photo_file.close()
-            '''
+                photo_path = Photo.objects.filter(post=item.post_id)[0].photo
+                multimedia.append(photo_path)
+            
             # 判断是否给自己点赞
             if item.self_favor:
                 self_favor = 1
@@ -359,7 +360,7 @@ def search(request):
             publisher_info = {
                 'userID': item.publisher.id,
                 'username': item.publisher.username,
-                'avatar': ''
+                'avatar': item.publisher.avatar
             }
             favorcnt = Favor.objects.filter(post=item).count()
             post_info =  {
@@ -367,7 +368,7 @@ def search(request):
                 'publisher': publisher_info,
                 'time': int(item.time.timestamp()*1000),
                 'text': item.text,
-                'multimediaContent': ['multimedia'],
+                'multimediaContent': multimedia,
                 'favor': {
                     'self': self_favor,
                     'favorCnt': favorcnt
@@ -391,6 +392,11 @@ def comments(request):
     if request.method == 'GET':
     # 获取评论列表, GET /post/comments/?postID=123&limit=10&start=10
         print('server receive GET', request.get_full_path())
+        
+        # 检查登陆状态
+        if not request.user.is_authenticated:
+            return JsonResponse(gen_response["user_error"])
+        
         try:
             post_id = int(request.GET.get('postID')) # 评论的动态id
             num = int(request.GET.get('limit', default=10)) # 获取多少个评论
@@ -413,16 +419,11 @@ def comments(request):
 
         comment_list = []
         for comment in comments:
-            '''
-            # 加载头像
-            avatar_file = open(comment.user.avatar, "rb") 
-            avatar = avatar_file.read()
-            avatar_file.close()
-            '''
+            
             user = {
                 'userID': comment.user.id,
                 'username': comment.user.username,
-                'avatar': 'avatar'
+                'avatar': comment.user.avatar
             }
             comment_list.append({
                 'commentID': comment.id,
@@ -456,6 +457,11 @@ def favor(request):
     if request.method == 'POST':
     # 点赞, POST /post/favor/?postID=123&userID=123
         print('server receive POST', request.get_full_path())
+        
+        # 检查登陆状态
+        if not request.user.is_authenticated:
+            return JsonResponse(gen_response["user_error"])
+        
         try:
             post_id = int(request.POST.get('postID'))
             user_id = int(request.POST.get('userID'))
@@ -478,24 +484,23 @@ def favor(request):
                 "msg": "favored already"
             }
         }
-        if post.publisher.id == user_id:
-            if post.self_favor:
-                return JsonResponse(fail)
-            else:
-                post.self_favor = True
-                post.save()
-        else:
-            if Favor.objects.filter(post=post).filter(user=user):
-                return JsonResponse(fail)
-            try:
-                Favor(post=post, user=user).save()
-            except:
-                pass
+        
+        if Favor.objects.filter(post=post).filter(user=user):
+            return JsonResponse(fail)
+        try:
+            Favor(post=post, user=user).save()
+        except:
+            pass
 
         return JsonResponse(gen_response['success'])
     elif request.method == 'DELETE':
     # 取消点赞, DELETE /post/favor/?postID=123&userID=123
         print('server receive DELETE', request.get_full_path())
+        
+        # 检查登陆状态
+        if not request.user.is_authenticated:
+            return JsonResponse(gen_response["user_error"])
+        
         DELETE = json.loads(request.body)
         try:
             post_id = int(DELETE.get('postID'))
@@ -519,18 +524,11 @@ def favor(request):
                 "msg": "never favored"
             }
         }
-        if post.publisher.id == user_id:
-            if not post.self_favor:
-                return JsonResponse(fail)
-            else:
-                post.self_favor = False
-                post.save()
-        else:
-            try:
-                favor = Favor.objects.filter(post=post).filter(user=user)[0]
-                favor.delete()
-            except:
-                return JsonResponse(fail)
+        try:
+            favor = Favor.objects.filter(post=post).filter(user=user)[0]
+            favor.delete()
+        except:
+            return JsonResponse(fail)
 
         return JsonResponse(gen_response['success'])
 
@@ -540,6 +538,11 @@ def comment(request):
     if request.method == 'POST':
     # 评论, POST /post/comment/?postID=123&userID=123&text=“test”
         print('server receive POST', request.get_full_path())
+        
+        # 检查登陆状态
+        if not request.user.is_authenticated:
+            return JsonResponse(gen_response["user_error"])
+        
         try:
             post_id = int(request.POST.get('postID'))
             user_id = int(request.POST.get('userID'))
