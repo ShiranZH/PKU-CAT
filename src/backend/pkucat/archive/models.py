@@ -28,7 +28,7 @@ class Archive(models.Model):
 
 
 class Photo(models.Model):
-    photo_url = models.CharField(max_length=128)
+    photo_url = models.CharField(max_length=128, blank=True)
     containing_archive = models.ForeignKey(
         'Archive',
         on_delete=models.CASCADE,
