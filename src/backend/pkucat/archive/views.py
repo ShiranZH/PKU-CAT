@@ -60,7 +60,7 @@ def archive(request):
                 return JsonResponse(response)
             
             try:
-                cat_name = Cat.objects.get(id=catid).name
+                archive_one = Archive.objects.get(catID=catid)
             except:
                 response = {
                     'code': 300,
@@ -69,7 +69,7 @@ def archive(request):
                     }
                 }
                 return JsonResponse(response)
-            archive_one = Archive.objects.get(name=cat_name)
+            #archive_one = Archive.objects.get(name=cat_name)
             related_cats_list = []
             for c in archive_one.relatedCats.all():
                 relateCatInfo = {
@@ -77,10 +77,15 @@ def archive(request):
                     "relation": Relationship.objects.filter(archive=archive_one, cat=c).first().relation
                 }
                 related_cats_list.append(relateCatInfo)
+            photos = []
+            for p in Photo.objects.filter(containing_archive=archive_one).all():
+                photos.append(p.photo_url)
+            photos_str = " ".join(photos)
             archive_detail = {
                 "catName": archive_one.name,
                 "introduction": archive_one.introduction,
-                "relatedCats": related_cats_list
+                "relatedCats": related_cats_list,
+                "photos": photos_str
             }
             response = {
                 "code": 200,
@@ -117,9 +122,8 @@ def archive(request):
                 }
                 return JsonResponse(response)
             
-            try:
-                search_cats = Cat.objects.filter(name__icontains=keyword).all()#QuerySet
-            except:
+            search_cats = Cat.objects.filter(name__icontains=keyword).all()#QuerySet
+            if search_cats.count() == 0:
                 response = {
                     'code': 300,
                     'data': {
@@ -129,6 +133,10 @@ def archive(request):
                 return JsonResponse(response)
             search_results = []
             for search_cat in search_cats:
+                print("searched cat")
+                print(search_cat.name)
+                print(search_cat.id)
+                print(search_cat.avatar)
                 catInfo = {
                     "name": search_cat.name,
                     "catID": search_cat.id,
@@ -162,7 +170,8 @@ def archive(request):
         related_cat_list = put.getlist('relatedCats')
 
         target_cat_name = Cat.objects.get(id=catid_modify).name
-        target_archive = Archive.objects.get(name=target_cat_name)
+        target_archive = Archive.objects.get(catID=catid_modify)
+        #target_archive = Archive.objects.get(name=target_cat_name)
         target_archive.introduction=introduction_modify
         #relatedCats操作
         for related_cat in related_cat_list:
@@ -212,6 +221,8 @@ def archive(request):
         cat_add.name = cat_name_add 
         #avatar暂且不设？
         cat_add.save()
+        archive_add.catID = cat_add.id
+        archive_add.save()
 
         response = {
             "code": 200,

@@ -42,6 +42,7 @@ class ArchiveTests(TestCase):
         archive1 = Archive()
         archive1.name = 'xiaobai'
         archive1.introduction = "这是一只小白猫"
+        archive1.catID = cat1id
         #catMaomao = Cat(name='maomao', avatar='/home/photos/picture1.jpg')
         relatedCatName1 = 'maomao'
         relatedCat1 = Cat.objects.filter(name=relatedCatName1).first()
@@ -68,6 +69,10 @@ class ArchiveTests(TestCase):
         print('cat_name='+r.cat.name)
         print('relation='+r.relation)
 
+        Photo.objects.create(photo_url='/home/photos/play.jpg', containing_archive=archive1)
+        Photo.objects.create(photo_url='/home/photos/eat.jpg', containing_archive=archive1)
+        
+
         #成功
         response = self.client.get('/archive/archive', {'catid': cat1id})
         self.assertEqual(type(response), JsonResponse)
@@ -78,6 +83,7 @@ class ArchiveTests(TestCase):
         self.assertEqual(response['data']['archive']['introduction'], "这是一只小白猫")
         self.assertEqual(response['data']['archive']['relatedCats'][0]['relatedCat'], relatedCat1id)
         self.assertEqual(response['data']['archive']['relatedCats'][0]['relation'], 'brother')
+        self.assertEqual(response['data']['archive']['photos'], '/home/photos/play.jpg /home/photos/eat.jpg')
 
         #catid找不到对应的archive
         response = self.client.get('/archive/archive', {'catid': 3})#maomao没建archive
@@ -112,23 +118,22 @@ class ArchiveTests(TestCase):
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], 300)
-        self.assertEqual(response['code']['msg'], 'fail to search with keyword')
+        self.assertEqual(response['data']['msg'], 'fail to search with keyword')
 
         #成功
         response = self.client.get('/archive/archive', {'keyword': 'ao'})
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
-        self.assertEqual(response['code']['msg']['results'][0]['name'], 'maomao')
-        self.assertEqual(response['code']['msg']['results'][0]['catID'], Cat.objects.get(name='maomao').id)
-        self.assertEqual(response['code']['msg']['results'][0]['avatar'], '/home/photos/picture1.jpg')
-        self.assertEqual(response['code']['msg']['results'][1]['name'], 'xiaobai')
-        self.assertEqual(response['code']['msg']['results'][1]['catID'], Cat.objects.get(name='xiaobai').id)
-        self.assertEqual(response['code']['msg']['results'][1]['avatar'], '/home/photos/xiaobai.jpg')
+
+        self.assertEqual(response['data']['results'][0]['name'], 'maomao')
+        self.assertEqual(response['data']['results'][0]['catID'], Cat.objects.get(name='maomao').id)
+        self.assertEqual(response['data']['results'][0]['avatar'], '/home/photos/maomao.jpg')
+        self.assertEqual(response['data']['results'][1]['name'], 'xiaobai')
+        self.assertEqual(response['data']['results'][1]['catID'], Cat.objects.get(name='xiaobai').id)
+        self.assertEqual(response['data']['results'][1]['avatar'], '/home/photos/xiaobai.jpg')
 
         
 
-    #def test_modify_archive(self):
-        
-        
-        #response = self.client.put('/archive', {'catID':'', '':''})
+    def test_modify_archive(self):
+        response = self.client.put('/archive', {'catID':'', '':''})
 
