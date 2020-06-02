@@ -3,6 +3,7 @@ package com.example.pkucat.net;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 public class User {
     private boolean isLogin = false;
     private UserProfile profile = null;
+    private static HashMap<String, UserProfile> users = new HashMap<String, UserProfile>();
     
     
     public void register(String email) throws APIException {
@@ -79,6 +81,7 @@ public class User {
                 throw new APIException(retData);
             JSONObject profileJSON = retData.getJSONObject("data").getJSONObject("profile");
             profile = new UserProfile(profileJSON);
+            users.put(profile.userID, profile);
             isLogin = true;
             return profile;
         } catch (JSONException e) {
@@ -96,9 +99,9 @@ public class User {
         return profile;
     }
     
-    public UserProfile getProfile(String userID) throws APIException  {
-        if (userID.equals(profile.userID))
-            return profile;
+    public static UserProfile getProfile(String userID) throws APIException  {
+        if (users.containsKey(userID))
+            return users.get(userID);
         try {
             JSONObject data = new JSONObject();
             data.put("userID", userID);
@@ -108,6 +111,7 @@ public class User {
                 throw new APIException(retData);
             JSONObject profileJSON = retData.getJSONObject("data").getJSONObject("profile");
             UserProfile userProfile = new UserProfile(profileJSON);
+            users.put(userProfile.userID, userProfile);
             return userProfile;
         } catch (JSONException e) {
             throw new APIException("404", "返回值错误");
@@ -131,6 +135,7 @@ public class User {
 
             profile = new UserProfile(profileJSON);
             isLogin = true;
+            users.put(profile.userID, profile);
 
             return profile;
         }
