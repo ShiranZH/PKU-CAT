@@ -12,6 +12,7 @@ class Cat(models.Model):
 
 
 class Archive(models.Model):
+    catID = models.IntegerField()
     name = models.CharField(max_length=30, unique=True)
     introduction = models.TextField()
     relatedCats = models.ManyToManyField(
@@ -25,7 +26,7 @@ class Archive(models.Model):
         return self.name
 
 class Photo(models.Model):
-    photo_url = models.URLField()
+    photo_url = models.CharField(max_length=128)
     containing_archive = models.ForeignKey(
         'Archive',
         on_delete=models.CASCADE,
