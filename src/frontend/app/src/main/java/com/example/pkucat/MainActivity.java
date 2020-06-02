@@ -1,7 +1,9 @@
 package com.example.pkucat;
 
+import android.app.Application;
 import android.os.Bundle;
 import android.view.Menu;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -16,6 +18,9 @@ import com.google.android.material.navigation.NavigationView;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    private NavController navController;
+    private NavigationView navigationView;
+    private App app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,13 +29,17 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
+        app = (App)getApplication();
+        app.setMainActivity(this);
+        fill_user_info();
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_setting)
                 .setDrawerLayout(drawer)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
@@ -47,6 +56,29 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+
+    public void hide_Manage()
+    {
+        Menu menu = navigationView.getMenu();
+        menu.findItem(R.id.nav_manage).setVisible(false);
+
+    }
+
+    public void show_Manage()
+    {
+        Menu menu = navigationView.getMenu();
+        menu.findItem(R.id.nav_manage).setVisible(true);
+
+    }
+
+    public void fill_user_info()
+    {
+        TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
+        name.setText(app.getUsername());
+        TextView mail = navigationView.getHeaderView(0).findViewById(R.id.nav_header_mail);
+        mail.setText(app.getMail());
     }
 
 }

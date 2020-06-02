@@ -46,7 +46,7 @@ User = {
 UserProfile = {
     "user": User,
     "avatar": url (string),
-    "mail": string,
+    "email": string,
     "whatsup": string
 }
 ```

@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.example.pkucat.App;
 import com.example.pkucat.MainActivity;
 import com.example.pkucat.R;
+import com.example.pkucat.net.*;
+import com.example.pkucat.net.Client;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +43,7 @@ public class LoginActivity extends Activity {
             public void onClick(View v) {
                 Intent tostart = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(tostart);
+                finish();
             }
         });
 
@@ -49,29 +52,25 @@ public class LoginActivity extends Activity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONObject request = new JSONObject();
                 String email = pkumail.getText().toString();
                 String password = pw.getText().toString();
+                Client client = app.client;
+                System.out.println(client.user.isLogin());
                 try {
-                    request.put("email", email);
-                    request.put("password", password);
-                    JSONObject response = Client.post(request, new URL("https", app.serverIP, "/user/login"), null);
-                    if(!response.getString("code").equals("200")){
-                        JSONObject data = response.getJSONObject("data");
-                        message.setText(data.get("msg").toString());
-                        return;
-                    }
-                    JSONObject data = response.getJSONObject("data");
-                    JSONObject userprofile = data.getJSONObject("profile");
-                    app.login_as_user(userprofile);
-                    app.cookie = response.getString("cookie");
-                } catch (Exception e) {
-                    message.setText("未知错误");
-                    e.printStackTrace();
-                    return;
+                    UserProfile profile = client.user.login(email, password);
+                    System.out.println("登录成功");
+                    System.out.println(profile.username);
+                    System.out.println(profile.userID);
+                    System.out.println(profile.email);
+                    System.out.println(profile.whatsup);
+                    System.out.println(profile.getAvatar());
+                    System.out.println(client.user.isLogin());
+                    app.login(profile.username, profile.email, profile.isAdmin);
+                    app.setWhatsup(profile.whatsup);
+                    finish();
+                } catch (APIException e) {
+                    message.setText(e.getDescription());
                 }
-                Intent tostart = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(tostart);
             }
         });
     }
