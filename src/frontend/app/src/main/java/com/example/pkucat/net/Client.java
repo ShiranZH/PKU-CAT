@@ -29,6 +29,7 @@ public class Client {
     
     public User user;
     public Archive archive;
+    public PostManager post;
     
     public Client(String protocol, String serverIP, String host)
     {
@@ -40,6 +41,7 @@ public class Client {
         this.session = new Session(baseUrl);
         this.user = new User(session, baseUrl);
         this.archive = new Archive(session, baseUrl);
+        this.post = new PostManager(session, baseUrl);
     }
 
 }
