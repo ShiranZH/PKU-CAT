@@ -90,8 +90,18 @@ public class Session {
         return request("POST", urlStr, data, files);
     }
     
-    public static byte[] put(String urlStr, JSONObject data, HashMap<String, List<File>> files){
-        return request("PUT", urlStr, data, files);
+    public static byte[] put(String urlStr, JSONObject data){
+        byte[] response = null;
+        PutThread thread = new PutThread(baseUrl+urlStr, data, cookie);
+        thread.start();
+        
+        try {
+            thread.join();
+            response = thread.response;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return response;
     }
   
     public static byte[] get(String urlStr, JSONObject data){
@@ -127,6 +137,41 @@ class GetThread extends Thread {
             URL url = new URL(urlStr+"?"+Session.json2Url(data));
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
+            connection.setRequestProperty("cookie", cookie);
+            connection.setSSLSocketFactory(SSLSocketClient.getSSLSocketFactory());
+            connection.setHostnameVerifier(SSLSocketClient.getHostnameVerifier());
+            connection.connect();
+            if (connection.getResponseCode() != 200)
+                response = null;
+            
+            response = IOUtils.toByteArray(connection.getInputStream());
+            
+            connection.disconnect();
+        } catch (Exception e){
+            e.printStackTrace();
+            response = null;
+        }
+    }
+}
+
+class PutThread extends Thread {
+    public byte[] response;
+    public String cookie;
+    
+    private String urlStr;
+    private JSONObject data;
+    
+    public PutThread(String urlStr, JSONObject data, String cookie) {
+        this.response = null;
+        this.urlStr = urlStr;
+        this.data = data;
+        this.cookie = cookie;
+    }
+    public void run() {
+        try {
+            URL url = new URL(urlStr+"?"+Session.json2Url(data));
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
             connection.setRequestProperty("cookie", cookie);
             connection.setSSLSocketFactory(SSLSocketClient.getSSLSocketFactory());
             connection.setHostnameVerifier(SSLSocketClient.getHostnameVerifier());
