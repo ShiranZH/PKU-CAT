@@ -17,7 +17,9 @@ public class SoleArchive extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getIntent().getExtras();
-        int catId = bundle.getInt("catId");
+        String catname = bundle.getString("name");
+        String info = bundle.getString("info");
+        byte catPhoto[] = bundle.getByteArray("photo");
         setContentView(R.layout.activity_sole_archive);
         //bSearchArchive = (Button) findViewById(R.id.searchArchive_button);
 
@@ -32,24 +34,26 @@ public class SoleArchive extends AppCompatActivity {
         }
 
         TextView title = findViewById(R.id.sole_archive_title);
+        TextView content = findViewById(R.id.sole_archive_content);
         ImageView mImage = findViewById(R.id.sole_archive_pic);
 
-
-        switch (catId) {
-            case 0:
-                title.setText("山岚");
-                Glide.with(SoleArchive.this).load(R.drawable.catexp0).into(mImage);
-                break;
-            case 1:
-                title.setText("李美人");
-                Glide.with(SoleArchive.this).load(R.drawable.catexp1).into(mImage);
-                break;
-            case 2:
-                title.setText("小芝麻");
-                Glide.with(SoleArchive.this).load(R.drawable.catexp2).into(mImage);
-                break;
-
-        }
+        title.setText(catname);
+        content.setText(info);
+        Glide.with(SoleArchive.this).load(catPhoto).into(mImage);
+//        switch (catId) {
+//            case 0:
+//                title.setText("山岚");
+//                Glide.with(SoleArchive.this).load(R.drawable.catexp0).into(mImage);
+//                break;
+//            case 1:
+//                title.setText("李美人");
+//                Glide.with(SoleArchive.this).load(R.drawable.catexp1).into(mImage);
+//                break;
+//            case 2:
+//                title.setText("小芝麻");
+//                Glide.with(SoleArchive.this).load(R.drawable.catexp2).into(mImage);
+//                break;//
+//        }
         //title.setText("aaa");
     }
 

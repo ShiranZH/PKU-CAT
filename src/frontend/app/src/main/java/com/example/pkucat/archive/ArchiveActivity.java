@@ -16,6 +16,9 @@ import com.example.pkucat.net.APIException;
 import com.example.pkucat.net.Cat;
 import com.example.pkucat.net.Client;
 
+import org.json.JSONException;
+
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 public class ArchiveActivity extends Activity {
@@ -47,6 +50,17 @@ public class ArchiveActivity extends Activity {
                 intent = new Intent(ArchiveActivity.this, SoleArchive.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("catId", position);
+                Cat cat=archiveCats.get(String.valueOf(position+1));
+                bundle.putInt("catId", Integer.parseInt(cat.catId));
+                bundle.putString("name",cat.name);
+                try {
+                    bundle.putString("info",cat.getInfo());
+                } catch (APIException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                bundle.putByteArray("photo", cat.getAvatar());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -61,14 +75,35 @@ public class ArchiveActivity extends Activity {
         public void onClick(View v) {
             Intent intent = new Intent(ArchiveActivity.this, SoleArchive.class);
             Bundle bundle = new Bundle();
-            switch(editText.getText().toString()){
-                case "山岚": bundle.putInt("catId", 0);break;
-                case "李美人": bundle.putInt("catId",1);break;
-                case "小芝麻": bundle.putInt("catId",2);break;
-                default : Toast.makeText(ArchiveActivity.this, "查无此猫", Toast.LENGTH_SHORT).show();return;
+            String catname = editText.getText().toString();
+            for (int i= 1; i<=archiveCats.size();i++) {
+                Cat cat=archiveCats.get(String.valueOf(i));
+                if (cat.name.equals(catname)){
+                    bundle.putInt("catId", Integer.parseInt(cat.catId));
+                    bundle.putString("name",cat.name);
+                    try {
+                        bundle.putString("info",cat.getInfo());
+                    } catch (APIException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    bundle.putByteArray("photo", cat.getAvatar());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    return;
+                }
             }
-            intent.putExtras(bundle);
-            startActivity(intent);
+            Toast.makeText(ArchiveActivity.this, "查无此猫", Toast.LENGTH_SHORT).show();
+            return;
+
+//            switch(editText.getText().toString()){
+//                case "山岚": bundle.putInt("catId", 0);break;
+//                case "李美人": bundle.putInt("catId",1);break;
+//                case "小芝麻": bundle.putInt("catId",2);break;
+//                default : Toast.makeText(ArchiveActivity.this, "查无此猫", Toast.LENGTH_SHORT).show();return;
+//            }
+
         }
     }
 }

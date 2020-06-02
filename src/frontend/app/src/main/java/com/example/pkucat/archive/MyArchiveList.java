@@ -24,10 +24,8 @@ public class MyArchiveList extends BaseAdapter {
         this.mContext = context;
         this.size = archiveCats.size();
         cats = new Cat[this.size];
-        int i=0;
-        for (String key : archiveCats.keySet()) {
-            this.cats[i]=archiveCats.get(key);
-            i=i+1;
+        for (int i=1;i<=this.size;i++) {
+            this.cats[i-1]=archiveCats.get(String.valueOf(i));
         }
         mLayoutInflater = LayoutInflater.from(mContext);
     }
@@ -65,21 +63,21 @@ public class MyArchiveList extends BaseAdapter {
         }
         //给控件赋值
         RequestOptions mRequestOptions = RequestOptions.circleCropTransform();
-        switch (position%3) {
-            case 0:
-                holder.itemTitle.setText("山岚");
-                Glide.with(mContext).load(R.drawable.catexp0).apply(mRequestOptions).into(holder.imageView);
-                break;
-            case 1:
-                holder.itemTitle.setText("李美人");
-                Glide.with(mContext).load(R.drawable.catexp1).apply(mRequestOptions).into(holder.imageView);
-                break;
-            case 2:
-                holder.itemTitle.setText("小芝麻");
-                Glide.with(mContext).load(R.drawable.catexp2).apply(mRequestOptions).into(holder.imageView);
-                break;
-
-        }
+//        switch (position%3) {
+//            case 0:
+//                holder.itemTitle.setText("山岚");
+//                Glide.with(mContext).load(R.drawable.catexp0).apply(mRequestOptions).into(holder.imageView);
+//                break;
+//            case 1:
+//                holder.itemTitle.setText("李美人");
+//                Glide.with(mContext).load(R.drawable.catexp1).apply(mRequestOptions).into(holder.imageView);
+//                break;
+//            case 2:
+//                holder.itemTitle.setText("小芝麻");
+//                Glide.with(mContext).load(R.drawable.catexp2).apply(mRequestOptions).into(holder.imageView);
+//                break;
+//
+//        }
         holder.itemTitle.setText(cats[position].name);
         Glide.with(mContext).load(cats[position].getAvatar()).apply(mRequestOptions).into(holder.imageView);
         return convertView;
