@@ -1,5 +1,6 @@
 package com.example.pkucat.net;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,6 @@ public class Cat {
     private HashMap<String, String> relations;
     private String[] photoUrls;
     private HashMap<String, byte[]> photos;
-    private Session session;
 
     Cat(JSONObject cat) throws JSONException  {
         this.name = cat.getString("name");
@@ -26,13 +26,8 @@ public class Cat {
         this.info = null;
         this.relations = null;
         this.avatar = null;
-        this.photoUrls = new String[1];
-        this.photos = new HashMap<String, byte[]>();
-
-        this.photoUrls[0] = this.avatarUrl;
-        for (int i = 0; i < 1; ++i) {
-            this.photos.put(this.photoUrls[i], null);
-        }
+        this.photoUrls = null;
+        this.photos = null;
     }
 
     public byte[] getAvatar() {
@@ -60,7 +55,14 @@ public class Cat {
             relations.put(String.valueOf(relatedCats.getJSONObject(i).getInt("relatedCat")),
                     relatedCats.getJSONObject(i).getString("relation"));
         }
-        // TODO: photos
+        JSONArray photoArray = retData.getJSONObject("data").getJSONObject("archive").getJSONArray("photos");
+        photoUrls = new String[photoArray.length()];
+        photos = new HashMap<String, byte[]>();
+        for (int i = 0; i < photoArray.length(); ++i) {
+            String url = photoArray.getString(i);
+            byte[] photo = Session.get(url, null);
+            photos.put(url, photo);
+        }
     }
     
     public String getInfo() throws APIException, JSONException {
@@ -77,13 +79,56 @@ public class Cat {
         return relations;
     }
 
-    public HashMap<String, byte[]> getPhotos() {
-        for (Map.Entry<String, byte[]> entry : photos.entrySet()) {
-            if (entry.getValue() == null) {
-                photos.put(entry.getKey(), 
-                        Session.get(entry.getKey(), null));
-            }
+    public HashMap<String, byte[]> getPhotos() throws JSONException, APIException {
+        if (photoUrls == null) {
+            refresh();
         }
         return photos;
+    }
+    
+    public void modifyInfo(String _info) throws APIException {
+        JSONObject data = new JSONObject();
+        data.put("id", this.catId);
+        data.put("introduction", _info);
+
+        try {
+            byte[] ret = Session.put("/user/archive", data);
+            if (ret == null)
+                throw new APIException("404", "ÍøÂç´íÎó");
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+            
+            info = _info;
+        } catch (JSONException e) {
+            throw new APIException("404", "·µ»ØÖµ´íÎó");
+        } catch (APIException e) {
+            throw e;
+        }
+    }
+    
+    public void modifyAvatar(File file) throws APIException {
+        File[] files = new File[]{file};
+        String[] urls = Session.uploadPicture(files);
+        JSONObject data = new JSONObject();
+        data.put("id", this.catId);
+        data.put("avatar", urls[0]);
+        
+        try {
+            byte[] ret = Session.put("/user/archive", data);
+            if (ret == null)
+                throw new APIException("404", "ÍøÂç´íÎó");
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+            
+            avatarUrl = urls[0];
+            avatar = Session.get(avatarUrl, null);
+            
+        } catch (JSONException e) {
+            throw new APIException("404", "·µ»ØÖµ´íÎó");
+        } catch (APIException e) {
+            throw e;
+        }
     }
 }

@@ -13,7 +13,7 @@ public class UserProfile {
     public String[] feedCatID;
     
     private byte[] avatar;
-    private String avatarUrl;
+    public String avatarUrl;
     
     UserProfile(String username, String userID, 
             String email, String whatsup, String avatarUrl,
@@ -54,5 +54,9 @@ public class UserProfile {
         if (avatar == null)
             avatar = Session.get(Session.baseUrl+avatarUrl, null);
         return avatar;
+    }
+    
+    public void refresh() {
+        avatar = Session.get(Session.baseUrl+avatarUrl, null);
     }
 }
