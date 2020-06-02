@@ -1,5 +1,9 @@
 package com.example.pkucat.net;
 
+import android.widget.Toast;
+
+import com.example.pkucat.archive.ArchiveActivity;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +49,7 @@ public class Cat {
         try {
             data.put("catid", catId);
         } catch (JSONException e) {
-            e.printStackTrace();
+            name = "refreshERROR";
         }
         byte[] ret = Session.get("/user/archive", data);
         JSONObject retData = new JSONObject(new String(ret));
@@ -64,15 +68,27 @@ public class Cat {
     }
     
     public String getInfo() throws APIException, JSONException {
-        if (info == null) {
-            refresh();
+        if (info == null || info.length()==0) {
+            try {
+                refresh();
+            } catch (JSONException e) {
+                info = "JSONException";
+            } catch (APIException e){
+                info = "APIException";
+            }
         }
         return info;
     }
     
     public HashMap<String, String> getRelations() throws APIException, JSONException {
         if (relations == null) {
-            refresh();
+            try {
+                refresh();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (APIException e){
+                e.printStackTrace();
+            }
         }
         return relations;
     }

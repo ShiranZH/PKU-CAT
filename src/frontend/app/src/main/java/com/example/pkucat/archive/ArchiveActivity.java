@@ -45,14 +45,12 @@ public class ArchiveActivity extends Activity {
         archiveList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Intent intent;
                 intent = new Intent(ArchiveActivity.this, SoleArchive.class);
                 Bundle bundle = new Bundle();
-                bundle.putInt("catId", position+1);
+                bundle.putInt("catId", position);
                 Cat cat=archiveCats.get(String.valueOf(position+1));
                 bundle.putInt("catId", Integer.parseInt(cat.catId));
-                bundle.putString("name",cat.name);
                 try {
                     bundle.putString("info",cat.getInfo());
                 } catch (APIException e) {
@@ -60,6 +58,7 @@ public class ArchiveActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                bundle.putString("name",cat.name);
                 bundle.putByteArray("photo", cat.getAvatar());
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -73,21 +72,24 @@ public class ArchiveActivity extends Activity {
     private class OnClick implements View.OnClickListener{
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(ArchiveActivity.this, SoleArchive.class);
+                        Intent intent = new Intent(ArchiveActivity.this, SoleArchive.class);
             Bundle bundle = new Bundle();
             String catname = editText.getText().toString();
             for (int i= 1; i<=archiveCats.size();i++) {
                 Cat cat=archiveCats.get(String.valueOf(i));
                 if (cat.name.equals(catname)){
                     bundle.putInt("catId", Integer.parseInt(cat.catId));
+//                    try {
+//                        bundle.putString("info",cat.getInfo());
+//                    } catch (APIException e) {
+//                        Toast.makeText(ArchiveActivity.this, "APIException", Toast.LENGTH_SHORT).show();
+//                    } catch (JSONException e) {
+//                        Toast.makeText(ArchiveActivity.this, "JSONException", Toast.LENGTH_SHORT).show();
+//                    }
+                    String tmp ="efqwfw";
+                    Toast.makeText(ArchiveActivity.this, "APIException", Toast.LENGTH_SHORT).show();
+                    bundle.putString("info",tmp);
                     bundle.putString("name",cat.name);
-                    try {
-                        bundle.putString("info",cat.getInfo());
-                    } catch (APIException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
                     bundle.putByteArray("photo", cat.getAvatar());
                     intent.putExtras(bundle);
                     startActivity(intent);
