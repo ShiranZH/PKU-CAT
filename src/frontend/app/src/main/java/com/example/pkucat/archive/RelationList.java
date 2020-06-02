@@ -20,16 +20,18 @@ public class RelationList extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mLayoutInflater;
     private RelatedCat relatedCats[];
-    RelationList(Context context, RelatedCat relatedcats[]){
+    private int size;
+    RelationList(Context context, RelatedCat relatedcats[], int size){
         this.relatedCats=relatedcats;
         this.mContext = context;
+        this.size = size;
         mLayoutInflater = LayoutInflater.from(mContext);
     }
 
 
     @Override
     public int getCount() {
-        return 1;
+        return size;
     }
 
     @Override

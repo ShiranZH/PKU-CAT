@@ -1,7 +1,10 @@
 package com.example.pkucat.archive;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,6 +26,7 @@ import java.util.HashMap;
 public class SoleArchive extends AppCompatActivity {
     private ListView archiveList;
     public HashMap<String, Cat> archiveCats;
+    public Cat relatedcatlist[];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,28 +76,37 @@ public class SoleArchive extends AppCompatActivity {
         }
         RelatedCat relatedcats[];
         relatedcats = new RelatedCat[relationCatIds.size()];
+        relatedcatlist = new Cat[relationCatIds.size()];
         int i=0;
         for (String key : relationCatIds.keySet()) {
             Cat currentCat = archiveCats.get(key);
             relatedcats[i] = new RelatedCat(relationCatIds.get(key), currentCat.name,currentCat.getAvatar());
+            relatedcatlist[i] = currentCat;
             i=i+1;
         }
-        archiveList.setAdapter(new RelationList(SoleArchive.this, relatedcats));
-//        switch (catId) {
-//            case 0:
-//                title.setText("山岚");
-//                Glide.with(SoleArchive.this).load(R.drawable.catexp0).into(mImage);
-//                break;
-//            case 1:
-//                title.setText("李美人");
-//                Glide.with(SoleArchive.this).load(R.drawable.catexp1).into(mImage);
-//                break;
-//            case 2:
-//                title.setText("小芝麻");
-//                Glide.with(SoleArchive.this).load(R.drawable.catexp2).into(mImage);
-//                break;//
-//        }
-        //title.setText("aaa");
+        archiveList.setAdapter(new RelationList(SoleArchive.this, relatedcats,relationCatIds.size() ));
+        archiveList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent;
+                intent = new Intent(SoleArchive.this, SoleArchive.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("catId", position);
+                Cat cat=relatedcatlist[position];
+                bundle.putInt("catId", Integer.parseInt(cat.catId));
+                bundle.putString("name",cat.name);
+                try {
+                    bundle.putString("info",cat.getInfo());
+                } catch (APIException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                bundle.putByteArray("photo", cat.getAvatar());
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
