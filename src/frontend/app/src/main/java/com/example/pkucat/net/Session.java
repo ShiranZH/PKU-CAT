@@ -72,9 +72,9 @@ public class Session {
         return url.toString();
     }
 
-    private static byte[] request(String method, String urlStr, JSONObject data, HashMap<String, List<File>> files){
+    public static byte[] post(String urlStr, JSONObject data, HashMap<String, List<File>> files){
         byte[] response = null;
-        RequestThread thread = new RequestThread(method, baseUrl+urlStr, data, files, cookie);
+        PostThread thread = new PostThread(baseUrl+urlStr, data, files, cookie);
         thread.start();
         
         try {
@@ -88,27 +88,22 @@ public class Session {
         
         return response;
     }
-    public static byte[] post(String urlStr, JSONObject data, HashMap<String, List<File>> files){
-        return request("POST", urlStr, data, files);
-    }
     
     public static byte[] put(String urlStr, JSONObject data){
-        byte[] response = null;
-        PutThread thread = new PutThread(baseUrl+urlStr, data, cookie);
-        thread.start();
-        
-        try {
-            thread.join();
-            response = thread.response;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return response;
+        return request(urlStr, data, "PUT");
+    }
+    
+    public static byte[] delete(String urlStr, JSONObject data){
+        return request(urlStr, data, "DELETE");
+    }
+    
+    public static byte[] get(String urlStr, JSONObject data){
+        return request(urlStr, data, "GET");
     }
   
-    public static byte[] get(String urlStr, JSONObject data){
+    public static byte[] request(String urlStr, JSONObject data, String method){
         byte[] response = null;
-        GetThread thread = new GetThread(baseUrl+urlStr, data, cookie);
+        RequestThread thread = new RequestThread(baseUrl+urlStr, data, cookie, method);
         thread.start();
         
         try {
@@ -177,89 +172,55 @@ public class Session {
     }
 }
 
-class GetThread extends Thread {
-    public byte[] response;
-    public String cookie;
-    
-    private String urlStr;
-    private JSONObject data;
-    
-    public GetThread(String urlStr, JSONObject data, String cookie) {
-        this.response = null;
-        this.urlStr = urlStr;
-        this.data = data;
-        this.cookie = cookie;
-    }
-    public void run() {
-        try {
-            URL url = new URL(urlStr+"?"+Session.json2Url(data));
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("cookie", cookie);
-            connection.setSSLSocketFactory(SSLSocketClient.getSSLSocketFactory());
-            connection.setHostnameVerifier(SSLSocketClient.getHostnameVerifier());
-            connection.connect();
-            if (connection.getResponseCode() != 200)
-                response = null;
-            
-            response = IOUtils.toByteArray(connection.getInputStream());
-            
-            connection.disconnect();
-        } catch (Exception e){
-            e.printStackTrace();
-            response = null;
-        }
-    }
-}
-
-class PutThread extends Thread {
-    public byte[] response;
-    public String cookie;
-    
-    private String urlStr;
-    private JSONObject data;
-    
-    public PutThread(String urlStr, JSONObject data, String cookie) {
-        this.response = null;
-        this.urlStr = urlStr;
-        this.data = data;
-        this.cookie = cookie;
-    }
-    public void run() {
-        try {
-            URL url = new URL(urlStr+"?"+Session.json2Url(data));
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            connection.setRequestMethod("PUT");
-            connection.setRequestProperty("cookie", cookie);
-            connection.setSSLSocketFactory(SSLSocketClient.getSSLSocketFactory());
-            connection.setHostnameVerifier(SSLSocketClient.getHostnameVerifier());
-            connection.connect();
-            if (connection.getResponseCode() != 200)
-                response = null;
-            
-            response = IOUtils.toByteArray(connection.getInputStream());
-            
-            connection.disconnect();
-        } catch (Exception e){
-            e.printStackTrace();
-            response = null;
-        }
-    }
-}
 
 class RequestThread extends Thread {
     public byte[] response;
     public String cookie;
     
+    private String urlStr;
+    private JSONObject data;
     private String method;
+    
+    public RequestThread(String urlStr, JSONObject data, String cookie, String method) {
+        this.response = null;
+        this.urlStr = urlStr;
+        this.data = data;
+        this.cookie = cookie;
+        this.method = method;
+    }
+    public void run() {
+        try {
+            URL url = new URL(urlStr+"?"+Session.json2Url(data));
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setRequestMethod(method);
+            connection.setRequestProperty("cookie", cookie);
+            connection.setSSLSocketFactory(SSLSocketClient.getSSLSocketFactory());
+            connection.setHostnameVerifier(SSLSocketClient.getHostnameVerifier());
+            connection.connect();
+            if (connection.getResponseCode() != 200)
+                response = null;
+            
+            response = IOUtils.toByteArray(connection.getInputStream());
+            
+            connection.disconnect();
+        } catch (Exception e){
+            e.printStackTrace();
+            response = null;
+        }
+    }
+}
+
+class PostThread extends Thread {
+    public byte[] response;
+    public String cookie;
+    
     private String urlStr;
     private JSONObject data;
     private HashMap<String, List<File>> files;
     
-    public RequestThread(String method, String urlStr,
+    public PostThread(String urlStr,
             JSONObject data, HashMap<String, List<File>> files, String cookie) {
         this.response = null;
-        this.method = method;
         this.urlStr = urlStr;
         this.data = data;
         this.files = files;
@@ -271,7 +232,7 @@ class RequestThread extends Thread {
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             String boundary = UUID.randomUUID().toString().replace("-", "");
             connection.setDoOutput(true);
-            connection.setRequestMethod(method);
+            connection.setRequestMethod("POST");
             connection.setRequestProperty("cookie", cookie);
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary="+boundary);
             connection.setSSLSocketFactory(SSLSocketClient.getSSLSocketFactory());
