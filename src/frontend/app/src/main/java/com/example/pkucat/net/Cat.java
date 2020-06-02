@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,8 +42,29 @@ public class Cat {
         return avatar;
     }
     
-    public String getInfo() {
-        info = "getInfo";
+    public void refresh() throws APIException {
+        JSONObject data = new JSONObject();
+        data.put("catid", catId);
+        byte[] ret = session.get(session.baseUrl+"/user/archive", data);
+        JSONObject retData = new JSONObject(new String(ret));
+
+        if (retData.getInt("code") != 200)
+            throw new APIException(retData);
+        JSONObject archive = retData.getJSONObject("data").getJSONObject("archive");
+        info = archive.getString("introduction");
+        JSONArray relatedCats = archive.getJSONArray("relatedCats");
+        relations = new HashMap<String, String>();
+        for (int i = 0; i < relatedCats.length(); ++i) {
+            relations.put(String.valueOf(relatedCats.getJSONObject(i).getInt("relatedCat")),
+                    relatedCats.getJSONObject(i).getString("relation"));
+        }
+        // TODO: photos
+    }
+    
+    public String getInfo() throws APIException {
+        if (info == null) {
+            refresh();
+        }
         return info;
     }
     
