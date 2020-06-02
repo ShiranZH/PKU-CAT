@@ -1,5 +1,6 @@
 package com.example.pkucat.net;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.commons.io.IOUtils;
@@ -9,6 +10,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -116,6 +118,62 @@ public class Session {
             e.printStackTrace();
         }
         return response;
+    }
+    
+    public static String[] uploadPicture(File[] files) throws APIException {
+        HashMap<String, List<File>> fs = new HashMap<String, List<File>>();
+        fs.put("picture", new ArrayList<File>());
+        for (int i = 0; i < files.length; ++i) {
+            fs.get("picture").add(files[i]);
+        }
+        try {
+            byte[] ret = Session.post("/file", null, fs);
+            
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+            
+            JSONArray urlArray = retData.getJSONObject("data").getJSONArray("picture");
+            
+            String[] urls = new String[urlArray.length()];
+            for (int i = 0; i < urlArray.length(); ++i) {
+                urls[i] = urlArray.getString(i);
+            }
+            
+            return urls;
+        } catch (JSONException e) {
+            throw new APIException("404", "返回值错误");
+        } catch (APIException e) {
+            throw e;
+        }
+    }
+    
+    public static String[] uploadVideo(File[] files) throws APIException {
+        HashMap<String, List<File>> fs = new HashMap<String, List<File>>();
+        fs.put("picture", new ArrayList<File>());
+        for (int i = 0; i < files.length; ++i) {
+            fs.get("video").add(files[i]);
+        }
+        try {
+            byte[] ret = Session.post("/file", null, fs);
+            
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+            
+            JSONArray urlArray = retData.getJSONObject("data").getJSONArray("video");
+            
+            String[] urls = new String[urlArray.length()];
+            for (int i = 0; i < urlArray.length(); ++i) {
+                urls[i] = urlArray.getString(i);
+            }
+            
+            return urls;
+        } catch (JSONException e) {
+            throw new APIException("404", "返回值错误");
+        } catch (APIException e) {
+            throw e;
+        }
     }
 }
 

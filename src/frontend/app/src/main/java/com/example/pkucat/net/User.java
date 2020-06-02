@@ -1,5 +1,6 @@
 package com.example.pkucat.net;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -93,6 +94,30 @@ public class User {
     
     public boolean isLogin() {
         return isLogin;
+    }
+    
+    public void modifyAvatar(File file) throws APIException, JSONException {
+        File[] files = new File[]{file};
+        String[] urls = Session.uploadPicture(files);
+        JSONObject data = new JSONObject();
+        data.put("avatar", urls[0]);
+        
+        try {
+            byte[] ret = Session.put("/user/profile", data);
+            if (ret == null)
+                throw new APIException("404", "网络错误");
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+            
+            profile.avatarUrl = urls[0];
+            profile.refresh();
+            
+        } catch (JSONException e) {
+            throw new APIException("404", "返回值错误");
+        } catch (APIException e) {
+            throw e;
+        }
     }
     
     public UserProfile getProfile() throws APIException {
