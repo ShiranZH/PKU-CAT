@@ -12,26 +12,23 @@ public class UserProfile {
     public boolean isAdmin;
     public String[] feedCatID;
     
-    private Session session;
     private byte[] avatar;
     private String avatarUrl;
     
     UserProfile(String username, String userID, 
             String email, String whatsup, String avatarUrl,
-            boolean isAdmin, String[] feedCatID,
-            Session session) {
+            boolean isAdmin, String[] feedCatID) {
         this.username = username;
         this.userID = userID;
         this.email = email;
         this.whatsup = whatsup;
         this.avatarUrl = avatarUrl;
-        this.session = session;
         this.isAdmin = isAdmin;
         this.feedCatID = feedCatID;
         this.avatar = null;
     }
     
-    UserProfile(JSONObject profile, Session session) throws JSONException {
+    UserProfile(JSONObject profile) throws JSONException {
         this.username = profile.getJSONObject("user").getString("name");
         this.userID = String.valueOf(profile.getJSONObject("user").getInt("userID"));
         this.email = profile.getString("email");
@@ -50,13 +47,12 @@ public class UserProfile {
         } else {
             this.feedCatID = new String[0];
         }
-        this.session = session;
         this.avatar = null;
     }
     
     public byte[] getAvatar() {
         if (avatar == null)
-            avatar = session.get(session.baseUrl+avatarUrl, null);
+            avatar = Session.get(Session.baseUrl+avatarUrl, null);
         return avatar;
     }
 }

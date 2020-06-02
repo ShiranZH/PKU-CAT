@@ -7,13 +7,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Archive {
-    private Session session;
-    private String baseUrl;
     private HashMap<String, Cat> cats;
     
-    Archive(Session sess, String baseUrl) {
-        this.session = sess;
-        this.baseUrl = baseUrl;
+    Archive() {
         cats = new HashMap<String, Cat>();
     }
     
@@ -31,7 +27,7 @@ public class Archive {
     
     public void refreshCats() throws APIException {
         try {
-            byte[] ret = session.get(baseUrl + "/user/archives", null);
+            byte[] ret = Session.get("/user/archives", null);
             JSONObject retData = new JSONObject(new String(ret));
 
             if (retData.getInt("code") != 200)
@@ -40,7 +36,7 @@ public class Archive {
             JSONArray catArray = retData.getJSONObject("data").getJSONArray("catList");
             for (int i = 0; i < catArray.length(); ++i) {
                 String catID = String.valueOf(catArray.getJSONObject(i).getInt("catID"));
-                this.cats.put(catID, new Cat(catArray.getJSONObject(i), session));
+                this.cats.put(catID, new Cat(catArray.getJSONObject(i)));
             }
         } catch (JSONException e) {
             e.printStackTrace();

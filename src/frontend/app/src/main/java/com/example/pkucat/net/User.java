@@ -8,22 +8,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class User {
-    private Session session;
-    private String baseUrl;
     private boolean isLogin = false;
     private UserProfile profile = null;
     
-    
-    User(Session sess, String url) {
-        session = sess;
-        baseUrl = url;
-    }
     
     public void register(String email) throws APIException {
         try {
             JSONObject data = new JSONObject();
             data.put("email", email);
-            byte[] ret = session.post(baseUrl + "/user/register", data, null);
+            byte[] ret = Session.post(Session.baseUrl + "/user/register", data, null);
             if (ret == null)
                 throw new APIException("404", "网络错误");
             JSONObject retData = new JSONObject(new String(ret));
@@ -40,7 +33,7 @@ public class User {
         try {
             JSONObject data = new JSONObject();
             data.put("email", email);
-            byte[] ret = session.get(baseUrl + "/user/password", data);
+            byte[] ret = Session.get(Session.baseUrl + "/user/password", data);
             JSONObject retData = new JSONObject(new String(ret));
             if (retData.getInt("code") != 200)
                 throw new APIException(retData);
@@ -57,7 +50,7 @@ public class User {
             data.put("email", email);
             data.put("password", password);
             data.put("verificationCode", code);
-            byte[] ret = session.post(baseUrl + "/user/password", data, null);
+            byte[] ret = Session.post(Session.baseUrl + "/user/password", data, null);
             if (ret == null)
                 throw new APIException("404", "网络错误");
             JSONObject retData = new JSONObject(new String(ret));
@@ -78,14 +71,14 @@ public class User {
             data.put("password", password);
             data.put("username", username);
             data.put("verificationCode", code);
-            byte[] ret = session.post(baseUrl + "/user/register_validation", data, null);
+            byte[] ret = Session.post("/user/register_validation", data, null);
             if (ret == null)
                 throw new APIException("404", "网络错误");
             JSONObject retData = new JSONObject(new String(ret));
             if (retData.getInt("code") != 200)
                 throw new APIException(retData);
             JSONObject profileJSON = retData.getJSONObject("data").getJSONObject("profile");
-            profile = new UserProfile(profileJSON, session);
+            profile = new UserProfile(profileJSON);
             isLogin = true;
             return profile;
         } catch (JSONException e) {
@@ -109,12 +102,12 @@ public class User {
         try {
             JSONObject data = new JSONObject();
             data.put("userID", userID);
-            byte[] ret = session.get(baseUrl + "/user/profile", data);
+            byte[] ret = Session.get("/user/profile", data);
             JSONObject retData = new JSONObject(new String(ret));
             if (retData.getInt("code") != 200)
                 throw new APIException(retData);
             JSONObject profileJSON = retData.getJSONObject("data").getJSONObject("profile");
-            UserProfile userProfile = new UserProfile(profileJSON, session);
+            UserProfile userProfile = new UserProfile(profileJSON);
             return userProfile;
         } catch (JSONException e) {
             throw new APIException("404", "返回值错误");
@@ -128,7 +121,7 @@ public class User {
             JSONObject data = new JSONObject();
             data.put("email", email);
             data.put("password", SHA256.getSHA256(password));
-            byte[] ret = session.post(baseUrl + "/user/login", data, null);
+            byte[] ret = Session.post("/user/login", data, null);
             if (ret == null)
                 throw new APIException("404", "网络错误");
             JSONObject retData = new JSONObject(new String(ret));
@@ -136,7 +129,7 @@ public class User {
                 throw new APIException(retData);
             JSONObject profileJSON = retData.getJSONObject("data").getJSONObject("profile");
 
-            profile = new UserProfile(profileJSON, session);
+            profile = new UserProfile(profileJSON);
             isLogin = true;
 
             return profile;
@@ -154,7 +147,7 @@ public class User {
     public void logout() throws APIException {
         try {
             isLogin = false;
-            byte[] ret = session.post(baseUrl + "/user/logout", null, null);
+            byte[] ret = Session.post("/user/logout", null, null);
             if (ret == null)
                 throw new APIException("404", "网络错误");
             JSONObject retData = new JSONObject(new String(ret));

@@ -24,10 +24,10 @@ import javax.net.ssl.X509TrustManager;
 import java.util.UUID;
 
 public class Session {
-    private String cookie = "";
-    public String baseUrl;
+    private static String cookie = "";
+    public static String baseUrl;
     
-    Session(String url) {
+    public static void setBaseUrl(String url) {
         baseUrl = url;
     }
 
@@ -70,9 +70,9 @@ public class Session {
         return url.toString();
     }
 
-    private byte[] request(String method, String urlStr, JSONObject data, HashMap<String, List<File>> files){
+    private static byte[] request(String method, String urlStr, JSONObject data, HashMap<String, List<File>> files){
         byte[] response = null;
-        RequestThread thread = new RequestThread(method, urlStr, data, files, cookie);
+        RequestThread thread = new RequestThread(method, baseUrl+urlStr, data, files, cookie);
         thread.start();
         
         try {
@@ -86,17 +86,17 @@ public class Session {
         
         return response;
     }
-    public byte[] post(String urlStr, JSONObject data, HashMap<String, List<File>> files){
+    public static byte[] post(String urlStr, JSONObject data, HashMap<String, List<File>> files){
         return request("POST", urlStr, data, files);
     }
     
-    public byte[] put(String urlStr, JSONObject data, HashMap<String, List<File>> files){
+    public static byte[] put(String urlStr, JSONObject data, HashMap<String, List<File>> files){
         return request("PUT", urlStr, data, files);
     }
   
-    public byte[] get(String urlStr, JSONObject data){
+    public static byte[] get(String urlStr, JSONObject data){
         byte[] response = null;
-        GetThread thread = new GetThread(urlStr, data, cookie);
+        GetThread thread = new GetThread(baseUrl+urlStr, data, cookie);
         thread.start();
         
         try {

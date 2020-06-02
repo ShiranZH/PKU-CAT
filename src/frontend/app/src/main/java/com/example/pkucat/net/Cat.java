@@ -17,13 +17,11 @@ public class Cat {
     private HashMap<String, String> relations;
     private String[] photoUrls;
     private HashMap<String, byte[]> photos;
-    private Session session;
     
-    Cat(JSONObject cat, Session session) throws JSONException  {
+    Cat(JSONObject cat) throws JSONException  {
         this.name = cat.getString("name");
         this.avatarUrl = cat.getString("avatar");
         this.catId = String.valueOf(cat.getInt("catID"));
-        this.session = session;
         this.info = null;
         this.relations = null;
         this.avatar = null;
@@ -38,14 +36,14 @@ public class Cat {
     
     public byte[] getAvatar() {
         if (avatar == null)
-            avatar = session.get(session.baseUrl+avatarUrl, null);
+            avatar = Session.get(avatarUrl, null);
         return avatar;
     }
     
     public void refresh() throws APIException {
         JSONObject data = new JSONObject();
         data.put("catid", catId);
-        byte[] ret = session.get(session.baseUrl+"/user/archive", data);
+        byte[] ret = Session.get("/user/archive", data);
         JSONObject retData = new JSONObject(new String(ret));
 
         if (retData.getInt("code") != 200)
@@ -79,7 +77,7 @@ public class Cat {
         for (Map.Entry<String, byte[]> entry : photos.entrySet()) {
             if (entry.getValue() == null) {
                 photos.put(entry.getKey(), 
-                        session.get(session.baseUrl+entry.getKey(), null));
+                        Session.get(entry.getKey(), null));
             }
         }
         return photos;
