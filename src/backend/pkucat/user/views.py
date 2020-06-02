@@ -52,6 +52,8 @@ def register_validation(request):
                     user_profile['avatar'] = user.avatar if user.avatar != '' else '/static/user/avatar_default.jpg'
                     user_profile['email'] = user.pku_mail 
                     user_profile['whatsup'] = user.whatsup
+                    user_profile['is_admin'] = user.is_superuser
+                    user_profile['feed'] = [1, 2] if user.is_superuser else [] # TODO
                     code = CODE['success']
                     msg = 'success'
             except ValidationError:
@@ -146,6 +148,8 @@ def login(request):
                     user_profile['avatar'] = user.avatar if user.avatar != '' else '/static/user/avatar_default.jpg'
                     user_profile['email'] = user.pku_mail 
                     user_profile['whatsup'] = user.whatsup
+                    user_profile['is_admin'] = user.is_superuser
+                    user_profile['feed'] = [1, 2] if user.is_superuser else [] # TODO
                     code = CODE['success']
                     msg = 'success'
     else:
@@ -265,6 +269,8 @@ def profile(request):
                 user_profile['avatar'] = user.avatar if user.avatar != '' else '/static/user/avatar_default.jpg'
                 user_profile['email'] = user.pku_mail 
                 user_profile['whatsup'] = user.whatsup
+                user_profile['is_admin'] = user.is_superuser
+                user_profile['feed'] = [1, 2] if user.is_superuser else [] # TODO
                 code = CODE['success']
                 msg = 'success'
             else:

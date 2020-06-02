@@ -1,3 +1,9 @@
 from django.contrib import admin
+from feeder.models import Feed, ApplicationFeeder
 
-# Register your models here.
+class FeedAdmin(admin.ModelAdmin):
+    fields = ['feeder', 'cat']
+    list_display = ['feeder', 'cat']
+
+admin.site.register(Feed, FeedAdmin)
+admin.site.register(ApplicationFeeder)

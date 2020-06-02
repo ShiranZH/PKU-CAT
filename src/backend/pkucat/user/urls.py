@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from . import views
 
@@ -11,4 +11,6 @@ urlpatterns = [
     path('profile', views.profile),
     path('password', views.password),
     path('test', views.mytest),
+    path('archive', include('archive.urls')),
+    path('archive/', include('archive.urls')),
 ]

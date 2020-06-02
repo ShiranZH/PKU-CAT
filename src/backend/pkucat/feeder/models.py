@@ -28,6 +28,8 @@ class Feed(models.Model):
 
     class Meta:
         unique_together = ('feeder', 'cat')
+        verbose_name = '饲养关系'
+        verbose_name_plural = '饲养关系'
 
 
 class ApplicationFeeder(models.Model):
@@ -47,3 +49,5 @@ class ApplicationFeeder(models.Model):
 
     class Meta:
         unique_together = ('feeder', 'cat')
+        verbose_name = '饲养申请'
+        verbose_name_plural = '饲养申请'
