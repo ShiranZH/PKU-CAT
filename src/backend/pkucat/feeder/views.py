@@ -13,7 +13,7 @@ from demo.config import CODE
 from archive.models import Cat
 from user.models import User
 from django.views.decorators.csrf import csrf_exempt
-
+from django.http import QueryDict
 
 @csrf_exempt
 def feeders(request):
@@ -44,8 +44,9 @@ def feeders(request):
                 users = []
                 feeds = Feed.objects.all()
                 if feeds.exists():
-                    for feed in feeds:
-                        users.append(feed.feeder.id)
+                    for feed in feeds:                    
+                        if feed.feeder.id not in users:
+                            users.append(feed.feeder.id)
                     code = CODE['success']
                     msg = "success"
                 else:
@@ -118,27 +119,38 @@ def apply(request):
             }
 
         elif request.method == 'DELETE':
-            DELETE = eval(str(request.body, encoding="utf-8"))
-            applyID = DELETE.get('applyID')
-            if applyID is None:
-                code = CODE['parameter_error']
-                msg = "wrong parameters"
-            else:
-                application = ApplicationFeeder.objects.filter(id=applyID)
-                if application.exists():
-                    # 删除申请记录
-                    application.delete()
-                    code = CODE['success']
-                    msg = "success"
+            if request.user.is_superuser:
+                DELETE = request.GET
+                applyID = DELETE.get('applyID')
+                if applyID is None:
+                    code = CODE['parameter_error']
+                    msg = "wrong parameters"
                 else:
-                    code = CODE['database_error']
-                    msg = "no match application in database"
-            response = {
-                'code': code,
-                'data': {
-                    'msg': msg
+                    application = ApplicationFeeder.objects.filter(id=applyID)
+                    if application.exists():
+                        # 删除申请记录
+                        application.delete()
+                        code = CODE['success']
+                        msg = "success"
+                    else:
+                        code = CODE['database_error']
+                        msg = "no match application in database"
+                response = {
+                    'code': code,
+                    'data': {
+                        'msg': msg
+                    }
                 }
-            }
+            # 用户不是管理员
+            else:
+                code = CODE['user_error']
+                msg = "user is not super user"
+                response = {
+                    'code': code,
+                    'data': {
+                        'msg': msg
+                    }
+                }
 
         # 其他method，报错
         else:
