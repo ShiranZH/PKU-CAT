@@ -57,6 +57,8 @@ def archive(request):
                         'msg': 'wrong parameter'
                     }
                 }
+                return JsonResponse(response)
+            
             try:
                 cat_name = Cat.objects.get(id=catid).name
             except:
@@ -71,7 +73,7 @@ def archive(request):
             related_cats_list = []
             for c in archive_one.relatedCats.all():
                 relateCatInfo = {
-                    "relatedCat": c.cat,
+                    "relatedCat": c.id,
                     "relation": Relationship.objects.filter(archive=archive_one, cat=c).first().relation
                 }
                 related_cats_list.append(relateCatInfo)
@@ -87,9 +89,44 @@ def archive(request):
                     "archive": archive_detail
                 }
             }
-        elif keyword:
         #搜索猫咪
-            search_cats = Cat.objects.filter(name__icontains=keyword).all()#QuerySet
+        elif keyword:
+            '''
+            if not type(keyword) == str:
+                response = {
+                    'code': 700,
+                    'data': {
+                        'msg': 'wrong parameter'
+                    }
+                }
+                return JsonResponse(response)
+            '''
+            try:
+                print(type(keyword))
+                print('keyword = '+str(keyword))
+                assert type(keyword) == str
+                print('keyword = '+keyword)
+                #keyword = str(keyword)
+            except:
+                print('fail')
+                response = {
+                    'code': 700,
+                    'data': {
+                        'msg': 'wrong parameter'
+                    }
+                }
+                return JsonResponse(response)
+            
+            try:
+                search_cats = Cat.objects.filter(name__icontains=keyword).all()#QuerySet
+            except:
+                response = {
+                    'code': 300,
+                    'data': {
+                        'msg': 'fail to search with keyword'
+                    }
+                }
+                return JsonResponse(response)
             search_results = []
             for search_cat in search_cats:
                 catInfo = {
