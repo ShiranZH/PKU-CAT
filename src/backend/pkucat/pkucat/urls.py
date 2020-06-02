@@ -14,7 +14,6 @@ urlpatterns = [
     path('post/', include('post.urls')),
     path('posts/', include('post.urls')),
     path('archive/', include('archive.urls')),
-    path('archives/', archive_views.archives, name='archive2'),
     path('feeder/', include('feeder.urls')),
 ]
 

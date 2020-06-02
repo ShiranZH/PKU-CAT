@@ -17,7 +17,8 @@ public class Cat {
     private HashMap<String, String> relations;
     private String[] photoUrls;
     private HashMap<String, byte[]> photos;
-    
+    private Session session;
+
     Cat(JSONObject cat) throws JSONException  {
         this.name = cat.getString("name");
         this.avatarUrl = cat.getString("avatar");
@@ -33,16 +34,19 @@ public class Cat {
             this.photos.put(this.photoUrls[i], null);
         }
     }
-    
+
     public byte[] getAvatar() {
         if (avatar == null)
             avatar = Session.get(avatarUrl, null);
         return avatar;
     }
-    
-    public void refresh() throws APIException {
+    public void refresh() throws APIException, JSONException {
         JSONObject data = new JSONObject();
-        data.put("catid", catId);
+        try {
+            data.put("catid", catId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         byte[] ret = Session.get("/user/archive", data);
         JSONObject retData = new JSONObject(new String(ret));
 
@@ -59,20 +63,20 @@ public class Cat {
         // TODO: photos
     }
     
-    public String getInfo() throws APIException {
+    public String getInfo() throws APIException, JSONException {
         if (info == null) {
             refresh();
         }
         return info;
     }
     
-    public HashMap<String, String> getRelations() throws APIException {
+    public HashMap<String, String> getRelations() throws APIException, JSONException {
         if (relations == null) {
             refresh();
         }
         return relations;
     }
-    
+
     public HashMap<String, byte[]> getPhotos() {
         for (Map.Entry<String, byte[]> entry : photos.entrySet()) {
             if (entry.getValue() == null) {

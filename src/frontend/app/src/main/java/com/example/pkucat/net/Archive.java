@@ -12,19 +12,19 @@ public class Archive {
     Archive() {
         cats = new HashMap<String, Cat>();
     }
-    
+
     public Cat getArchive(String catID) {
         if (!cats.containsKey(catID))
             return null;
         return cats.get(catID);
     }
-    
+
     public HashMap<String, Cat> getArchives() throws APIException {
         if (cats.size() == 0)
             refreshCats();
         return cats;
     }
-    
+
     public void refreshCats() throws APIException {
         try {
             byte[] ret = Session.get("/user/archives", null);
@@ -46,4 +46,3 @@ public class Archive {
         }
     }
 }
-    
