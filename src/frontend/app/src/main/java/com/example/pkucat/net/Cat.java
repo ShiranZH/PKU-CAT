@@ -1,10 +1,14 @@
 package com.example.pkucat.net;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,20 +98,20 @@ public class Cat {
         try {
             byte[] ret = Session.put("/user/archive", data);
             if (ret == null)
-                throw new APIException("404", "ÍøÂç´íÎó");
+                throw new APIException("404", "ç½‘ç»œé”™è¯¯");
             JSONObject retData = new JSONObject(new String(ret));
             if (retData.getInt("code") != 200)
                 throw new APIException(retData);
             
             info = _info;
         } catch (JSONException e) {
-            throw new APIException("404", "·µ»ØÖµ´íÎó");
+            throw new APIException("404", "è¿”å›žå€¼é”™è¯¯");
         } catch (APIException e) {
             throw e;
         }
     }
     
-    public void modifyAvatar(File file) throws APIException {
+    public void modifyAvatar(File file) throws APIException, IOException {
         File[] files = new File[]{file};
         String[] urls = Session.uploadPicture(files);
         JSONObject data = new JSONObject();
@@ -117,16 +121,78 @@ public class Cat {
         try {
             byte[] ret = Session.put("/user/archive", data);
             if (ret == null)
-                throw new APIException("404", "ÍøÂç´íÎó");
+                throw new APIException("404", "ç½‘ç»œé”™è¯¯");
             JSONObject retData = new JSONObject(new String(ret));
             if (retData.getInt("code") != 200)
                 throw new APIException(retData);
             
             avatarUrl = urls[0];
-            avatar = Session.get(avatarUrl, null);
+            FileInputStream in = new FileInputStream(file);
+            avatar = IOUtils.toByteArray(in);
+            in.close();
+            
             
         } catch (JSONException e) {
-            throw new APIException("404", "·µ»ØÖµ´íÎó");
+            throw new APIException("404", "è¿”å›žå€¼é”™è¯¯");
+        } catch (APIException e) {
+            throw e;
+        }
+    }
+    
+    public void delPhotos(String[] urls ) throws APIException {
+        JSONObject data = new JSONObject();
+        data.put("id", this.catId);
+        JSONArray urlArray = new JSONArray();
+        for (int i = 0; i < urls.length; ++i) {
+            urlArray.put(urls[i]);
+        }
+        data.put("deleteImages", urlArray);
+        try {
+            byte[] ret = Session.put("/user/archive", data);
+            if (ret == null)
+                throw new APIException("404", "ç½‘ç»œé”™è¯¯");
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+            
+            photoUrls = java.util.Arrays.copyOf(photoUrls, photoUrls.length+urls.length);
+            for (int i = 0; i < urls.length; ++i) {
+                photos.put(urls[i], null);
+            }
+        } catch (JSONException e) {
+            throw new APIException("404", "è¿”å›žå€¼é”™è¯¯");
+        } catch (APIException e) {
+            throw e;
+        }
+    }
+    
+    public void addPhotos(File[] files) throws APIException, IOException {
+        String[] urls = Session.uploadPicture(files);
+        JSONObject data = new JSONObject();
+        data.put("id", this.catId);
+        JSONArray urlArray = new JSONArray();
+        for (int i = 0; i < urls.length; ++i) {
+            urlArray.put(urls[i]);
+        }
+        data.put("addPhotos", urlArray);
+        Session.uploadPicture(files);
+        
+        try {
+            byte[] ret = Session.put("/user/archive", data);
+            if (ret == null)
+                throw new APIException("404", "ç½‘ç»œé”™è¯¯");
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+            
+            photoUrls = java.util.Arrays.copyOf(photoUrls, photoUrls.length+urls.length);
+            for (int i = 0; i < urls.length; ++i) {
+                FileInputStream in = new FileInputStream(files[i]);
+                photos.put(urls[i], IOUtils.toByteArray(in));
+                in.close();
+            }
+        } catch (JSONException e) {
+            throw new APIException("404", "è¿”å›žå€¼é”™è¯¯");
         } catch (APIException e) {
             throw e;
         }
