@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,11 +19,10 @@ public class Cat {
     private HashMap<String, byte[]> photos;
     private Session session;
 
-    Cat(JSONObject cat, Session session) throws JSONException  {
+    Cat(JSONObject cat) throws JSONException  {
         this.name = cat.getString("name");
         this.avatarUrl = cat.getString("avatar");
         this.catId = String.valueOf(cat.getInt("catID"));
-        this.session = session;
         this.info = null;
         this.relations = null;
         this.avatar = null;
@@ -37,26 +37,51 @@ public class Cat {
 
     public byte[] getAvatar() {
         if (avatar == null)
-            avatar = session.get(session.baseUrl+avatarUrl, null);
+            avatar = Session.get(avatarUrl, null);
         return avatar;
     }
+    public void refresh() throws APIException, JSONException {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("catid", catId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        byte[] ret = Session.get("/user/archive", data);
+        JSONObject retData = new JSONObject(new String(ret));
 
-    public String getInfo() {
-        info = "getInfo";
+        if (retData.getInt("code") != 200)
+            throw new APIException(retData);
+        JSONObject archive = retData.getJSONObject("data").getJSONObject("archive");
+        info = archive.getString("introduction");
+        JSONArray relatedCats = archive.getJSONArray("relatedCats");
+        relations = new HashMap<String, String>();
+        for (int i = 0; i < relatedCats.length(); ++i) {
+            relations.put(String.valueOf(relatedCats.getJSONObject(i).getInt("relatedCat")),
+                    relatedCats.getJSONObject(i).getString("relation"));
+        }
+        // TODO: photos
+    }
+    
+    public String getInfo() throws APIException, JSONException {
+        if (info == null) {
+            refresh();
+        }
         return info;
     }
-
-    public HashMap<String, String> getRelations() {
-        relations = new HashMap<String, String>();
-        relations.put("2", "ÐÖµÜ");
+    
+    public HashMap<String, String> getRelations() throws APIException, JSONException {
+        if (relations == null) {
+            refresh();
+        }
         return relations;
     }
 
     public HashMap<String, byte[]> getPhotos() {
         for (Map.Entry<String, byte[]> entry : photos.entrySet()) {
             if (entry.getValue() == null) {
-                photos.put(entry.getKey(),
-                        session.get(session.baseUrl+entry.getKey(), null));
+                photos.put(entry.getKey(), 
+                        Session.get(entry.getKey(), null));
             }
         }
         return photos;

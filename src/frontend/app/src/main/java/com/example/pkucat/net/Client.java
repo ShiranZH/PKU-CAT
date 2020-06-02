@@ -25,10 +25,10 @@ public class Client {
 //    private String protocol;
 //    private String host;
     private String baseUrl;
-    private Session session;
     
     public User user;
     public Archive archive;
+    public PostManager post;
     
     public Client(String protocol, String serverIP, String host)
     {
@@ -37,9 +37,9 @@ public class Client {
 //        this.host = host;
         this.baseUrl = protocol + "://" + serverIP + ":" + host;
         
-        this.session = new Session(baseUrl);
-        this.user = new User(session, baseUrl);
-        this.archive = new Archive(session, baseUrl);
+        Session.setBaseUrl(baseUrl);
+        this.user = new User();
+        this.archive = new Archive();
+        this.post = new PostManager();
     }
-
 }

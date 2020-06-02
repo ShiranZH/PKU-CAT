@@ -20,6 +20,22 @@ public class Post {
     
     private HashMap<String, byte[]> photos;
     
+    public Post(JSONObject json) throws JSONException, APIException {
+
+        System.out.println(json);
+        this.postID = String.valueOf(json.getInt("postID"));
+        this.author = User.getProfile(String.valueOf(json.getJSONObject("publisher").getInt("userID")));
+        this.date = new Date(json.getLong("time"));
+        this.text = json.getString("text");
+        this.favorCnt = json.getJSONObject("favor").getInt("favorCnt");
+        if (json.getJSONObject("favor").getInt("self") == 1)
+            this.isFavor = true;
+        else
+            this.isFavor = false;
+        this.isPublished = true;
+        this.comments = null;
+    }
+    
     public void addFavor() {
     }
     
