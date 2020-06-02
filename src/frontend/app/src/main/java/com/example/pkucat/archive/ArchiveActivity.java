@@ -10,21 +10,35 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.pkucat.App;
 import com.example.pkucat.R;
+import com.example.pkucat.net.APIException;
+import com.example.pkucat.net.Cat;
+import com.example.pkucat.net.Client;
+
+import java.util.HashMap;
 
 public class ArchiveActivity extends Activity {
     private Button bSearchArchive;
     private ListView archiveList;
     private EditText editText;
+    public HashMap<String, Cat> archiveCats;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        App app=(App)getApplication();
+        Client client=app.client;
+        try {
+            archiveCats = client.archive.getArchives();
+        } catch (APIException e) {
+            e.printStackTrace();
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_archive);
         bSearchArchive = (Button) findViewById(R.id.searchArchive_button);
         editText=(EditText) findViewById(R.id.search_text);
         setListeners();
         archiveList = (ListView) findViewById(R.id.archive_list);
-        archiveList.setAdapter(new MyArchiveList(ArchiveActivity.this));
+        archiveList.setAdapter(new MyArchiveList(ArchiveActivity.this, archiveCats));
         archiveList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

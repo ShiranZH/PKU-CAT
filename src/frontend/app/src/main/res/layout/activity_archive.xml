@@ -23,7 +23,7 @@
             android:layout_width="320dp"
             android:layout_height="match_parent"
             android:drawableBottom="@color/cardview_dark_background"
-            android:ems="10"
+            android:ems="20"
             android:hint="   请输入猫咪名称" />
 
         <Button

@@ -11,17 +11,29 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.pkucat.R;
+import com.example.pkucat.net.Cat;
+
+import java.util.HashMap;
 
 public class MyArchiveList extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mLayoutInflater;
-    MyArchiveList(Context context){
+    private Cat cats[];
+    private int size;
+    MyArchiveList(Context context, HashMap<String, Cat> archiveCats){
         this.mContext = context;
+        this.size = archiveCats.size();
+        cats = new Cat[this.size];
+        int i=0;
+        for (String key : archiveCats.keySet()) {
+            this.cats[i]=archiveCats.get(key);
+            i=i+1;
+        }
         mLayoutInflater = LayoutInflater.from(mContext);
     }
     @Override
     public int getCount() {
-        return 3;
+        return size;
     }
 
     @Override
@@ -53,7 +65,7 @@ public class MyArchiveList extends BaseAdapter {
         }
         //给控件赋值
         RequestOptions mRequestOptions = RequestOptions.circleCropTransform();
-        switch (position) {
+        switch (position%3) {
             case 0:
                 holder.itemTitle.setText("山岚");
                 Glide.with(mContext).load(R.drawable.catexp0).apply(mRequestOptions).into(holder.imageView);
@@ -68,6 +80,8 @@ public class MyArchiveList extends BaseAdapter {
                 break;
 
         }
+        holder.itemTitle.setText(cats[position].name);
+        Glide.with(mContext).load(cats[position].getAvatar()).apply(mRequestOptions).into(holder.imageView);
         return convertView;
     }
 }

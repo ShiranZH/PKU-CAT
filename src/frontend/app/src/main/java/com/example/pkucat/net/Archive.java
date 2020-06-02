@@ -7,28 +7,29 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Archive {
+    public HashMap<String, Cat> cats;
     private Session session;
     private String baseUrl;
     private HashMap<String, Cat> cats;
-    
+
     Archive(Session sess, String baseUrl) {
         this.session = sess;
         this.baseUrl = baseUrl;
         cats = new HashMap<String, Cat>();
     }
-    
+
     public Cat getArchive(String catID) {
         if (!cats.containsKey(catID))
             return null;
         return cats.get(catID);
     }
-    
+
     public HashMap<String, Cat> getArchives() throws APIException {
         if (cats.size() == 0)
             refreshCats();
         return cats;
     }
-    
+
     public void refreshCats() throws APIException {
         System.out.println("refreshCats begin---------------");
         try {
@@ -55,4 +56,3 @@ public class Archive {
         System.out.println("refreshCats end-----------------");
     }
 }
-    
