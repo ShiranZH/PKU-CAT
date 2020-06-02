@@ -89,7 +89,7 @@ def posts(request):
             post_info =  {
                 'postID': item.post_id,
                 'publisher': publisher_info,
-                'time': item.time,
+                'time': int(item.time.timestamp()*1000),
                 'text': item.text,
                 'multimediaContent': ['multimedia'],
                 'favor': {
@@ -146,7 +146,7 @@ def post(request):
             comment_list.append({
                 'commentID': comment.id,
                 'user': user,
-                'time': comment.time,
+                'time': int(comment.time.timestamp()*1000),
                 'text': comment.text
             })
         if len(comment_list):
@@ -193,7 +193,7 @@ def post(request):
         post_info =  {
             'postID': post.post_id,
             'publisher': publisher_info,
-            'time': post.time,
+            'time': int(post.time.timestamp()*1000),
             'text': post.text,
             'isVideo': post.is_video,
             'multimediaContent': ['multimedia'],
@@ -263,7 +263,7 @@ def post(request):
             "code": 200,
             "data": {
                 "postID": post.post_id,
-                "time": post.time
+                "time": int(post.time.timestamp()*1000)
             } 
         }
         return JsonResponse(response)
@@ -365,7 +365,7 @@ def search(request):
             post_info =  {
                 'postID': item.post_id,
                 'publisher': publisher_info,
-                'time': item.time,
+                'time': int(item.time.timestamp()*1000),
                 'text': item.text,
                 'multimediaContent': ['multimedia'],
                 'favor': {
@@ -427,7 +427,7 @@ def comments(request):
             comment_list.append({
                 'commentID': comment.id,
                 'user': user,
-                'time': comment.time,
+                'time': int(comment.time.timestamp()*1000),
                 'text': comment.text
             })
         if len(comment_list):
