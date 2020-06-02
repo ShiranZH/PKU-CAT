@@ -63,7 +63,7 @@ public class RelationList extends BaseAdapter {
         }
         //给控件赋值
         RequestOptions mRequestOptions = RequestOptions.circleCropTransform();
-        holder.itemTitle.setText(relatedCats[position].name);
+        holder.itemTitle.setText(relatedCats[position].relation+"："+relatedCats[position].name);
         Glide.with(mContext).load(relatedCats[position].avatar).apply(mRequestOptions).into(holder.imageView);
 //        switch (position%3) {
 //            case 0:
