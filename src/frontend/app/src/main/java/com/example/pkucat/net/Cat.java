@@ -68,9 +68,10 @@ public class Cat {
         return info;
     }
     
-    public HashMap<String, String> getRelations() {
-        relations = new HashMap<String, String>();
-        relations.put("2", "ÐÖµÜ");
+    public HashMap<String, String> getRelations() throws APIException {
+        if (relations == null) {
+            refresh();
+        }
         return relations;
     }
     
