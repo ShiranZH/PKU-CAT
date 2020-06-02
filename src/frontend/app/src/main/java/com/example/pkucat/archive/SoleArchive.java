@@ -3,20 +3,31 @@ package com.example.pkucat.archive;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.pkucat.App;
 import com.example.pkucat.R;
+import com.example.pkucat.net.APIException;
+import com.example.pkucat.net.Cat;
+import com.example.pkucat.net.Client;
+
+import org.json.JSONException;
+
+import java.util.HashMap;
 
 public class SoleArchive extends AppCompatActivity {
-
+    private ListView archiveList;
+    public HashMap<String, Cat> archiveCats;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getIntent().getExtras();
+        String catId = String.valueOf(bundle.getInt("catId"));
         String catname = bundle.getString("name");
         String info = bundle.getString("info");
         byte catPhoto[] = bundle.getByteArray("photo");
@@ -40,6 +51,30 @@ public class SoleArchive extends AppCompatActivity {
         title.setText(catname);
         content.setText(info);
         Glide.with(SoleArchive.this).load(catPhoto).into(mImage);
+
+//        App app=(App)getApplication();
+//        Client client=app.client;
+//        try {
+//            archiveCats = client.archive.getArchives();
+//        } catch (APIException e) {
+//            e.printStackTrace();
+//        }
+//        Cat cat = archiveCats.get(catId);
+//
+//        archiveList = (ListView) findViewById(R.id.sole_archive_relation_list);
+//        HashMap<String, String> relationCatIds=null;
+//        try {
+//            relationCatIds=cat.getRelations();
+//        } catch (APIException e) {
+//            e.printStackTrace();
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        HashMap<String, Cat> relationCats=null;
+//        for (String key : relationCatIds.keySet()) {
+//            relationCats.put(key,archiveCats.get(key));
+//        }
+//        archiveList.setAdapter(new RelationList(SoleArchive.this, relationCats));
 //        switch (catId) {
 //            case 0:
 //                title.setText("山岚");

@@ -49,7 +49,7 @@ public class ArchiveActivity extends Activity {
                 Intent intent;
                 intent = new Intent(ArchiveActivity.this, SoleArchive.class);
                 Bundle bundle = new Bundle();
-                bundle.putInt("catId", position);
+                bundle.putInt("catId", position+1);
                 Cat cat=archiveCats.get(String.valueOf(position+1));
                 bundle.putInt("catId", Integer.parseInt(cat.catId));
                 bundle.putString("name",cat.name);
