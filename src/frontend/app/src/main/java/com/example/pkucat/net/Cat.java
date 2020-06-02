@@ -74,7 +74,7 @@ public class Cat {
             } catch (JSONException e) {
                 info = "JSONException";
             } catch (APIException e){
-                info = "APIException";
+                e.printStackTrace();
             }
         }
         return info;

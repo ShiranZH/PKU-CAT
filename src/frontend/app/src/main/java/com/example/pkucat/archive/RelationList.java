@@ -13,14 +13,15 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.pkucat.R;
 import com.example.pkucat.net.Cat;
 
+
 import java.util.HashMap;
 
 public class RelationList extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mLayoutInflater;
-    private HashMap<String, Cat> cats;
-    RelationList(Context context,HashMap<String, Cat> relationCats){
-//        this.cats=relationCats;
+    private RelatedCat relatedCats[];
+    RelationList(Context context, RelatedCat relatedcats[]){
+        this.relatedCats=relatedcats;
         this.mContext = context;
         mLayoutInflater = LayoutInflater.from(mContext);
     }
@@ -28,7 +29,7 @@ public class RelationList extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 1;
     }
 
     @Override
@@ -60,20 +61,22 @@ public class RelationList extends BaseAdapter {
         }
         //给控件赋值
         RequestOptions mRequestOptions = RequestOptions.circleCropTransform();
-        switch (position%3) {
-            case 0:
-                holder.itemTitle.setText("山岚");
-                Glide.with(mContext).load(R.drawable.catexp0).apply(mRequestOptions).into(holder.imageView);
-                break;
-            case 1:
-                holder.itemTitle.setText("李美人");
-                Glide.with(mContext).load(R.drawable.catexp1).apply(mRequestOptions).into(holder.imageView);
-                break;
-            case 2:
-                holder.itemTitle.setText("小芝麻");
-                Glide.with(mContext).load(R.drawable.catexp2).apply(mRequestOptions).into(holder.imageView);
-                break;
-        }
+        holder.itemTitle.setText(relatedCats[position].name);
+        Glide.with(mContext).load(relatedCats[position].avatar).apply(mRequestOptions).into(holder.imageView);
+//        switch (position%3) {
+//            case 0:
+//                holder.itemTitle.setText("山岚");
+//                Glide.with(mContext).load(R.drawable.catexp0).apply(mRequestOptions).into(holder.imageView);
+//                break;
+//            case 1:
+//                holder.itemTitle.setText("李美人");
+//                Glide.with(mContext).load(R.drawable.catexp1).apply(mRequestOptions).into(holder.imageView);
+//                break;
+//            case 2:
+//                holder.itemTitle.setText("小芝麻");
+//                Glide.with(mContext).load(R.drawable.catexp2).apply(mRequestOptions).into(holder.imageView);
+//                break;
+//        }
         return convertView;
     }
 }

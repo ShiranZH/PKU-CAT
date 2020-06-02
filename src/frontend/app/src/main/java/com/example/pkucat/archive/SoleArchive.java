@@ -52,29 +52,33 @@ public class SoleArchive extends AppCompatActivity {
         content.setText(info);
         Glide.with(SoleArchive.this).load(catPhoto).into(mImage);
 
-//        App app=(App)getApplication();
-//        Client client=app.client;
-//        try {
-//            archiveCats = client.archive.getArchives();
-//        } catch (APIException e) {
-//            e.printStackTrace();
-//        }
-//        Cat cat = archiveCats.get(catId);
-//
-//        archiveList = (ListView) findViewById(R.id.sole_archive_relation_list);
-//        HashMap<String, String> relationCatIds=null;
-//        try {
-//            relationCatIds=cat.getRelations();
-//        } catch (APIException e) {
-//            e.printStackTrace();
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        HashMap<String, Cat> relationCats=null;
-//        for (String key : relationCatIds.keySet()) {
-//            relationCats.put(key,archiveCats.get(key));
-//        }
-//        archiveList.setAdapter(new RelationList(SoleArchive.this, relationCats));
+        App app=(App)getApplication();
+        Client client=app.client;
+        try {
+            archiveCats = client.archive.getArchives();
+        } catch (APIException e) {
+            e.printStackTrace();
+        }
+        Cat cat = archiveCats.get(catId);
+
+        archiveList = (ListView) findViewById(R.id.sole_archive_relation_list);
+        HashMap<String, String> relationCatIds=null;
+        try {
+            relationCatIds=cat.getRelations();
+        } catch (APIException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RelatedCat relatedcats[];
+        relatedcats = new RelatedCat[relationCatIds.size()];
+        int i=0;
+        for (String key : relationCatIds.keySet()) {
+            Cat currentCat = archiveCats.get(key);
+            relatedcats[i] = new RelatedCat(relationCatIds.get(key), currentCat.name,currentCat.getAvatar());
+            i=i+1;
+        }
+        archiveList.setAdapter(new RelationList(SoleArchive.this, relatedcats));
 //        switch (catId) {
 //            case 0:
 //                title.setText("山岚");
