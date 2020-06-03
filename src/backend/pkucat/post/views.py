@@ -1,7 +1,7 @@
 import os
 import json
 import jieba.analyse
-from multiprocessing import Process
+import threading
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, QueryDict
 from .models import Post, Comment, Photo, Favor, TextKey
@@ -47,24 +47,15 @@ gen_response = {
     }
 }
 
-# 插入关键词多进程
-def insert_key(text, post):
-    #获取tf-idf排序下前10个关键词
-    keywords = jieba.analyse.extract_tags(text, topK=10)
-    for key in keywords:
-        try:
-            TextKey(key=key, post=post).save()
-        except: pass
-
 def demo(request):
     return HttpResponse('Post Response')
 
 def posts(request):
 #动态列表
+    print('server receive {} {}'.format(request.method, request.get_full_path()))
 
     if request.method == 'GET':
     #请求动态列表，GET /posts/?limit&start
-        print('server receive GET', request.get_full_path())
 
         # 检查登陆状态
         if not request.user.is_authenticated:
@@ -206,7 +197,7 @@ def post(request):
             'time': int(post.time.timestamp()*1000),
             'text': post.text,
             'isVideo': post.is_video,
-            'multimediaContent': ['multimedia'],
+            'multimediaContent': multimedia,
             'commentList': comment_list_info,
             'favor': {
                 'self': self_favor,
@@ -267,9 +258,12 @@ def post(request):
                 photo.post = post
                 photo.save()
         
-        # 使用多进程创建关键词数据, 避免影响主进程运行
-        p = Process(target=insert_key, args=(post.text, post))
-        p.start()
+        # 创建关键词数据
+        if not text is None:
+            keywords = jieba.analyse.extract_tags(text, topK=10)
+            for key in keywords:
+                TextKey(key=key, post=post).save()
+        
         
         response = {
             "code": 200,
@@ -340,6 +334,9 @@ def search(request):
         except:
             return JsonResponse(gen_response['param_err'])
 
+        for keys in TextKey.objects.order_by('id'):
+            print(keys.key)
+
         if user_id >= 0:
             # 从User数据库获取user
             try: 
@@ -356,20 +353,22 @@ def search(request):
             for key in keyword_list:
                 post_list.append(key.post) 
 
+        user = User.objects.get(id=request.user.id)
         posts = []
         for item in post_list:
-            
-            # 加载图片（一张）
+
+            # 加载图片
             multimedia = []
             if item.is_video == False:
-                photo_path = Photo.objects.filter(post=item.post_id)[0].photo
-                multimedia.append(photo_path)
+                for photo in Photo.objects.filter(post=item):
+                    multimedia.append(photo.photo)
             
             # 判断是否给自己点赞
-            if item.self_favor:
+            if Favor.objects.filter(post=item).filter(user=user):
                 self_favor = 1
             else:
                 self_favor = 0
+
             # 一条摘要动态的数据结构
             publisher_info = {
                 'userID': item.publisher.id,
@@ -468,7 +467,7 @@ def comments(request):
 @csrf_exempt
 def favor(request):
     if request.method == 'POST':
-    # 点赞, POST /post/favor/?postID=123&userID=123
+    # 点赞, POST /post/favor/?postID=123
         print('server receive POST', request.get_full_path())
         
         # 检查登陆状态
@@ -551,7 +550,7 @@ def favor(request):
 @csrf_exempt
 def comment(request):
     if request.method == 'POST':
-    # 评论, POST /post/comment/?postID=123&userID=123&text=“test”
+    # 评论, POST /post/comment/?postID=123&text=“test”
         print('server receive POST', request.get_full_path())
         
         # 检查登陆状态
