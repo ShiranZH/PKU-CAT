@@ -289,7 +289,7 @@ class UserTests(TestCase):
         self.assertEqual(response['code'], CODE['success'])
 
         # 修改
-        response = self.client.put('/user/profile', {"avatar": '/static/user/avatar_default.jpg'})
+        response = self.client.put('/user/profile?avatar=/static/user/avatar_default.jpg')
         self.assertEqual(type(response), JsonResponse)
         response = response.json()
         self.assertEqual(response['code'], CODE['success'])
