@@ -35,7 +35,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 
-public class ArchiveActivity extends AppCompatActivity {
+public class ArchiveAdminitrationActivity extends AppCompatActivity {
     private Button bSearchArchive;
     private ListView archiveList;
     private EditText editText;
@@ -43,8 +43,8 @@ public class ArchiveActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        setContentView(R.layout.activity_archive);
-        setTitle("Cat Archives");
+        setContentView(R.layout.activity_archive_adminitration);
+        setTitle("Cat Administration");
 
         // 返回键
         ActionBar actionBar = getSupportActionBar();
@@ -53,11 +53,6 @@ public class ArchiveActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
         }
-//        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-//        ViewPager viewPager = findViewById(R.id.view_pager);
-//        viewPager.setAdapter(sectionsPagerAdapter);
-//        TabLayout tabs = findViewById(R.id.tabs_archive);
-//        tabs.setupWithViewPager(viewPager);
 
 
         App app=(App)getApplication();
@@ -68,20 +63,27 @@ public class ArchiveActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         super.onCreate(savedInstanceState);
-        bSearchArchive = (Button) findViewById(R.id.searchArchive_button);
-        editText=(EditText) findViewById(R.id.search_text);
-        setListeners();
+
+
+        HashMap<String,Cat> adminitratedCats=archiveCats;
+        final Cat adCatList[]=new Cat[adminitratedCats.size()];
+        String catNames[]=new String[adminitratedCats.size()];
+        int size=0;
+        for (String key:adminitratedCats.keySet()){
+            adCatList[size] = adminitratedCats.get(key);
+            catNames[size] = adminitratedCats.get(key).name;
+            size++;
+        }
+
         archiveList = (ListView) findViewById(R.id.archive_list);
-        archiveList.setAdapter(new MyArchiveList(ArchiveActivity.this, archiveCats));
+        archiveList.setAdapter(new AdministrationList(ArchiveAdminitrationActivity.this, catNames, size));
         archiveList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Intent intent;
-                intent = new Intent(ArchiveActivity.this, SoleArchive.class);
+                intent = new Intent(ArchiveAdminitrationActivity.this, EditArchive.class);
                 Bundle bundle = new Bundle();
-                bundle.putInt("catId", position);
-                Cat cat=archiveCats.get(String.valueOf(position+1));
+                Cat cat=adCatList[position];
                 bundle.putInt("catId", Integer.parseInt(cat.catId));
                 bundle.putString("name",cat.name);
                 try {
@@ -94,25 +96,13 @@ public class ArchiveActivity extends AppCompatActivity {
                 bundle.putByteArray("photo", cat.getAvatar());
                 intent.putExtras(bundle);
                 startActivity(intent);
-            }
-        });
-
-//        try {
-//            boolean f=client.user.getProfile().isAdmin;
-//        } catch (APIException e) {
-//            e.printStackTrace();
-//        }
-        ImageView icon = new ImageView(this);
-        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_post_text));
-        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
-                .setContentView(icon)
-                .build();
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(ArchiveActivity.this, ArchiveAdminitrationActivity.class);
-                startActivity(intent);
+                try {
+                    adCatList[position].refresh();
+                } catch (APIException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -127,37 +117,4 @@ public class ArchiveActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setListeners(){
-        OnClick onClick = new OnClick();
-        bSearchArchive.setOnClickListener((View.OnClickListener) onClick);
-    }
-
-    private class OnClick implements View.OnClickListener{
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(ArchiveActivity.this, SoleArchive.class);
-            Bundle bundle = new Bundle();
-            String catname = editText.getText().toString();
-            for (int i= 1; i<=archiveCats.size();i++) {
-                Cat cat=archiveCats.get(String.valueOf(i));
-                if (cat.name.equals(catname)){
-                    bundle.putInt("catId", Integer.parseInt(cat.catId));
-                    bundle.putString("name",cat.name);
-                    try {
-                        bundle.putString("info",cat.getInfo());
-                    } catch (APIException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    bundle.putByteArray("photo", cat.getAvatar());
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                    return;
-                }
-            }
-            Toast.makeText(ArchiveActivity.this, "查无此猫", Toast.LENGTH_SHORT).show();
-            return;
-        }
-    }
 }
