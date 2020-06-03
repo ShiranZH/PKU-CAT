@@ -20,8 +20,6 @@
         tools:targetApi="q">
         <activity android:name=".archive.EditArchive"></activity>
         <activity android:name=".archive.ArchiveAdminitrationActivity" />
-        <activity android:name=".archive.Main3Activity" />
-        <activity android:name=".Main2Activity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -39,6 +37,7 @@
         <activity android:name=".setting.LoginActivity" />
         <activity android:name=".setting.RegisterActivity" />
         <activity android:name=".manage.ManageActivity" />
+        <activity android:name=".manage.FeederListActivity"/>
     </application>
 
 </manifest>

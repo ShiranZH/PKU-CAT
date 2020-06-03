@@ -1,6 +1,9 @@
 package com.example.pkucat.setting;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -19,11 +22,16 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import android.app.Application;
+import android.widget.Toast;
 
 import com.example.pkucat.App;
+import com.example.pkucat.MainActivity;
 import com.example.pkucat.R;
 
 import java.net.URL;
+
+import com.example.pkucat.manage.FeederListActivity;
+import com.example.pkucat.manage.ManageActivity;
 import com.example.pkucat.net.*;
 import com.example.pkucat.net.Client;
 
@@ -34,6 +42,7 @@ public class SettingFragment extends Fragment {
     private Handler bmpArrived;
     private Button permissionManage;
     private Button logout_button;
+    private Button feeder_request_button;
     private TextView username, mail;
     private ImageView avatar;
 
@@ -52,7 +61,6 @@ public class SettingFragment extends Fragment {
                 if(msg.what==0x2233) avatar.setImageBitmap(bitmap);
             }
         };
-
 
         // 编辑个人信息
         final Button button1 = root.findViewById(R.id.button1);
@@ -106,11 +114,13 @@ public class SettingFragment extends Fragment {
             }
         });
 
-        // 权限管理
+        // 查看饲养员列表
         permissionManage = root.findViewById(R.id.button4);
         permissionManage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent tostart = new Intent(getActivity(), FeederListActivity.class);
+                startActivity(tostart);
             }
         });
 
