@@ -1,5 +1,6 @@
 package com.example.pkucat.net;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.commons.io.IOUtils;
@@ -9,6 +10,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,10 +26,10 @@ import javax.net.ssl.X509TrustManager;
 import java.util.UUID;
 
 public class Session {
-    private String cookie = "";
-    public String baseUrl;
+    private static String cookie = "";
+    public static String baseUrl;
     
-    Session(String url) {
+    public static void setBaseUrl(String url) {
         baseUrl = url;
     }
 
@@ -70,9 +72,9 @@ public class Session {
         return url.toString();
     }
 
-    private byte[] request(String method, String urlStr, JSONObject data, HashMap<String, List<File>> files){
+    public static byte[] post(String urlStr, JSONObject data, HashMap<String, List<File>> files){
         byte[] response = null;
-        RequestThread thread = new RequestThread(method, urlStr, data, files, cookie);
+        PostThread thread = new PostThread(baseUrl+urlStr, data, files, cookie);
         thread.start();
         
         try {
@@ -86,17 +88,22 @@ public class Session {
         
         return response;
     }
-    public byte[] post(String urlStr, JSONObject data, HashMap<String, List<File>> files){
-        return request("POST", urlStr, data, files);
+    
+    public static byte[] put(String urlStr, JSONObject data){
+        return request(urlStr, data, "PUT");
     }
     
-    public byte[] put(String urlStr, JSONObject data, HashMap<String, List<File>> files){
-        return request("PUT", urlStr, data, files);
+    public static byte[] delete(String urlStr, JSONObject data){
+        return request(urlStr, data, "DELETE");
+    }
+    
+    public static byte[] get(String urlStr, JSONObject data){
+        return request(urlStr, data, "GET");
     }
   
-    public byte[] get(String urlStr, JSONObject data){
+    public static byte[] request(String urlStr, JSONObject data, String method){
         byte[] response = null;
-        GetThread thread = new GetThread(urlStr, data, cookie);
+        RequestThread thread = new RequestThread(baseUrl+urlStr, data, cookie, method);
         thread.start();
         
         try {
@@ -107,26 +114,85 @@ public class Session {
         }
         return response;
     }
+    
+    public static String[] uploadPicture(File[] files) throws APIException {
+        HashMap<String, List<File>> fs = new HashMap<String, List<File>>();
+        fs.put("picture", new ArrayList<File>());
+        for (int i = 0; i < files.length; ++i) {
+            fs.get("picture").add(files[i]);
+        }
+        try {
+            byte[] ret = Session.post("/file", null, fs);
+            
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+            
+            JSONArray urlArray = retData.getJSONObject("data").getJSONArray("picture");
+            
+            String[] urls = new String[urlArray.length()];
+            for (int i = 0; i < urlArray.length(); ++i) {
+                urls[i] = urlArray.getString(i);
+            }
+            
+            return urls;
+        } catch (JSONException e) {
+            throw new APIException("404", "返回值错误");
+        } catch (APIException e) {
+            throw e;
+        }
+    }
+    
+    public static String[] uploadVideo(File[] files) throws APIException {
+        HashMap<String, List<File>> fs = new HashMap<String, List<File>>();
+        fs.put("picture", new ArrayList<File>());
+        for (int i = 0; i < files.length; ++i) {
+            fs.get("video").add(files[i]);
+        }
+        try {
+            byte[] ret = Session.post("/file", null, fs);
+            
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+            
+            JSONArray urlArray = retData.getJSONObject("data").getJSONArray("video");
+            
+            String[] urls = new String[urlArray.length()];
+            for (int i = 0; i < urlArray.length(); ++i) {
+                urls[i] = urlArray.getString(i);
+            }
+            
+            return urls;
+        } catch (JSONException e) {
+            throw new APIException("404", "返回值错误");
+        } catch (APIException e) {
+            throw e;
+        }
+    }
 }
 
-class GetThread extends Thread {
+
+class RequestThread extends Thread {
     public byte[] response;
     public String cookie;
     
     private String urlStr;
     private JSONObject data;
+    private String method;
     
-    public GetThread(String urlStr, JSONObject data, String cookie) {
+    public RequestThread(String urlStr, JSONObject data, String cookie, String method) {
         this.response = null;
         this.urlStr = urlStr;
         this.data = data;
         this.cookie = cookie;
+        this.method = method;
     }
     public void run() {
         try {
             URL url = new URL(urlStr+"?"+Session.json2Url(data));
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod(method);
             connection.setRequestProperty("cookie", cookie);
             connection.setSSLSocketFactory(SSLSocketClient.getSSLSocketFactory());
             connection.setHostnameVerifier(SSLSocketClient.getHostnameVerifier());
@@ -144,19 +210,17 @@ class GetThread extends Thread {
     }
 }
 
-class RequestThread extends Thread {
+class PostThread extends Thread {
     public byte[] response;
     public String cookie;
     
-    private String method;
     private String urlStr;
     private JSONObject data;
     private HashMap<String, List<File>> files;
     
-    public RequestThread(String method, String urlStr,
+    public PostThread(String urlStr,
             JSONObject data, HashMap<String, List<File>> files, String cookie) {
         this.response = null;
-        this.method = method;
         this.urlStr = urlStr;
         this.data = data;
         this.files = files;
@@ -168,7 +232,7 @@ class RequestThread extends Thread {
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             String boundary = UUID.randomUUID().toString().replace("-", "");
             connection.setDoOutput(true);
-            connection.setRequestMethod(method);
+            connection.setRequestMethod("POST");
             connection.setRequestProperty("cookie", cookie);
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary="+boundary);
             connection.setSSLSocketFactory(SSLSocketClient.getSSLSocketFactory());
