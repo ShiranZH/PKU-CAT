@@ -30,6 +30,7 @@ import com.example.pkucat.R;
 
 import java.net.URL;
 
+import com.example.pkucat.manage.FeederListActivity;
 import com.example.pkucat.manage.ManageActivity;
 import com.example.pkucat.net.*;
 import com.example.pkucat.net.Client;
@@ -118,7 +119,7 @@ public class SettingFragment extends Fragment {
         permissionManage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent tostart = new Intent(getActivity(), ManageActivity.class);
+                Intent tostart = new Intent(getActivity(), FeederListActivity.class);
                 startActivity(tostart);
             }
         });

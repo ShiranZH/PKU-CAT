@@ -13,17 +13,12 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.example.pkucat.App;
 import com.example.pkucat.R;
 import com.example.pkucat.net.APIException;
 import com.example.pkucat.net.Apply;
 import com.example.pkucat.net.Client;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.jar.Attributes;
 
 public class ApplyList extends BaseAdapter {
 
@@ -138,7 +133,7 @@ public class ApplyList extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.admin_user_item,null);
+        View view = inflater.inflate(R.layout.apply_list_item,null);
         final String userName = applyInfoList.get(position).userName;
         final String catName = applyInfoList.get(position).catName;
         TextView textViewName = view.findViewById(R.id.admin_name);

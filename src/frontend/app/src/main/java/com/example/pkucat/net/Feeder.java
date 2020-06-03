@@ -32,7 +32,7 @@ public class Feeder {
     }
     
     public String[] getFeeders() throws APIException {
-        if (feeders == null || feeders.length == 0)
+        //if (feeders == null || feeders.length == 0)
             refresh();
         return feeders;
     }
