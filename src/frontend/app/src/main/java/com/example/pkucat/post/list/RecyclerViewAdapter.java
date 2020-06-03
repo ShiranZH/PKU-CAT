@@ -6,7 +6,9 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -92,6 +94,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.mIndicator.setViewPager(holder.mPostImage);
 
+        //holder.mComment.setAdapter(new SimpleAdapter() {
+
+        //});
+
         // optional
         //pagerAdapter.registerDataSetObserver(holder.mIndicator.getDataSetObserver());
     }
@@ -106,6 +112,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private ImageView mAvatarPath;
         private ViewPager mPostImage;
         private CircleIndicator mIndicator;
+        private RecyclerView mComment;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -115,7 +122,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             mPostContent = itemView.findViewById(R.id.post_content);
             mPostImage = itemView.findViewById(R.id.post_collection);
             mIndicator = itemView.findViewById(R.id.post_indicator);
+            mComment = itemView.findViewById(R.id.post_comment_list);
 
+            // TODO: 点赞功能
             ShineButton btLike = (ShineButton) itemView.findViewById(R.id.bt_like);
             btLike.init((Activity) context);
 

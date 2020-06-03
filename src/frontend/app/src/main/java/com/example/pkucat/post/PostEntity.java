@@ -11,13 +11,15 @@ public class PostEntity implements Serializable {
     private String postTime;
     private String postContent;
     private ArrayList<Integer> imagePath;
+    private ArrayList<String> commentList;
 
-    public PostEntity(String avatarPath, String userName, String postTime, String postContent, ArrayList<Integer> imagePath) {
+    public PostEntity(String avatarPath, String userName, String postTime, String postContent, ArrayList<Integer> imagePath, ArrayList<String> commentList) {
         this.avatarPath = avatarPath;
         this.userName = userName;
         this.postTime = postTime;
         this.postContent = postContent;
         this.imagePath = imagePath;
+        this.commentList = commentList;
     }
 
     public PostEntity() {
@@ -26,6 +28,7 @@ public class PostEntity implements Serializable {
         this.postTime = "";
         this.postContent = "";
         this.imagePath = new ArrayList<>();
+        this.commentList = new ArrayList<>();
     }
 
     public Uri getAvatarPath() {

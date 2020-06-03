@@ -74,7 +74,7 @@ public class PostFragment extends Fragment {
         postEntities = new ArrayList<>();
         // TODO: 获取动态
         for (int i = 0; i < 5; i++) {
-            PostEntity postEntity = new PostEntity("", "User"+i, "Time", "POST"+i*10, new ArrayList<Integer>());
+            PostEntity postEntity = new PostEntity("", "User"+i, "Time", "POST"+i*10, new ArrayList<Integer>(), new ArrayList<String>());
             if (i == 0) {
                 if (getArguments() != null && getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                     postEntity.addImagePath(R.drawable.catexp);
