@@ -105,6 +105,7 @@ public class SoleArchive extends AppCompatActivity {
                 bundle.putByteArray("photo", cat.getAvatar());
                 intent.putExtras(bundle);
                 startActivity(intent);
+                finish();
             }
         });
     }
