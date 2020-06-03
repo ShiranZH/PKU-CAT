@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, QueryDict
 from .models import Post, Comment, Photo, Favor, TextKey
 from user.models import User
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 gen_response = {
     'success': { 
@@ -71,23 +72,20 @@ def posts(request):
 
         try:
             num = int(request.GET.get('limit', default=10)) #请求动态数量
-            start = int(request.GET.get('start', default=-1)) #起始动态id
+            start = int(request.GET.get('start', default=0)) #起始动态id
         except:
             return JsonResponse(gen_response['param_err'])
 
-        if start < 0:
-            post_list = Post.objects.order_by('-post_id')[:num] #获取最新动态
-        else:
-            post_list = Post.objects.filter(post_id__lt=start).order_by('-post_id')[:num]
+        post_list = Post.objects.order_by('-post_id')[start:start+num] #获取最新动态
         
         posts = []
         for item in post_list:
             
-            # 加载图片（仅多媒体内容为图片时加载一张）
+            # 加载图片
             multimedia = []
             if item.is_video == False:
-                photo_path = Photo.objects.filter(post=item)[0].photo
-            multimedia.append(photo_path)
+                for photo in Photo.objects.filter(post=item):
+                    multimedia.append(photo.photo)
             
             # 判断是否给自己点赞
             user = User.objects.get(id=request.user.id)
@@ -106,7 +104,7 @@ def posts(request):
             post_info =  {
                 'postID': item.post_id,
                 'publisher': publisher_info,
-                'time': item.time,
+                'time': int(item.time.timestamp()*1000),
                 'text': item.text,
                 'multimediaContent': multimedia,
                 'favor': {
@@ -127,6 +125,7 @@ def posts(request):
     else:
         return JsonResponse(gen_response['method_err'])
 
+@csrf_exempt
 def post(request):
 #动态获取、添加、删除
     if request.method == 'GET':
@@ -163,7 +162,7 @@ def post(request):
             comment_list.append({
                 'commentID': comment.id,
                 'user': user,
-                'time': comment.time,
+                'time': int(comment.time.timestamp()*1000),
                 'text': comment.text
             })
         if len(comment_list):
@@ -204,7 +203,7 @@ def post(request):
         post_info =  {
             'postID': post.post_id,
             'publisher': publisher_info,
-            'time': post.time,
+            'time': int(post.time.timestamp()*1000),
             'text': post.text,
             'isVideo': post.is_video,
             'multimediaContent': ['multimedia'],
@@ -224,46 +223,45 @@ def post(request):
         return JsonResponse(response)
         
     if request.method == 'POST':
-    # 发布动态, POST /post/
-        print('server receive POST', request.get_full_path())
-        
+        # 发布动态, POST /post/
+
         # 检查登陆状态
         if not request.user.is_authenticated:
             return JsonResponse(gen_response["user_error"])
         
-        info = request.POST.get('post')
-        info = json.loads(info)
-  
-        # 分析参数
-        if not 'publisher' in info:
-            return JsonResponse(gen_response['param_err'])
-        if not 'text' in info and not 'isVideo' in info:
+        text = request.POST.get('text')
+        isVideo = request.POST.get('isVideo')
+        print('isVideo', repr(isVideo))
+        multimediaContent = request.POST.getlist('multimediaContent')
+
+        if isVideo == '1':
+            isVideo = True
+        elif isVideo == '0':
+            isVideo = False
+        else:
             return JsonResponse(gen_response['param_err'])
 
-        # 从User数据库获取user
-        user_id = info['publisher']
-        try: 
-            publisher = User.objects.get(id=user_id)
-        except:
-            return JsonResponse(gen_response['user_not_exist'])
+        # 分析参数
+        if text is None and len(multimediaContent) == 0:
+            return JsonResponse(gen_response['param_err'])
+        if isVideo and len(multimediaContent) == 0:
+            return JsonResponse(gen_response['param_err'])
+
+
+        publisher = User.objects.get(id=request.user.id)
 
         # 创建数据库动态数据
         post = Post()
         post.publisher = publisher
-        try:
-            post.text = info['text']
-        except: pass
-        try:
-            post.is_video = info['isVideo']
-        except:
-            post.is_video = None
+        post.text = text if not text is None else ""
+        post.is_video = isVideo
         if post.is_video:
-            post.video = info['multimediaContent'][0]
+            post.video = multimediaContent[0]
         post.save()
 
         # 存储图片
-        if post.is_video == False:
-            for photo_path in info['multimediaContent']:
+        if isVideo == False:
+            for photo_path in multimediaContent:
                 photo = Photo()
                 photo.photo = photo_path
                 photo.post = post
@@ -277,7 +275,7 @@ def post(request):
             "code": 200,
             "data": {
                 "postID": post.post_id,
-                "time": post.time
+                "time": int(post.time.timestamp()*1000)
             } 
         }
         return JsonResponse(response)
@@ -382,7 +380,7 @@ def search(request):
             post_info =  {
                 'postID': item.post_id,
                 'publisher': publisher_info,
-                'time': item.time,
+                'time': int(item.time.timestamp()*1000),
                 'text': item.text,
                 'multimediaContent': multimedia,
                 'favor': {
@@ -404,6 +402,7 @@ def search(request):
     response = gen_response['method_err']
     return JsonResponse(response)
 
+@csrf_exempt
 def comments(request):
     if request.method == 'GET':
     # 获取评论列表, GET /post/comments/?postID=123&limit=10&start=10
@@ -416,7 +415,7 @@ def comments(request):
         try:
             post_id = int(request.GET.get('postID')) # 评论的动态id
             num = int(request.GET.get('limit', default=10)) # 获取多少个评论
-            start = int(request.GET.get('start', default=-1)) # 上一次获取的结束评论号
+            start = int(request.GET.get('start', default=0)) # 上一次获取的结束评论号
         except:
             return(JsonResponse(gen_response['param_err'])) 
         
@@ -428,10 +427,7 @@ def comments(request):
         # 获取评论区列表
         total_cnt = Comment.objects.filter(post=post).count()
 
-        if start < 0:
-            comments = Comment.objects.filter(post=post)[:num] #获取最新动态
-        else:
-            comments = Comment.objects.filter(post=post).filter(id__gt=start)[:num]
+        comments = Comment.objects.filter(post=post).order_by('-id')[start:start+num]
 
         comment_list = []
         for comment in comments:
@@ -444,7 +440,7 @@ def comments(request):
             comment_list.append({
                 'commentID': comment.id,
                 'user': user,
-                'time': comment.time,
+                'time': int(comment.time.timestamp()*1000),
                 'text': comment.text
             })
         if len(comment_list):
@@ -469,6 +465,7 @@ def comments(request):
     response = gen_response['method_err']
     return JsonResponse(response)
 
+@csrf_exempt
 def favor(request):
     if request.method == 'POST':
     # 点赞, POST /post/favor/?postID=123&userID=123
@@ -480,7 +477,7 @@ def favor(request):
         
         try:
             post_id = int(request.POST.get('postID'))
-            user_id = int(request.POST.get('userID'))
+            user_id = request.user.id
         except:
             return(JsonResponse(gen_response['param_err'])) 
         
@@ -550,6 +547,8 @@ def favor(request):
 
     return JsonResponse(gen_response['method_err'])
 
+
+@csrf_exempt
 def comment(request):
     if request.method == 'POST':
     # 评论, POST /post/comment/?postID=123&userID=123&text=“test”
@@ -561,7 +560,7 @@ def comment(request):
         
         try:
             post_id = int(request.POST.get('postID'))
-            user_id = int(request.POST.get('userID'))
+            user_id = request.user.id
             text = request.POST.get('text', default='')
         except:
             return(JsonResponse(gen_response['param_err'])) 

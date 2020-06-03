@@ -7,6 +7,7 @@ import django.contrib.auth as auth
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import QueryDict
 
+from feeder.models import *
 from demo.config import CODE
 from user.models import Verification, User
 import file
@@ -270,7 +271,9 @@ def profile(request):
                 user_profile['email'] = user.pku_mail 
                 user_profile['whatsup'] = user.whatsup
                 user_profile['is_admin'] = user.is_superuser
-                user_profile['feed'] = [1, 2] if user.is_superuser else [] # TODO
+                user_profile['feed'] = []
+                for feed in Feed.objects.filter(feeder=user):
+                    user_profile['feed'].append(feed.cat.id)
                 code = CODE['success']
                 msg = 'success'
             else:
@@ -279,11 +282,9 @@ def profile(request):
         elif request.method == 'PUT':
             user = User.objects.get(id=request.user.id)
             
-            # PUT = QueryDict(request.body)
-            PUT = eval(str(request.body, encoding="utf-8"))
-            username = PUT.get('username')
-            avatar = PUT.get('avatar')
-            whatsup = PUT.get('whatsup')
+            username = request.GET.get('username')
+            avatar = request.GET.get('avatar')
+            whatsup = request.GET.get('whatsup')
 
             if username or avatar or whatsup:
                 msg = ""
@@ -324,15 +325,3 @@ def profile(request):
         }
     }
     return JsonResponse(response)
-import requests
-@csrf_exempt
-def mytest(request):
-    msg = ''
-    msg += "request.method: " + repr(request.method) + '\n'
-    msg += "request.body:   " + repr(request.body) + '\n'
-    msg += "request.GET:    " + repr(request.GET) + '\n'
-    msg += "request.FILES:  " + repr(request.FILES) + '\n'
-    msg += "request.POST:   " + repr(request.POST) + '\n'
-    # hashlib.sha256(bytes("ZHD123",encoding="utf-8")).hexdigest()
-
-    return HttpResponse(msg)
