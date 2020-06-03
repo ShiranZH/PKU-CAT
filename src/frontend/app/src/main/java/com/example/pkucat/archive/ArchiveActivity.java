@@ -96,25 +96,31 @@ public class ArchiveActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-//        try {
-//            boolean f=client.user.getProfile().isAdmin;
-//        } catch (APIException e) {
-//            e.printStackTrace();
-//        }
-        ImageView icon = new ImageView(this);
-        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_post_text));
-        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
-                .setContentView(icon)
-                .build();
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(ArchiveActivity.this, ArchiveAdminitrationActivity.class);
-                startActivity(intent);
+        try {
+            if (client.user.getProfile()!=null) {
+                try {
+                    if (client.user.getProfile().isAdmin) {
+                        ImageView icon = new ImageView(this);
+                        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_post_text));
+                        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
+                                .setContentView(icon)
+                                .build();
+                        actionButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent();
+                                intent.setClass(ArchiveActivity.this, ArchiveAdminitrationActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                } catch (APIException e) {
+                    e.printStackTrace();
+                }
             }
-        });
+        } catch (APIException e) {
+            e.printStackTrace();
+        }
     }
 
 
