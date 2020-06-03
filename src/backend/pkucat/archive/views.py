@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-# Create your views here.
-from django.shortcuts import HttpResponse
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.http import HttpResponse, JsonResponse
 from django.http import QueryDict
 from .models import Cat, Archive, Photo, Relationship
 
@@ -19,7 +19,7 @@ def archives(request):
         for c in cats:
             catInfo = {
                 "name": c.name,
-                "catID": c.catID,
+                "catID": c.id,
                 "avatar": c.avatar
             }
             catlist.append(catInfo)
@@ -30,36 +30,67 @@ def archives(request):
                 "catList": catlist
             }
         }
-        return HttpResponse(response)
+        return JsonResponse(response)
     response = {
         "code": 600,
         "data": {
             "msg": "wrong method"
         } 
     }
-    return HttpResponse(response)
+    return JsonResponse(response)
 
+@csrf_exempt
 def archive(request):
+    # if not request.user.is_authenticated:
+    #     response = {
+    #         "code": 400,
+    #         "data": {
+    #             "msg": "not authorized"
+    #         }
+    #     }
+    #     return JsonResponse(response)
     if request.method == 'GET':
-    #Archive_detail 查看猫咪档案详情    GET /archive?catid=10  
-    #Archive_search 搜索猫咪           GET /archive?keyword="大威"
+        #Archive_detail 查看猫咪档案详情    GET /archive?catid=10  
+        #Archive_search 搜索猫咪           GET /archive?keyword="大威"
         catid = request.GET.get('catid', default=None)
         keyword = request.GET.get('keyword', default=None)
-        if catid:
         #查看猫咪档案详情
-            cat_name = Cat.objects.get(catID=catid).name
+        if catid:
+            try:
+                catid = int(catid)
+            except:
+                response = {
+                    'code': 700,
+                    'data': {
+                        'msg': 'wrong parameter'
+                    }
+                }
+            try:
+                cat_name = Cat.objects.get(id=catid).name
+            except:
+                response = {
+                    'code': 300,
+                    'data': {
+                        'msg': 'archive not exist'
+                    }
+                }
+                return JsonResponse(response)
             archive_one = Archive.objects.get(name=cat_name)
             related_cats_list = []
             for c in archive_one.relatedCats.all():
                 relateCatInfo = {
-                    "relatedCat": c.catID,
+                    "relatedCat": c.id,
                     "relation": Relationship.objects.filter(archive=archive_one, cat=c).first().relation
                 }
                 related_cats_list.append(relateCatInfo)
+            photo_list = []
+            for photo in Photo.objects.filter(containing_archive=archive_one):
+                photo_list.append(photo.photo_url)
             archive_detail = {
                 "catName": archive_one.name,
                 "introduction": archive_one.introduction,
-                "relatedCats": related_cats_list
+                "relatedCats": related_cats_list,
+                "photos": photo_list,
             }
             response = {
                 "code": 200,
@@ -75,7 +106,7 @@ def archive(request):
             for search_cat in search_cats:
                 catInfo = {
                     "name": search_cat.name,
-                    "catID": search_cat.catID,
+                    "catID": search_cat.id,
                     "avatar": search_cat.avatar
                 }
                 search_results.append(catInfo)
@@ -93,30 +124,46 @@ def archive(request):
                     "msg": "wrong parameter"
                 }
             }
-        return HttpResponse(response)
+        return JsonResponse(response)
     
         
     if request.method == 'PUT':
-    #Archive_modify 修改猫咪档案        PUT /archive
-        put = QueryDict(request.body)
-        catid_modify = put.get('catID')
-        introduction_modify = put.get('introduction')
-        add_photos = put.getlist('addPhotos')#python列表   image是个啥类型？暂时写成urlstring
-        delete_images = put.getlist('deleteImages')#python列表
-        related_cat_list = put.getlist('relatedCats')
+        # Archive_modify 修改猫咪档案        PUT /archive
+        catid_modify = request.GET.get('id')
+        avatar = request.GET.get('avatar')
+        introduction_modify = request.GET.get('introduction')
+        add_photos = request.GET.getlist('addPhotos')#python列表   image是个啥类型？暂时写成urlstring
+        delete_images = request.GET.getlist('deleteImages')#python列表
+        related_cat_list = request.GET.getlist('relatedCats')
 
-        target_cat_name = Cat.objects.get(catID=catid_modify).name
+        if not Cat.objects.filter(id=catid_modify).exists():
+            response = {
+                "code": 700,
+                "data": {
+                    "msg": "wrong parameter"
+                }
+            }
+            return JsonResponse(response)
+
+        target_cat = Cat.objects.get(id=catid_modify)
+        target_cat_name = Cat.objects.get(id=catid_modify).name
         target_archive = Archive.objects.get(name=target_cat_name)
-        target_archive.introduction=introduction_modify
+        if not introduction_modify is None:
+            target_archive.introduction=introduction_modify
+        if not avatar is None:
+            target_cat.avatar=avatar
+            target_cat.save()
         #relatedCats操作
         for related_cat in related_cat_list:
             cat_related = related_cat["relatedCat"]#catID
             relationship = related_cat["relation"]
             #target_archive.relationship_set.
-            if not target_archive.relatedCats.all().filter(catID=cat_related).exists():#cat可以是catID么？
-                target_cat = Cat.objects.filter(catID=cat_related).first()
+            if not target_archive.relatedCats.all().filter(id=cat_related).exists():#cat可以是catID么？
+                target_cat = Cat.objects.filter(id=cat_related).first()
                 target_archive.relatedCats.add(target_cat)#add(Cat对象) 直接cat_related?
-                Relationship.objects.filter(archive=target_archive, cat=target_cat).first().relation = relationship
+                r = Relationship.objects.filter(archive=target_archive, cat=target_cat).first()
+                r.relation = relationship
+                r.save()
         
         target_archive.save()
         #photos增减
@@ -131,7 +178,7 @@ def archive(request):
                 "msg": "success"
             }
         }
-        return HttpResponse(response)
+        return JsonResponse(response)
 
 
     if request.method == 'POST':
@@ -147,7 +194,7 @@ def archive(request):
         for c in related_cat_list_add:
             cat_related = c["relatedCat"]#catID
             relationship = c["relation"]
-            related_cat_add = Cat.objects.filter(catID=cat_related).first()
+            related_cat_add = Cat.objects.filter(id=cat_related).first()
             archive_add.relatedCats.add(related_cat_add)#
             Relationship.objects.create(archive=archive_add, cat=related_cat_add, relation=relationship)
         archive_add.save()
@@ -161,17 +208,17 @@ def archive(request):
             "code": 200,
             "data": {
                 "msg": "success",
-                "catID": cat_add.catID
+                "catID": cat_add.id
             }
         }
-        return HttpResponse(response)
+        return JsonResponse(response)
     response = {
         "code": 600,
         "data": {
             "msg": "wrong method"
         } 
     }
-    return HttpResponse(response)
+    return JsonResponse(response)
 
 
         
