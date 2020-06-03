@@ -282,11 +282,9 @@ def profile(request):
         elif request.method == 'PUT':
             user = User.objects.get(id=request.user.id)
             
-            PUT = QueryDict(request.body)
-            # PUT = eval(str(request.body, encoding="utf-8"))
-            username = PUT.get('username')
-            avatar = PUT.get('avatar')
-            whatsup = PUT.get('whatsup')
+            username = request.GET.get('username')
+            avatar = request.GET.get('avatar')
+            whatsup = request.GET.get('whatsup')
 
             if username or avatar or whatsup:
                 msg = ""
@@ -327,16 +325,3 @@ def profile(request):
         }
     }
     return JsonResponse(response)
-import requests
-@csrf_exempt
-def mytest(request):
-    msg = ''
-    msg += "request.method: " + repr(request.method) + '\n'
-    msg += "request.body:   " + repr(request.body) + '\n'
-    msg += "request.GET:    " + repr(request.GET) + '\n'
-    msg += "request.FILES:  " + repr(request.FILES) + '\n'
-    msg += "request.POST:   " + repr(request.POST) + '\n'
-    msg += "QueryDict:   " + repr(QueryDict(request.body)) + '\n'
-    # hashlib.sha256(bytes("ZHD123",encoding="utf-8")).hexdigest()
-
-    return HttpResponse(msg)
