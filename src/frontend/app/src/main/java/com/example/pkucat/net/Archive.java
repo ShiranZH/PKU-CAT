@@ -13,7 +13,10 @@ public class Archive {
         cats = new HashMap<String, Cat>();
     }
 
-    public Cat getArchive(String catID) {
+    public Cat getArchive(String catID) throws APIException {
+        if (cats.size() == 0) {
+            refreshCats();
+        }
         if (!cats.containsKey(catID))
             return null;
         return cats.get(catID);

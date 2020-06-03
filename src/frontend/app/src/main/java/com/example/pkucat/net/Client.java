@@ -29,6 +29,7 @@ public class Client {
     public User user;
     public Archive archive;
     public PostManager post;
+    public Feeder feeder;
     
     public Client(String protocol, String serverIP, String host)
     {
@@ -38,6 +39,7 @@ public class Client {
         this.user = new User();
         this.archive = new Archive();
         this.post = new PostManager();
+        this.feeder = new Feeder();
     }
 
     public String[] uploadPicture(File[] files) throws APIException {

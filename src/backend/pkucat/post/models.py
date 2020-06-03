@@ -5,8 +5,10 @@ from user.models import User
 重定义文件上传路径
 /static/%post_id/%filename
 '''
+'''
 def upload_to(instance, fielname):
     return '/'.join(['/home/ubuntu/static', instance.post_id, filename])
+'''
 
 '''
 Post: 动态类
@@ -17,7 +19,6 @@ Post: 动态类
     text: 文本
     is_video: 多媒体内容类别,True=视频,False=图片,Null=没有多媒体内容
     video: 视频地址(可以为空)
-    self_favor: 用户是否为自己点赞,True=点赞
 
 外键:
     publisher: 动态发布者, user.models.User类
@@ -29,7 +30,10 @@ class Post(models.Model):
     text = models.CharField(max_length=2000, null=True)
     is_video = models.NullBooleanField(default=None)
     video = models.CharField(max_length=128, null=True)
-    self_favor = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = '动态'
+        verbose_name_plural = '动态'
 
 '''
 Comment: 评论类
@@ -41,7 +45,6 @@ Comment: 评论类
 外键:
     post: 评论动态主键, post.models.Post类
     user: 评论发布者主键, user.models.User类
-    parent: 回复评论主键, post.models.Comment类
 
 '''
 class Comment(models.Model):
@@ -49,7 +52,10 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     time = models.DateTimeField(auto_now_add=True)
     text = models.CharField(max_length=500)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        verbose_name = '评论'
+        verbose_name_plural = '评论'
 
 '''
 Photo: 图片类
@@ -63,6 +69,10 @@ Photo: 图片类
 class Photo(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     photo = models.CharField(max_length=128)
+
+    class Meta:
+        verbose_name = '图片'
+        verbose_name_plural = '图片'
 
 '''
 Favor: 点赞记录类
@@ -79,4 +89,6 @@ class Favor(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('post','user')
+        unique_together = ('post', 'user')
+        verbose_name = '点赞记录'
+        verbose_name_plural = '点赞记录'
