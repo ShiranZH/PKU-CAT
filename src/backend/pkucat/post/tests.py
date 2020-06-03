@@ -22,10 +22,6 @@ class PostTests(TestCase):
         u.save()
         self.user, self.reader, self.unlogin = User.objects.order_by('id')
 
-        # 登录
-        response = self.client.post('/user/login', {'username':'testuser1', 'password':hash('123456')})
-        response = self.client.post('/user/login', {'username':'testuser2', 'password':hash('123456')})
-
         # 测试数据库添加数据
         post1 = Post()
         post1.publisher=self.user
@@ -47,12 +43,7 @@ class PostTests(TestCase):
         Favor.objects.create(post=post2, user=self.reader)
         Comment.objects.create(post=post2, user=self.user, text='comment1')
         Comment.objects.create(post=post2, user=self.user, text='comment2')
-        '''
-        favor1 = Favor()
-        favor1.post = post1
-        favor1.user = self.user
-        favor1.save()
-        '''
+        
         self.post1 = post1
         self.post2 = post2
 
