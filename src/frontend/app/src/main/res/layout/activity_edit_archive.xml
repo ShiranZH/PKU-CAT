@@ -1,0 +1,50 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:gravity="center"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <Button
+            android:id="@+id/change_pic_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/shape_archive_search"
+            android:text="更改图片"
+            android:textColor="#262626"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/sole_archive_pic"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_margin="15dp"
+            app:srcCompat="@drawable/catexp" />
+
+        <Button
+            android:id="@+id/change_intro_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginLeft="25dp"
+            android:background="@drawable/shape_archive_search"
+            android:text="更改介绍"
+            android:textColor="#262626"
+            android:textSize="18sp" />
+        <EditText
+            android:id="@+id/edit_cat_intro"
+            android:layout_width="353dp"
+            android:layout_height="wrap_content"
+            android:drawableBottom="@color/cardview_dark_background"
+            android:ems="20"
+            android:layout_marginLeft="25dp"
+            android:text="昵称：女皇\n毛色：长毛灰\n性别：母\n状况：送养\n绝育情况：已绝育\n绝育时间：2019-07-09\n外貌：瘦，近似美短的灰色+黑纹\n性格：亲人可抱\n第一次目击时间：2019-05-24" />
+    </LinearLayout>
+</ScrollView>
