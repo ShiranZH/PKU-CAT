@@ -18,8 +18,8 @@ import com.example.pkucat.R;
 
 public class ManageActivity extends AppCompatActivity {
 
-    private ListView adminUserListView;
-    private AdminUserList adminUserList;
+    private ListView applyListView;
+    private ApplyList applyList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,10 +36,10 @@ public class ManageActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        adminUserListView = findViewById(R.id.admin_user_list);
+        applyListView = findViewById(R.id.apply_list);
         App app = (App)getApplication();
-        adminUserList = new AdminUserList(this, app.client);
-        adminUserListView.setAdapter(adminUserList);
+        applyList = new ApplyList(this, app.client);
+        applyListView.setAdapter(applyList);
     }
 
     /*@Override

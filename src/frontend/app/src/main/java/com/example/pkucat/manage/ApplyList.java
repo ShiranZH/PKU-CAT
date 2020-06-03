@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.jar.Attributes;
 
-public class AdminUserList extends BaseAdapter {
+public class ApplyList extends BaseAdapter {
 
     private Context mContext;
     private Client client;
@@ -66,7 +66,7 @@ public class AdminUserList extends BaseAdapter {
     }
     ArrayList<ApplyInfo> applyInfoList;
 
-    public AdminUserList(Context mContext, Client client)
+    public ApplyList(Context mContext, Client client)
     {
         super();
         this.mContext = mContext;
