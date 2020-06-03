@@ -59,14 +59,10 @@ public class PostManager {
             throw new APIException(retData);
     }
     
-    public void addPost(String text, File video, boolean isVideo) throws APIException {
-        File[] files = new File[]{video};
+    public void addPost(String text, File file, boolean isVideo) throws APIException {
+        File[] files = new File[]{file};
         String[] urls = Session.uploadPicture(files);
         JSONObject data = new JSONObject();
-//        JSONArray ps = new JSONArray();
-//        for (int i = 0; i < urls.length; ++i) {
-//            ps.put(urls[i]);
-//        }
         data.put("multimediaContent", urls[0]);
         if (isVideo)
             data.put("isVideo", "1");
