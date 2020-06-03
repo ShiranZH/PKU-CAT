@@ -2,30 +2,44 @@ import os
 import json
 from django.test import TestCase, Client
 from django.http import HttpResponse, JsonResponse, QueryDict
-from .models import Post, Comment, Photo, Favor
+from .models import Post, Comment, Photo, Favor, TextKey
 from user.models import User
 
 class PostTests(TestCase):
     # 初始化
     def setUp(self):
         # 添加用户
-        User.objects.create_user(username='testuser1', password='000000', pku_mail='testuser1@pku.edu.cn')
-        User.objects.create_user(username='testuser2', password='000000', pku_mail='testuser2@pku.edu.cn')
-        self.user, self.reader = User.objects.order_by('id')
+        u = User.objects.create_user(username='testuser1', password='123456', pku_mail='testuser1@pku.edu.cn')
+        u.sha256_password = hash("123456")
+        u.save()
+
+        u = User.objects.create_user(username='testuser2', password='123456', pku_mail='testuser2@pku.edu.cn')
+        u.sha256_password = hash("123456")
+        u.save()
+
+        u = User.objects.create_user(username='testuser3', password='123456', pku_mail='testuser3@pku.edu.cn')
+        u.sha256_password = hash("123456")
+        u.save()
+        self.user, self.reader, self.unlogin = User.objects.order_by('id')
+
+        # 登录
+        response = self.client.post('/user/login', {'username':'testuser1', 'password':hash('123456')})
+        response = self.client.post('/user/login', {'username':'testuser2', 'password':hash('123456')})
 
         # 测试数据库添加数据
         post1 = Post()
         post1.publisher=self.user
         post1.text = 'test1'
         post1.self_favor = True
+        post1.is_video = False
         post1.save()
         Comment.objects.create(post=post1, user=self.user, text='comment0')
-        '''
+        
         photo1 = Photo()
-        photo1.post_id = post1
+        photo1.post = post1
         photo1.photo = '/home/ywq/cat1.jpg'
         photo1.save()
-        '''
+        
         post2 = Post(post_id=post1.post_id+2)
         post2.publisher=self.user
         post2.text = 'test2'
@@ -44,6 +58,8 @@ class PostTests(TestCase):
 
     # 测试POST动态功能
     def test_post_post(self):
+
+        # 未登陆
 
         # 参数错误
         data = json.dumps({'publisher':self.user.id, 'test':'test3'})

@@ -1,8 +1,10 @@
 import os
 import json
+import jieba.analyse
+from multiprocessing import Process
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, QueryDict
-from .models import Post, Comment, Photo, Favor
+from .models import Post, Comment, Photo, Favor, TextKey
 from user.models import User
 
 gen_response = {
@@ -43,6 +45,15 @@ gen_response = {
         }
     }
 }
+
+# 插入关键词多进程
+def insert_key(text, post):
+    #获取tf-idf排序下前10个关键词
+    keywords = jieba.analyse.extract_tags(text, topK=10)
+    for key in keywords:
+        try:
+            TextKey(key=key, post=post).save()
+        except: pass
 
 def demo(request):
     return HttpResponse('Post Response')
@@ -236,7 +247,7 @@ def post(request):
         except:
             return JsonResponse(gen_response['user_not_exist'])
 
-        # 创建数据库数据
+        # 创建数据库动态数据
         post = Post()
         post.publisher = publisher
         try:
@@ -257,6 +268,10 @@ def post(request):
                 photo.photo = photo_path
                 photo.post = post
                 photo.save()
+        
+        # 使用多进程创建关键词数据, 避免影响主进程运行
+        p = Process(target=insert_key, args=(post.text, post))
+        p.start()
         
         response = {
             "code": 200,
@@ -312,7 +327,7 @@ def post(request):
 def search(request):
 # 搜索动态
     if request.method == 'GET':
-    # 搜索动态, GET /posts/search/?userID=123
+    # 搜索动态, GET /posts/search/?userID=123&keyword=大威
         print('server receive GET', request.get_full_path())
         
         # 检查登陆状态
@@ -320,28 +335,29 @@ def search(request):
             return JsonResponse(gen_response["user_error"])
         
         try:
-            user_id = int(request.GET.get('userID'))
-        except:
-            return JsonResponse(gen_response['param_err'])
-        '''
-        try:
-            user_id = request.GET.get('userID', default=-1)
+            user_id = int(request.GET.get('userID', default=-1))
             keyword = request.GET.get('keyword', default=None)
             if user_id < 0 and keyword==None:
-                response = gen_response['param_err']
-                return JsonResponse(response)
+                return JsonResponse(gen_response['param_err'])
         except:
-            response = gen_response['param_err']
-            return JsonResponse(response)
-        '''
+            return JsonResponse(gen_response['param_err'])
 
-        # 从User数据库获取user
-        try: 
-            publisher = User.objects.get(id=user_id)
-        except:
-            return JsonResponse(gen_response['user_not_exist'])
+        if user_id >= 0:
+            # 从User数据库获取user
+            try: 
+                publisher = User.objects.get(id=user_id)
+            except:
+                return JsonResponse(gen_response['user_not_exist'])
 
-        post_list = Post.objects.filter(publisher=publisher)
+            post_list = Post.objects.filter(publisher=publisher)
+
+        else:
+            # 获取包含该关键词的post
+            keyword_list = TextKey.objects.filter(key=keyword)
+            post_list = []
+            for key in keyword_list:
+                post_list.append(key.post) 
+
         posts = []
         for item in post_list:
             
