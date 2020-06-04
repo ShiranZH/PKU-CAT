@@ -36,13 +36,16 @@ public class PostManager {
             int postCnt = retData.getJSONObject("data").getInt("downloadCount");
             Post[] posts = new Post[postCnt];
             JSONArray postArray = retData.getJSONObject("data").getJSONArray("posts");
+
             for (int i = 0; i < postArray.length(); ++i) {
+
+                System.out.println(postArray.getJSONObject(i));
                 posts[i] = new Post(postArray.getJSONObject(i));
             }
             
             return posts;
         } catch (JSONException e) {
-            throw new APIException("404", "·µ»ØÖµ´íÎó");
+            throw new APIException("404", "è¿”å›žå€¼é”™è¯¯");
         } catch (APIException e) {
             throw e;
         }
@@ -75,12 +78,12 @@ public class PostManager {
         try {
             byte[] ret = Session.post("/user/post/post", data, null);
             if (ret == null)
-                throw new APIException("404", "ÍøÂç´íÎó");
+                throw new APIException("404", "ç½‘ç»œé”™è¯¯");
             JSONObject retData = new JSONObject(new String(ret));
             if (retData.getInt("code") != 200)
                 throw new APIException(retData);
         } catch (JSONException e) {
-            throw new APIException("404", "·µ»ØÖµ´íÎó");
+            throw new APIException("404", "è¿”å›žå€¼é”™è¯¯");
         } catch (APIException e) {
             throw e;
         }

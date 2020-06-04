@@ -137,7 +137,7 @@ public class Session {
             
             return urls;
         } catch (JSONException e) {
-            throw new APIException("404", "·µ»ØÖµ´íÎó");
+            throw new APIException("404", "è¿”å›žå€¼é”™è¯¯");
         } catch (APIException e) {
             throw e;
         }
@@ -165,7 +165,7 @@ public class Session {
             
             return urls;
         } catch (JSONException e) {
-            throw new APIException("404", "·µ»ØÖµ´íÎó");
+            throw new APIException("404", "è¿”å›žå€¼é”™è¯¯");
         } catch (APIException e) {
             throw e;
         }
@@ -190,6 +190,8 @@ class RequestThread extends Thread {
     }
     public void run() {
         try {
+
+            System.out.println(urlStr+"?"+Session.json2Url(data));
             URL url = new URL(urlStr+"?"+Session.json2Url(data));
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestMethod(method);
