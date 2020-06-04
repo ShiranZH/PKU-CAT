@@ -43,7 +43,7 @@ public class Archive {
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            throw new APIException("404", "·µ»ØÖµ´íÎó");
+            throw new APIException("404", "è¿”å›žå€¼é”™è¯¯");
         } catch (APIException e) {
             throw e;
         }

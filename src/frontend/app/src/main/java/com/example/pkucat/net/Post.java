@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,13 +37,56 @@ public class Post {
         this.comments = null;
     }
     
-    public void addFavor() {
+    public void addFavor() throws APIException {
+        if (isFavor == false) {
+            JSONObject data = new JSONObject();
+            data.put("postID", postID);
+            byte[] ret = Session.post("/user/post/favor", data, null);
+            
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+        }
     }
     
     public HashMap<String, byte[]> getPhotos() {
         return photos;
     }
     
-    public void addComment(String text) {
+    public Comment[] getComments(int num, int start) throws APIException {
+        try {
+            JSONObject data = new JSONObject();
+            data.put("postID", String.valueOf(postID));
+            data.put("limit", String.valueOf(num));
+            data.put("start", String.valueOf(start));
+            byte[] ret = Session.get("/user/post/comments", data);
+
+            JSONObject retData = new JSONObject(new String(ret));
+            if (retData.getInt("code") != 200)
+                throw new APIException(retData);
+            int commentCnt = retData.getJSONObject("data").getJSONObject("commentList").getInt("downloadCount");
+            Comment[] comments = new Comment[commentCnt];
+            JSONArray postArray = retData.getJSONObject("data").getJSONObject("commentList").getJSONArray("comments");
+            for (int i = 0; i < postArray.length(); ++i) {
+                comments[i] = new Comment(postArray.getJSONObject(i));
+            }
+            
+            return comments;
+        } catch (JSONException e) {
+            throw new APIException("404", "·µ»ØÖµ´íÎó");
+        } catch (APIException e) {
+            throw e;
+        }
+    }
+    
+    public void addComment(String text) throws APIException {
+        JSONObject data = new JSONObject();
+        data.put("text", text);
+        data.put("postID", postID);
+        byte[] ret = Session.post("/user/post/comment", data, null);
+        
+        JSONObject retData = new JSONObject(new String(ret));
+        if (retData.getInt("code") != 200)
+            throw new APIException(retData);
     }
 }

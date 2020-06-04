@@ -6,9 +6,19 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:orientation="vertical"
-    android:padding="15dp"
     tools:context=".archive.ArchiveActivity">
+<!--    <com.google.android.material.appbar.AppBarLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:theme="@style/AppTheme.AppBarOverlay">-->
 
+<!--        <com.google.android.material.tabs.TabLayout-->
+<!--            android:id="@+id/tabs_archive"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="?attr/colorPrimary" />-->
+
+<!--    </com.google.android.material.appbar.AppBarLayout>-->
     <LinearLayout
         android:id="@+id/fragment1"
         android:layout_width="match_parent"

@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".manage.ManageActivity">
+    tools:context=".manage.FeederListActivity">
 
     <ListView
-        android:id="@+id/apply_list"
+        android:id="@+id/feeder_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="15dp">

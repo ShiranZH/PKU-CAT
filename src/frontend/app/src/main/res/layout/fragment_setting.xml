@@ -106,11 +106,12 @@
             android:layout_height="wrap_content"
             android:text="@string/setting_logout"
             android:textSize="24sp" />
+
         <Button
             android:id="@+id/button4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/b4"
+            android:text="查看饲养员列表"
             android:textSize="24sp" />
 
     </LinearLayout>
