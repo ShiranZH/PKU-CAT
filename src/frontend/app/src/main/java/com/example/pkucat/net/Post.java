@@ -37,7 +37,7 @@ public class Post {
         this.comments = null;
     }
     
-    public void addFavor() throws APIException {
+    public void addFavor() throws APIException, JSONException {
         if (isFavor == false) {
             JSONObject data = new JSONObject();
             data.put("postID", postID);
@@ -73,13 +73,13 @@ public class Post {
             
             return comments;
         } catch (JSONException e) {
-            throw new APIException("404", "·µ»ØÖµ´íÎó");
+            throw new APIException("404", "è¿”å›žå€¼é”™è¯¯");
         } catch (APIException e) {
             throw e;
         }
     }
     
-    public void addComment(String text) throws APIException {
+    public void addComment(String text) throws APIException, JSONException {
         JSONObject data = new JSONObject();
         data.put("text", text);
         data.put("postID", postID);
