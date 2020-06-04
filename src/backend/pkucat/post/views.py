@@ -222,7 +222,7 @@ def post(request):
         
         text = request.POST.get('text')
         isVideo = request.POST.get('isVideo')
-        print('isVideo', repr(isVideo))
+        #print('isVideo', repr(isVideo))
         multimediaContent = request.POST.getlist('multimediaContent')
 
         if isVideo == '1':
@@ -333,9 +333,6 @@ def search(request):
                 return JsonResponse(gen_response['param_err'])
         except:
             return JsonResponse(gen_response['param_err'])
-
-        for keys in TextKey.objects.order_by('id'):
-            print(keys.key)
 
         if user_id >= 0:
             # 从User数据库获取user
