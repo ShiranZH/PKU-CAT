@@ -13,22 +13,22 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.pkucat.R;
 import com.example.pkucat.net.Cat;
 
+
 import java.util.HashMap;
 
-public class MyArchiveList extends BaseAdapter {
+public class RelationList extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mLayoutInflater;
-    private Cat cats[];
+    private RelatedCat relatedCats[];
     private int size;
-    MyArchiveList(Context context, HashMap<String, Cat> archiveCats){
+    RelationList(Context context, RelatedCat relatedcats[], int size){
+        this.relatedCats=relatedcats;
         this.mContext = context;
-        this.size = archiveCats.size();
-        cats = new Cat[this.size];
-        for (int i=1;i<=this.size;i++) {
-            this.cats[i-1]=archiveCats.get(String.valueOf(i));
-        }
+        this.size = size;
         mLayoutInflater = LayoutInflater.from(mContext);
     }
+
+
     @Override
     public int getCount() {
         return size;
@@ -53,7 +53,7 @@ public class MyArchiveList extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder=null;
         if (convertView == null){
-            convertView = mLayoutInflater.inflate(R.layout.archive_item,null);
+            convertView = mLayoutInflater.inflate(R.layout.relation_cat_item,null);
             holder = new ViewHolder();
             holder.imageView = (ImageView) convertView.findViewById(R.id.catview);
             holder.itemTitle = (TextView) convertView.findViewById(R.id.item_title);
@@ -63,6 +63,8 @@ public class MyArchiveList extends BaseAdapter {
         }
         //给控件赋值
         RequestOptions mRequestOptions = RequestOptions.circleCropTransform();
+        holder.itemTitle.setText(relatedCats[position].relation+"："+relatedCats[position].name);
+        Glide.with(mContext).load(relatedCats[position].avatar).apply(mRequestOptions).into(holder.imageView);
 //        switch (position%3) {
 //            case 0:
 //                holder.itemTitle.setText("山岚");
@@ -76,10 +78,7 @@ public class MyArchiveList extends BaseAdapter {
 //                holder.itemTitle.setText("小芝麻");
 //                Glide.with(mContext).load(R.drawable.catexp2).apply(mRequestOptions).into(holder.imageView);
 //                break;
-//
 //        }
-        holder.itemTitle.setText(cats[position].name);
-        Glide.with(mContext).load(cats[position].getAvatar()).apply(mRequestOptions).into(holder.imageView);
         return convertView;
     }
 }

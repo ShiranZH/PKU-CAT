@@ -1,5 +1,6 @@
 package com.example.pkucat.setting;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -23,6 +24,8 @@ import com.example.pkucat.App;
 import com.example.pkucat.R;
 
 import java.net.URL;
+import com.example.pkucat.net.*;
+import com.example.pkucat.net.Client;
 
 public class SettingFragment extends Fragment {
     private SettingViewModel settingViewModel;
@@ -30,6 +33,7 @@ public class SettingFragment extends Fragment {
     private Bitmap bitmap;
     private Handler bmpArrived;
     private Button permissionManage;
+    private Button logout_button;
     private TextView username, mail;
     private ImageView avatar;
 
@@ -71,6 +75,7 @@ public class SettingFragment extends Fragment {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO
             }
         });
 
@@ -79,6 +84,25 @@ public class SettingFragment extends Fragment {
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO
+            }
+        });
+
+        // 退出登录
+        logout_button = root.findViewById(R.id.setting_logout);
+        logout_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Client client = app.client;
+                    client.user.logout();
+                    app.logout();
+                    refreshSettingFragment();
+                }
+                catch (APIException e)
+                {
+
+                }
             }
         });
 
@@ -106,30 +130,28 @@ public class SettingFragment extends Fragment {
         return root;
     }
 
-    public void onResume(){
-        super.onResume();if(true)return;
+    private void refreshSettingFragment()
+    {
         if(app.getPermission()<2){
             permissionManage.setVisibility(View.INVISIBLE);
         }
+        else permissionManage.setVisibility(View.VISIBLE);
         if(!app.isguest()){
             username.setText(app.getUsername());
             mail.setText(app.getMail());
-            new Thread(){
-                public void run(){
-                    try {
-                        bitmap = Client.getBmp(new URL("https", app.serverIP, app.getPhotoUrl()));
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    if(bitmap != null) bmpArrived.sendEmptyMessage(0x2233);
-                }
-            }.start();
+            logout_button.setVisibility(View.VISIBLE);
         }
         else{
             username.setText(R.string.t1);
             mail.setText(R.string.t2);
             avatar.setImageResource(R.drawable.ic_menu_recognition);
+            logout_button.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public void onResume(){
+        super.onResume();
+        refreshSettingFragment();
     }
 
 }
