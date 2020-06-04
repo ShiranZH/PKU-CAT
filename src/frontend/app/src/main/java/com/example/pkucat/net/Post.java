@@ -37,22 +37,22 @@ public class Post {
         this.comments = null;
     }
     
-    public void addFavor() throws APIException {
+    public void addFavor() throws APIException, JSONException {
         if (isFavor == false) {
             JSONObject data = new JSONObject();
             data.put("postID", postID);
             byte[] ret = Session.post("/user/post/favor", data, null);
-            
+
             JSONObject retData = new JSONObject(new String(ret));
             if (retData.getInt("code") != 200)
                 throw new APIException(retData);
         }
     }
-    
+
     public HashMap<String, byte[]> getPhotos() {
         return photos;
     }
-    
+
     public Comment[] getComments(int num, int start) throws APIException {
         try {
             JSONObject data = new JSONObject();
@@ -70,7 +70,7 @@ public class Post {
             for (int i = 0; i < postArray.length(); ++i) {
                 comments[i] = new Comment(postArray.getJSONObject(i));
             }
-            
+
             return comments;
         } catch (JSONException e) {
             throw new APIException("404", "·µ»ØÖµ´íÎó");
@@ -78,8 +78,8 @@ public class Post {
             throw e;
         }
     }
-    
-    public void addComment(String text) throws APIException {
+
+    public void addComment(String text) throws APIException, JSONException {
         JSONObject data = new JSONObject();
         data.put("text", text);
         data.put("postID", postID);

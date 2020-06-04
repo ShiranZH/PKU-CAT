@@ -13,15 +13,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PostManager {
-    
+
     public Post addPost(Post post) {
         return null;
     }
-    
+
     public void delPost(String postID) {
 
     }
-    
+
     public Post[] getPosts(int num, int start, int commentNum) throws APIException {
         try {
             JSONObject data = new JSONObject();
@@ -39,7 +39,7 @@ public class PostManager {
             for (int i = 0; i < postArray.length(); ++i) {
                 posts[i] = new Post(postArray.getJSONObject(i));
             }
-            
+
             return posts;
         } catch (JSONException e) {
             throw new APIException("404", "·µ»ØÖµ´íÎó");
@@ -47,19 +47,19 @@ public class PostManager {
             throw e;
         }
     }
-    
-    public void addPost(String text) throws APIException {
+
+    public void addPost(String text) throws APIException, JSONException {
         JSONObject data = new JSONObject();
         data.put("text", text);
         data.put("isVideo", "0");
         byte[] ret = Session.post("/user/post/post", data, null);
-        
+
         JSONObject retData = new JSONObject(new String(ret));
         if (retData.getInt("code") != 200)
             throw new APIException(retData);
     }
-    
-    public void addPost(String text, File file, boolean isVideo) throws APIException {
+
+    public void addPost(String text, File file, boolean isVideo) throws APIException, JSONException {
         File[] files = new File[]{file};
         String[] urls = Session.uploadPicture(files);
         JSONObject data = new JSONObject();
@@ -68,10 +68,10 @@ public class PostManager {
             data.put("isVideo", "1");
         else
             data.put("isVideo", "0");
-            
+
         if (text != null)
             data.put("text", text);
-        
+
         try {
             byte[] ret = Session.post("/user/post/post", data, null);
             if (ret == null)
@@ -85,8 +85,8 @@ public class PostManager {
             throw e;
         }
     }
-    
-    
+
+
     public Post[] searchPosts(String userID, String catID, String keyword, int commentNum) {
         return null;
     }
