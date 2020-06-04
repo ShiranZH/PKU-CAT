@@ -52,11 +52,11 @@ public class UserProfile {
     
     public byte[] getAvatar() {
         if (avatar == null)
-            avatar = Session.get(Session.baseUrl+avatarUrl, null);
+            avatar = Session.get(avatarUrl, null);
         return avatar;
     }
     
     public void refresh() {
-        avatar = Session.get(Session.baseUrl+avatarUrl, null);
+        avatar = Session.get(avatarUrl, null);
     }
 }
