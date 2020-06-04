@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -58,21 +59,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:siShape="@raw/star" />
 
-    <com.sackcentury.shinebuttonlib.ShineButton
-        android:id="@+id/bt_like"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:btn_color="@android:color/darker_gray"
-        app:btn_fill_color="#f26d7d"
-        app:enable_flashing="true"
-        app:layout_constraintEnd_toStartOf="@+id/bt_star"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shine_size="40dp"
-        app:siShape="@raw/like" />
-
 
     <TextView
         android:id="@+id/post_content"
@@ -80,11 +66,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
-        android:text="TextView"
-        android:textSize="14sp"
+        android:text="动态内容"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_information" />
@@ -93,10 +79,10 @@
         android:id="@+id/post_collection"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="24dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -107,27 +93,96 @@
         android:id="@+id/post_indicator"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="24dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_content"/>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <LinearLayout
+        android:id="@+id/post_action_column"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_collection">
+
+        <com.sackcentury.shinebuttonlib.ShineButton
+            android:id="@+id/bt_like"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:btn_color="@android:color/darker_gray"
+            app:btn_fill_color="#f26d7d"
+            app:enable_flashing="true"
+            app:layout_constraintEnd_toStartOf="@+id/bt_comment"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shine_size="40dp"
+            app:siShape="@raw/like" />
+
+        <com.sackcentury.shinebuttonlib.ShineButton
+            android:id="@+id/bt_comment"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:btn_color="@android:color/darker_gray"
+            app:btn_fill_color="@android:color/black"
+            app:enable_flashing="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shine_size="40dp"
+            app:siShape="@raw/comment" />
+
+        <!--ImageButton
+            android:id="@+id/bt_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:color="@android:color/darker_gray"
+            app:srcCompat="@raw/comment" /> -->
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/post_line"
+        android:layout_height="1px"
+        android:layout_width="match_parent"
+        android:background="#66CCFF"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_action_column" />
+
+    <ListView
         android:id="@+id/post_comment_list"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/post_collection" />
+        app:layout_constraintTop_toBottomOf="@+id/post_line" >
+
+    </ListView>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

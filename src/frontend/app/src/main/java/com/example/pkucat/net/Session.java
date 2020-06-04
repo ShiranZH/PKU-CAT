@@ -123,18 +123,18 @@ public class Session {
         }
         try {
             byte[] ret = Session.post("/file", null, fs);
-            
+
             JSONObject retData = new JSONObject(new String(ret));
             if (retData.getInt("code") != 200)
                 throw new APIException(retData);
-            
+
             JSONArray urlArray = retData.getJSONObject("data").getJSONArray("picture");
-            
+
             String[] urls = new String[urlArray.length()];
             for (int i = 0; i < urlArray.length(); ++i) {
                 urls[i] = urlArray.getString(i);
             }
-            
+
             return urls;
         } catch (JSONException e) {
             throw new APIException("404", "返回值错误");
@@ -219,7 +219,7 @@ class PostThread extends Thread {
     private String urlStr;
     private JSONObject data;
     private HashMap<String, List<File>> files;
-    
+
     public PostThread(String urlStr,
             JSONObject data, HashMap<String, List<File>> files, String cookie) {
         this.response = null;

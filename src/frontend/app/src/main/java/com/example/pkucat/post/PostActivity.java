@@ -67,6 +67,7 @@ public class PostActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
 
 
+        /*
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -89,6 +90,8 @@ public class PostActivity extends AppCompatActivity {
                 }
             }
         }).start();
+
+         */
 
         // 编辑动态的浮标
         ImageView icon = new ImageView(this);
@@ -147,8 +150,11 @@ public class PostActivity extends AppCompatActivity {
     /****** begin of edit post ******/
     /*** select picture ***/
     private void selectPicture() {
-        Intent picIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        //Intent picIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent picIntent = new Intent(Intent.ACTION_PICK);
         picIntent.setType("image/*");
+        //Intent picIntent = new Intent(Intent.ACTION_PICK,
+        //        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(picIntent, CHOOSE_PHOTO);
     }
 

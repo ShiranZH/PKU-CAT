@@ -2,11 +2,13 @@ package com.example.pkucat.post.edit;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentUris;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -21,8 +23,19 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.pkucat.App;
 import com.example.pkucat.R;
+import com.example.pkucat.net.APIException;
+import com.example.pkucat.net.Client;
+import com.example.pkucat.net.Post;
+import com.example.pkucat.net.UserProfile;
+import com.example.pkucat.post.PostEntity;
 
+import org.json.JSONException;
+
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class PostEditActivity extends AppCompatActivity {
@@ -31,11 +44,17 @@ public class PostEditActivity extends AppCompatActivity {
     private static final int CHOOSE_PHOTO = 1;
     private static final int TAKE_PHOTO = 2;
     private static final int RECORD_VIDEO = 3;
-    private Uri imageUri;
+    private String postStr = null;
+    //private Uri imageUri;
     private String imagePath;
-    ArrayList<Uri> uriArrayList = new ArrayList<>();;
+    private Post post;
+    //ArrayList<Uri> uriArrayList = new ArrayList<>();
+    ArrayList<String> pathArrayList = new ArrayList<>();;
     ImageAdapter imageAdapter;
     GridView gridView;
+
+    private App app;
+    private Client client;
 
     private static final int MENU_POST = 18; // id of this menu item
 
@@ -55,12 +74,18 @@ public class PostEditActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String imagePath = intent.getStringExtra("ImagePath");
+        /*
         if (imagePath != null) {
             imageUri = Uri.parse(imagePath);
             uriArrayList.add(imageUri);
         }
 
-        imageAdapter = new ImageAdapter(this, uriArrayList);
+         */
+        if (imagePath != null) {
+            pathArrayList.add(imagePath);
+        }
+
+        imageAdapter = new ImageAdapter(this, pathArrayList);
         gridView = findViewById(R.id.post_edit_pic_group);
         gridView.setAdapter(imageAdapter);
         gridView.setOnItemClickListener(new GridView.OnItemClickListener() {
@@ -69,7 +94,7 @@ public class PostEditActivity extends AppCompatActivity {
                 ImageView imageView = (ImageView) view.getTag();
 
                 /**代表+号之前的需要正常显示图片**/
-                if (position < uriArrayList.size()) {
+                if (position < pathArrayList.size()) {
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -80,8 +105,8 @@ public class PostEditActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     switch (which) {
                                         case 0:
-                                            uriArrayList.remove(position);
-                                            imageAdapter = new ImageAdapter(PostEditActivity.this, uriArrayList);
+                                            pathArrayList.remove(position);
+                                            imageAdapter = new ImageAdapter(PostEditActivity.this, pathArrayList);
                                             gridView.setAdapter(imageAdapter);
                                             imageAdapter.notifyDataSetChanged();
                                             Toast.makeText(PostEditActivity.this, "删除成功！", Toast.LENGTH_SHORT).show();
@@ -93,19 +118,25 @@ public class PostEditActivity extends AppCompatActivity {
                             builder.show();
                         }
                     });
-                } else if (position == uriArrayList.size()){
+                } else if (position == pathArrayList.size()){
                     /**代表+号的需要+号图片显示图片**/
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(Intent.ACTION_PICK,
-                                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            Intent intent = new Intent(Intent.ACTION_PICK);
+                            intent.setType("image/*");
+                            //Intent intent = new Intent(Intent.ACTION_PICK,
+                            //        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             ((Activity) PostEditActivity.this).startActivityForResult(intent, CHOOSE_PHOTO);
                         }
                     });
                 }
             }
         });
+
+
+        app = (App)getApplication();
+        client = app.client;
     }
 
     @Override
@@ -142,9 +173,41 @@ public class PostEditActivity extends AppCompatActivity {
                         builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // TODO: 传递数据给后端，同时本地缓存，直接显示在返回界面的首位
-                                Toast.makeText(PostEditActivity.this,"发布成功！",Toast.LENGTH_SHORT).show();
-                                PostEditActivity.this.finish();
+                                // 传递数据给后端，直接显示在返回界面的首位
+                                // TODO: 同时本地缓存
+                                //获取动态输入的文本
+                                EditText editText = (EditText)findViewById(R.id.post_edit_text);
+                                postStr = editText.getText().toString();
+
+                                if ((postStr == null || postStr == "" || postStr.length() == 0) && (pathArrayList == null || pathArrayList.size() == 0)) {
+                                    Toast.makeText(PostEditActivity.this,"请输入内容！",Toast.LENGTH_SHORT).show();
+                                } else {
+                                    try {
+                                        UserProfile profile = client.user.login("pkuzhd", "123456");
+                                    } catch (APIException e) {
+                                        e.printStackTrace();
+                                    }
+                                    try {
+                                        if (pathArrayList == null || pathArrayList.size() == 0) {
+                                            client.post.addPost(postStr);
+                                        } else {
+                                            imagePath = pathArrayList.get(0);
+                                            Uri uri = Uri.parse(imagePath);
+                                            String[] proj = { MediaStore.Images.Media.DATA };
+                                            Cursor actualimagecursor = managedQuery(uri,proj,null,null,null);
+                                            int actual_image_column_index = actualimagecursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                                            actualimagecursor.moveToFirst();
+                                            String img_path = actualimagecursor.getString(actual_image_column_index);
+                                            File file = new File(img_path);
+                                            // TODO: 需要打开权限，不然会闪退
+                                            client.post.addPost(postStr, file, false);
+                                        }
+                                    } catch (APIException | JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Toast.makeText(PostEditActivity.this,"发布成功！",Toast.LENGTH_SHORT).show();
+                                    PostEditActivity.this.finish();
+                                }
                             }
                         });
                         builder.setNegativeButton("取消", null);
@@ -174,8 +237,12 @@ public class PostEditActivity extends AppCompatActivity {
         switch (requestCode) {
             case CHOOSE_PHOTO:
                 Uri imageUri = data.getData();
-                uriArrayList.add(imageUri);
-                imageAdapter = new ImageAdapter(this, uriArrayList);
+                String imagePath;
+                if (imageUri != null) {
+                    imagePath = imageUri.toString();
+                    pathArrayList.add(imagePath);
+                }
+                imageAdapter = new ImageAdapter(this, pathArrayList);
                 gridView.setAdapter(imageAdapter);
                 imageAdapter.notifyDataSetChanged();
                 break;
@@ -192,7 +259,7 @@ public class PostEditActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        imageAdapter = new ImageAdapter(this, uriArrayList);
+        imageAdapter = new ImageAdapter(this, pathArrayList);
         gridView.setAdapter(imageAdapter);
         imageAdapter.notifyDataSetChanged();
     }

@@ -7,13 +7,9 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="419dp"
+        android:layout_width="match_parent"
         android:layout_height="224dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginLeft="1dp"
         android:layout_marginTop="113dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginRight="1dp"
         android:background="?android:attr/autofilledHighlight"
         android:divider="@android:drawable/bottom_bar"
         android:orientation="vertical"

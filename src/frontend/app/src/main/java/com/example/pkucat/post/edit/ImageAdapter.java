@@ -21,16 +21,17 @@ public class ImageAdapter extends BaseAdapter {
     private final int MAX_IMAGE_NUM = 9;
 
     private Context context;
-    private ArrayList<Uri> uriArrayList;
+    // private ArrayList<Uri> uriArrayList;
+    private ArrayList<String> pathArrayList;
 
-    public ImageAdapter(Context context, ArrayList<Uri> uriArrayList) {
+    public ImageAdapter(Context context, ArrayList<String> pathArrayList) {
         this.context = context;
-        this.uriArrayList = uriArrayList;
+        this.pathArrayList = pathArrayList;
     }
 
     @Override
     public int getCount() {
-        int size = uriArrayList.size();
+        int size = pathArrayList.size();
         if (size >= MAX_IMAGE_NUM) {
             return size;
         } else {
@@ -40,7 +41,7 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return uriArrayList.get(position);
+        return pathArrayList.get(position);
     }
 
     @Override
@@ -59,8 +60,8 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView.getTag();
         }
 
-        if (position < uriArrayList.size()) {
-            imageView.setImageURI(uriArrayList.get(position));
+        if (position < pathArrayList.size()) {
+            imageView.setImageURI(Uri.parse(pathArrayList.get(position)));
         } else {
             imageView.setBackgroundResource(R.drawable.ic_post_edit_add);
         }

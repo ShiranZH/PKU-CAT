@@ -14,7 +14,12 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pkucat.App;
 import com.example.pkucat.R;
+import com.example.pkucat.net.APIException;
+import com.example.pkucat.net.Client;
+import com.example.pkucat.net.Post;
+import com.example.pkucat.net.UserProfile;
 import com.example.pkucat.post.PostEntity;
 
 import java.util.ArrayList;
@@ -23,9 +28,12 @@ public class PostFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private int index = 1;
-
     private View view;
-    private ArrayList<PostEntity> postEntities;
+    //private ArrayList<PostEntity> postEntities;
+    private Post[] posts = {};
+
+    private App app;
+    private Client client;
 
     public static PostFragment newInstance(int index) {
         PostFragment fragment = new PostFragment();
@@ -45,6 +53,11 @@ public class PostFragment extends Fragment {
             System.out.println(index);
         }
         postViewModel.setIndex(index);
+
+
+        app = (App)this.getActivity().getApplication();
+        client = app.client;
+
         // TODO: 下拉刷新，上拉加载
     }
 
@@ -71,6 +84,7 @@ public class PostFragment extends Fragment {
     }
 
     private void initData() {
+        /*
         postEntities = new ArrayList<>();
         // TODO: 获取动态
         for (int i = 0; i < 5; i++) {
@@ -86,11 +100,23 @@ public class PostFragment extends Fragment {
             }
             postEntities.add(postEntity);
         }
+        */
+
+        try {
+            UserProfile profile = client.user.login("pkuzhd", "123456");
+        } catch (APIException e) {
+            e.printStackTrace();
+        }
+        try {
+            posts = client.post.getPosts(10, 1, 3);
+        } catch (APIException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initRecyclerView() {
         RecyclerView mRecyclerView = view.findViewById(R.id.recyclerview_post);
-        RecyclerViewAdapter mRecyclerViewAdapter = new RecyclerViewAdapter(this.getActivity(), postEntities);
+        RecyclerViewAdapter mRecyclerViewAdapter = new RecyclerViewAdapter(this.getActivity(), posts, client);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         // layout: vertical, horizontal, ...
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -98,9 +124,8 @@ public class PostFragment extends Fragment {
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this.getActivity(), DividerItemDecoration.VERTICAL));
         mRecyclerViewAdapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
             @Override
-            public void OnItemClick(View view, PostEntity data) {
-                Toast.makeText(getActivity(), "Here it is: "+data.getAvatarPath(), Toast.LENGTH_SHORT)
-                        .show();
+            public void OnItemClick(View view, Post data) {
+                // TODO: 展示具体的动态页面
             }
         });
 

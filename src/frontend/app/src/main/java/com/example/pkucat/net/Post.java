@@ -18,12 +18,14 @@ public class Post {
     public boolean isFavor;
     public boolean isPublished;
     public Comment[] comments;
-    
+    public String photoUrl;
+    public byte[] photo;
+
     private HashMap<String, byte[]> photos;
-    
+
     public Post(JSONObject json) throws JSONException, APIException {
 
-        System.out.println(json);
+        //System.out.println(json);
         this.postID = String.valueOf(json.getInt("postID"));
         this.author = User.getProfile(String.valueOf(json.getJSONObject("publisher").getInt("userID")));
         this.date = new Date(json.getLong("time"));
@@ -35,8 +37,26 @@ public class Post {
             this.isFavor = false;
         this.isPublished = true;
         this.comments = null;
+        JSONArray ps = json.getJSONArray("multimediaContent");
+        if (ps.length() > 0) {
+            photoUrl = ps.getString(0);
+            if (photoUrl.equals("/"))
+                photoUrl = null;
+        }
+        else
+            photoUrl = null;
+        photo = null;
     }
-    
+
+    public byte[] getPhoto() {
+        if (photoUrl == null)
+            return null;
+        if (photo == null)
+            photo = Session.get(photoUrl, null);
+        return photo;
+    }
+
+
     public void addFavor() throws APIException, JSONException {
         if (isFavor == false) {
             JSONObject data = new JSONObject();
@@ -84,7 +104,7 @@ public class Post {
         data.put("text", text);
         data.put("postID", postID);
         byte[] ret = Session.post("/user/post/comment", data, null);
-        
+
         JSONObject retData = new JSONObject(new String(ret));
         if (retData.getInt("code") != 200)
             throw new APIException(retData);

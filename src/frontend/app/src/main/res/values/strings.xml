@@ -14,6 +14,8 @@
     <string name="sole_post">Sole Post</string>
     <string name="post_tab_1">Post</string>
     <string name="post_tab_2">Star</string>
+    <string name="post_userid">UserID</string>
+    <string name="post_time">time</string>
 
     <string name="menu_recognition">Recognition</string>
     <string name="menu_setting">Setting</string>

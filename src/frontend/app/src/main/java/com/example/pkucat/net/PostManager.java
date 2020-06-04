@@ -36,7 +36,7 @@ public class PostManager {
 
             for (int i = 0; i < postArray.length(); ++i) {
 
-                System.out.println(postArray.getJSONObject(i));
+                //System.out.println(postArray.getJSONObject(i));
                 posts[i] = new Post(postArray.getJSONObject(i));
             }
 

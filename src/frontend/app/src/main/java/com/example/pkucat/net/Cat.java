@@ -71,7 +71,7 @@ public class Cat {
             photos.put(url, photo);
         }
     }
-    
+
     public String getInfo() throws APIException, JSONException {
         if (info == null || info.length()==0) {
             try {
@@ -84,7 +84,7 @@ public class Cat {
         }
         return info;
     }
-    
+
     public HashMap<String, String> getRelations() throws APIException, JSONException {
         if (relations == null) {
             try {
@@ -104,7 +104,7 @@ public class Cat {
         }
         return photos;
     }
-    
+
     public void modifyInfo(String _info) throws APIException, JSONException {
         JSONObject data = new JSONObject();
         data.put("id", this.catId);
@@ -117,7 +117,7 @@ public class Cat {
             JSONObject retData = new JSONObject(new String(ret));
             if (retData.getInt("code") != 200)
                 throw new APIException(retData);
-            
+
             info = _info;
         } catch (JSONException e) {
             throw new APIException("404", "返回值错误");
@@ -125,7 +125,7 @@ public class Cat {
             throw e;
         }
     }
-    
+
     public void modifyAvatar(File file) throws APIException, IOException, JSONException {
         File[] files = new File[]{file};
         String[] urls = Session.uploadPicture(files);
@@ -136,7 +136,7 @@ public class Cat {
             e.printStackTrace();
         }
         data.put("avatar", urls[0]);
-        
+
         try {
             byte[] ret = Session.put("/user/archive", data);
             if (ret == null)
@@ -144,20 +144,20 @@ public class Cat {
             JSONObject retData = new JSONObject(new String(ret));
             if (retData.getInt("code") != 200)
                 throw new APIException(retData);
-            
+
             avatarUrl = urls[0];
             FileInputStream in = new FileInputStream(file);
             avatar = IOUtils.toByteArray(in);
             in.close();
-            
-            
+
+
         } catch (JSONException e) {
             throw new APIException("404", "返回值错误");
         } catch (APIException e) {
             throw e;
         }
     }
-    
+
     public void delPhotos(String[] urls ) throws APIException, JSONException {
         JSONObject data = new JSONObject();
         data.put("id", this.catId);
@@ -173,7 +173,7 @@ public class Cat {
             JSONObject retData = new JSONObject(new String(ret));
             if (retData.getInt("code") != 200)
                 throw new APIException(retData);
-            
+
             photoUrls = java.util.Arrays.copyOf(photoUrls, photoUrls.length+urls.length);
             for (int i = 0; i < urls.length; ++i) {
                 photos.put(urls[i], null);
@@ -184,7 +184,7 @@ public class Cat {
             throw e;
         }
     }
-    
+
     public void addPhotos(File[] files) throws APIException, IOException, JSONException {
         String[] urls = Session.uploadPicture(files);
         JSONObject data = new JSONObject();
@@ -195,7 +195,7 @@ public class Cat {
         }
         data.put("addPhotos", urlArray);
         Session.uploadPicture(files);
-        
+
         try {
             byte[] ret = Session.put("/user/archive", data);
             if (ret == null)
@@ -203,7 +203,7 @@ public class Cat {
             JSONObject retData = new JSONObject(new String(ret));
             if (retData.getInt("code") != 200)
                 throw new APIException(retData);
-            
+
             photoUrls = java.util.Arrays.copyOf(photoUrls, photoUrls.length+urls.length);
             for (int i = 0; i < urls.length; ++i) {
                 FileInputStream in = new FileInputStream(files[i]);

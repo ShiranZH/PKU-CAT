@@ -81,7 +81,7 @@ public class ArchiveActivity extends AppCompatActivity {
                 intent = new Intent(ArchiveActivity.this, SoleArchive.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("catId", position);
-                Cat cat=archiveCats.get(String.valueOf(position+1));
+                Cat cat=archiveCats.get(String.valueOf(position));
                 bundle.putInt("catId", Integer.parseInt(cat.catId));
                 bundle.putString("name",cat.name);
                 try {

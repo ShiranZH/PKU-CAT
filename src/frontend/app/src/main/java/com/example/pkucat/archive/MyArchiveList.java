@@ -24,9 +24,17 @@ public class MyArchiveList extends BaseAdapter {
         this.mContext = context;
         this.size = archiveCats.size();
         cats = new Cat[this.size];
+        int i = 0;
+        for (String key : archiveCats.keySet()) {
+            this.cats[i]=archiveCats.get(key);
+            ++i;
+        }
+        /*
         for (int i=1;i<=this.size;i++) {
             this.cats[i-1]=archiveCats.get(String.valueOf(i));
         }
+
+         */
         mLayoutInflater = LayoutInflater.from(mContext);
     }
     @Override
@@ -36,7 +44,7 @@ public class MyArchiveList extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return cats[position];
     }
 
     @Override
