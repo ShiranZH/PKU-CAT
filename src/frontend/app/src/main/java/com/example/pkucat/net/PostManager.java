@@ -51,7 +51,7 @@ public class PostManager {
         }
     }
     
-    public void addPost(String text) throws APIException {
+    public void addPost(String text) throws APIException, JSONException {
         JSONObject data = new JSONObject();
         data.put("text", text);
         data.put("isVideo", "0");
@@ -62,7 +62,7 @@ public class PostManager {
             throw new APIException(retData);
     }
     
-    public void addPost(String text, File file, boolean isVideo) throws APIException {
+    public void addPost(String text, File file, boolean isVideo) throws APIException, JSONException {
         File[] files = new File[]{file};
         String[] urls = Session.uploadPicture(files);
         JSONObject data = new JSONObject();

@@ -40,9 +40,10 @@ public class ArchiveActivity extends AppCompatActivity {
     private ListView archiveList;
     private EditText editText;
     public HashMap<String, Cat> archiveCats;
+    public String position2id[];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_archive);
         setTitle("Cat Archives");
 
@@ -53,11 +54,6 @@ public class ArchiveActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
         }
-//        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-//        ViewPager viewPager = findViewById(R.id.view_pager);
-//        viewPager.setAdapter(sectionsPagerAdapter);
-//        TabLayout tabs = findViewById(R.id.tabs_archive);
-//        tabs.setupWithViewPager(viewPager);
 
 
         App app=(App)getApplication();
@@ -67,12 +63,17 @@ public class ArchiveActivity extends AppCompatActivity {
         } catch (APIException e) {
             e.printStackTrace();
         }
-        super.onCreate(savedInstanceState);
+        position2id = new String[archiveCats.size()];
+        int i=0;
+        for (String key:archiveCats.keySet()){
+            position2id[i++]=key;
+        }
+
         bSearchArchive = (Button) findViewById(R.id.searchArchive_button);
         editText=(EditText) findViewById(R.id.search_text);
         setListeners();
         archiveList = (ListView) findViewById(R.id.archive_list);
-        archiveList.setAdapter(new MyArchiveList(ArchiveActivity.this, archiveCats));
+        archiveList.setAdapter(new MyArchiveList(ArchiveActivity.this, archiveCats,this.position2id));
         archiveList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -80,8 +81,7 @@ public class ArchiveActivity extends AppCompatActivity {
                 Intent intent;
                 intent = new Intent(ArchiveActivity.this, SoleArchive.class);
                 Bundle bundle = new Bundle();
-                bundle.putInt("catId", position);
-                Cat cat=archiveCats.get(String.valueOf(position+1));
+                Cat cat=archiveCats.get(position2id[position]);
                 bundle.putInt("catId", Integer.parseInt(cat.catId));
                 bundle.putString("name",cat.name);
                 try {
