@@ -65,6 +65,7 @@ def archive(request):
                         'msg': 'wrong parameter'
                     }
                 }
+                return JsonResponse(response)
             try:
                 cat_name = Cat.objects.get(id=catid).name
             except:
@@ -201,7 +202,6 @@ def archive(request):
 
         cat_add = Cat()
         cat_add.name = cat_name_add 
-        #avatar暂且不设？
         cat_add.save()
 
         response = {
