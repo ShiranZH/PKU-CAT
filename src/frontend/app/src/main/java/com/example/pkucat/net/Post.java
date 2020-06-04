@@ -73,7 +73,7 @@ public class Post {
 
             return comments;
         } catch (JSONException e) {
-            throw new APIException("404", "·µ»ØÖµ´íÎó");
+            throw new APIException("404", "è¿”å›žå€¼é”™è¯¯");
         } catch (APIException e) {
             throw e;
         }

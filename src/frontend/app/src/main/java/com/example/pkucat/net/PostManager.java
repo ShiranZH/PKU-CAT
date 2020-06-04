@@ -1,13 +1,10 @@
 package com.example.pkucat.net;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,9 +22,9 @@ public class PostManager {
     public Post[] getPosts(int num, int start, int commentNum) throws APIException {
         try {
             JSONObject data = new JSONObject();
-            data.put("limit", String.valueOf(num));
-            data.put("start", String.valueOf(start));
-            data.put("commentNum", String.valueOf(commentNum));
+//            data.put("num", String.valueOf(num));
+//            data.put("start", String.valueOf(start));
+//            data.put("commentNum", String.valueOf(commentNum));
             byte[] ret = Session.get("/user/post/posts", data);
 
             JSONObject retData = new JSONObject(new String(ret));
@@ -88,7 +85,6 @@ public class PostManager {
             throw e;
         }
     }
-
 
     public Post[] searchPosts(String userID, String catID, String keyword, int commentNum) {
         return null;
