@@ -56,7 +56,6 @@ public class Post {
         return photo;
     }
 
-
     public void addFavor() throws APIException, JSONException {
         if (isFavor == false) {
             JSONObject data = new JSONObject();

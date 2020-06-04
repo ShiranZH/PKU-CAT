@@ -13,7 +13,7 @@ def demo(request):
 
 def archives(request):
     if request.method == 'GET':
-    #Archive_list 查看猫咪档案列表      GET /archives
+    #Archive_list 查看猫咪档案列表      GET /archive/archives
         cats = Cat.objects.all()#QuerySet
         catlist = []
         for c in cats:
@@ -50,8 +50,8 @@ def archive(request):
     #     }
     #     return JsonResponse(response)
     if request.method == 'GET':
-        #Archive_detail 查看猫咪档案详情    GET /archive?catid=10  
-        #Archive_search 搜索猫咪           GET /archive?keyword="大威"
+        #Archive_detail 查看猫咪档案详情    GET /archive/archive?catid=10  
+        #Archive_search 搜索猫咪           GET /archive/archive?keyword="大威"
         catid = request.GET.get('catid', default=None)
         keyword = request.GET.get('keyword', default=None)
         #查看猫咪档案详情
@@ -65,6 +65,7 @@ def archive(request):
                         'msg': 'wrong parameter'
                     }
                 }
+                return JsonResponse(response)
             try:
                 cat_name = Cat.objects.get(id=catid).name
             except:
@@ -128,7 +129,7 @@ def archive(request):
     
         
     if request.method == 'PUT':
-        # Archive_modify 修改猫咪档案        PUT /archive
+        # Archive_modify 修改猫咪档案        PUT /archive/archive
         catid_modify = request.GET.get('id')
         avatar = request.GET.get('avatar')
         introduction_modify = request.GET.get('introduction')
@@ -182,7 +183,7 @@ def archive(request):
 
 
     if request.method == 'POST':
-    #Archive_add 添加猫咪档案       POST /archive
+    #Archive_add 添加猫咪档案       POST /archive/archive
         cat_name_add = request.POST.get('catName')
         introduction_add = request.POST.get('introduction')
         photos_add = request.POST.getlist('photos')
@@ -201,7 +202,6 @@ def archive(request):
 
         cat_add = Cat()
         cat_add.name = cat_name_add 
-        #avatar暂且不设？
         cat_add.save()
 
         response = {
