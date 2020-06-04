@@ -1,8 +1,10 @@
 import os
 import json
+import jieba.analyse
+import threading
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, QueryDict
-from .models import Post, Comment, Photo, Favor
+from .models import Post, Comment, Photo, Favor, TextKey
 from user.models import User
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
@@ -50,10 +52,10 @@ def demo(request):
 
 def posts(request):
 #动态列表
+    print('server receive {} {}'.format(request.method, request.get_full_path()))
 
     if request.method == 'GET':
     #请求动态列表，GET /posts/?limit&start
-        print('server receive GET', request.get_full_path())
 
         # 检查登陆状态
         if not request.user.is_authenticated:
@@ -195,7 +197,7 @@ def post(request):
             'time': int(post.time.timestamp()*1000),
             'text': post.text,
             'isVideo': post.is_video,
-            'multimediaContent': ['multimedia'],
+            'multimediaContent': multimedia,
             'commentList': comment_list_info,
             'favor': {
                 'self': self_favor,
@@ -220,7 +222,7 @@ def post(request):
         
         text = request.POST.get('text')
         isVideo = request.POST.get('isVideo')
-        print('isVideo', repr(isVideo))
+        #print('isVideo', repr(isVideo))
         multimediaContent = request.POST.getlist('multimediaContent')
 
         if isVideo == '1':
@@ -239,7 +241,7 @@ def post(request):
 
         publisher = User.objects.get(id=request.user.id)
 
-        # 创建数据库数据
+        # 创建数据库动态数据
         post = Post()
         post.publisher = publisher
         post.text = text if not text is None else ""
@@ -255,6 +257,13 @@ def post(request):
                 photo.photo = photo_path
                 photo.post = post
                 photo.save()
+        
+        # 创建关键词数据
+        if not text is None:
+            keywords = jieba.analyse.extract_tags(text, topK=10)
+            for key in keywords:
+                TextKey(key=key, post=post).save()
+        
         
         response = {
             "code": 200,
@@ -310,7 +319,7 @@ def post(request):
 def search(request):
 # 搜索动态
     if request.method == 'GET':
-    # 搜索动态, GET /posts/search/?userID=123
+    # 搜索动态, GET /posts/search/?userID=123&keyword=大威
         print('server receive GET', request.get_full_path())
         
         # 检查登陆状态
@@ -318,42 +327,45 @@ def search(request):
             return JsonResponse(gen_response["user_error"])
         
         try:
-            user_id = int(request.GET.get('userID'))
-        except:
-            return JsonResponse(gen_response['param_err'])
-        '''
-        try:
-            user_id = request.GET.get('userID', default=-1)
+            user_id = int(request.GET.get('userID', default=-1))
             keyword = request.GET.get('keyword', default=None)
             if user_id < 0 and keyword==None:
-                response = gen_response['param_err']
-                return JsonResponse(response)
+                return JsonResponse(gen_response['param_err'])
         except:
-            response = gen_response['param_err']
-            return JsonResponse(response)
-        '''
+            return JsonResponse(gen_response['param_err'])
 
-        # 从User数据库获取user
-        try: 
-            publisher = User.objects.get(id=user_id)
-        except:
-            return JsonResponse(gen_response['user_not_exist'])
+        if user_id >= 0:
+            # 从User数据库获取user
+            try: 
+                publisher = User.objects.get(id=user_id)
+            except:
+                return JsonResponse(gen_response['user_not_exist'])
 
-        post_list = Post.objects.filter(publisher=publisher)
+            post_list = Post.objects.filter(publisher=publisher)
+
+        else:
+            # 获取包含该关键词的post
+            keyword_list = TextKey.objects.filter(key=keyword)
+            post_list = []
+            for key in keyword_list:
+                post_list.append(key.post) 
+
+        user = User.objects.get(id=request.user.id)
         posts = []
         for item in post_list:
-            
-            # 加载图片（一张）
+
+            # 加载图片
             multimedia = []
             if item.is_video == False:
-                photo_path = Photo.objects.filter(post=item.post_id)[0].photo
-                multimedia.append(photo_path)
+                for photo in Photo.objects.filter(post=item):
+                    multimedia.append(photo.photo)
             
             # 判断是否给自己点赞
-            if item.self_favor:
+            if Favor.objects.filter(post=item).filter(user=user):
                 self_favor = 1
             else:
                 self_favor = 0
+
             # 一条摘要动态的数据结构
             publisher_info = {
                 'userID': item.publisher.id,
@@ -452,7 +464,7 @@ def comments(request):
 @csrf_exempt
 def favor(request):
     if request.method == 'POST':
-    # 点赞, POST /post/favor/?postID=123&userID=123
+    # 点赞, POST /post/favor/?postID=123
         print('server receive POST', request.get_full_path())
         
         # 检查登陆状态
@@ -535,7 +547,7 @@ def favor(request):
 @csrf_exempt
 def comment(request):
     if request.method == 'POST':
-    # 评论, POST /post/comment/?postID=123&userID=123&text=“test”
+    # 评论, POST /post/comment/?postID=123&text=“test”
         print('server receive POST', request.get_full_path())
         
         # 检查登陆状态

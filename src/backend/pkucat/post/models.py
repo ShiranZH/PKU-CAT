@@ -2,15 +2,6 @@ from django.db import models
 from user.models import User
 
 '''
-重定义文件上传路径
-/static/%post_id/%filename
-'''
-'''
-def upload_to(instance, fielname):
-    return '/'.join(['/home/ubuntu/static', instance.post_id, filename])
-'''
-
-'''
 Post: 动态类
 
 属性:
@@ -78,7 +69,7 @@ class Photo(models.Model):
 Favor: 点赞记录类
 
 外键:
-    post_id: 评论动态主键, post.models.Post类
+    post: 评论动态主键, post.models.Post类
     user: 评论用户主键, user.models.User类
 
 元数据:
@@ -92,3 +83,20 @@ class Favor(models.Model):
         unique_together = ('post', 'user')
         verbose_name = '点赞记录'
         verbose_name_plural = '点赞记录'
+
+'''
+TextKey: 文本关键词类
+
+属性:
+    key: 文本关键词
+
+外键:
+    post: 评论动态主键, post.models.Post类
+'''
+class TextKey(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    key = models.CharField(max_length=128)
+
+    class Meta:
+        verbose_name = '关键词'
+        verbose_name_plural = '关键词'  
