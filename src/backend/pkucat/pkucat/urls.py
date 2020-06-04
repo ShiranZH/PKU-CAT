@@ -16,6 +16,7 @@ urlpatterns = [
     path('posts/', post_views.posts),
     path('posts/search/', post_views.search),
     path('post/', include('post.urls')),
+    path('archive', include('archive.urls')),
     path('archive/', include('archive.urls')),
     path('feeder/', include('feeder.urls')),
 ]

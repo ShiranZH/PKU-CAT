@@ -56,8 +56,8 @@ def posts(request):
         print('server receive GET', request.get_full_path())
 
         # 检查登陆状态
-        if not request.user.is_authenticated:
-            return JsonResponse(gen_response["user_error"])
+        # if not request.user.is_authenticated:
+        #     return JsonResponse(gen_response["user_error"])
 
         try:
             num = int(request.GET.get('limit', default=10)) #请求动态数量
@@ -393,8 +393,8 @@ def comments(request):
         print('server receive GET', request.get_full_path())
         
         # 检查登陆状态
-        if not request.user.is_authenticated:
-            return JsonResponse(gen_response["user_error"])
+        # if not request.user.is_authenticated:
+        #     return JsonResponse(gen_response["user_error"])
         
         try:
             post_id = int(request.GET.get('postID')) # 评论的动态id
