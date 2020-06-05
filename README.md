@@ -1,4 +1,4 @@
-# PKU-CAT
+# [PKU-CAT](https://github.com/AngelaEcho/PKU-CAT)
 
 这是北大软工第七组的课程实践项目，基于`Python 3.6.9`和`Django 2.0.1`的`Android`应用——**燕园吸猫助手**。
 
@@ -54,7 +54,13 @@
 
 ## 维护者
 
-[@pkuzhd](https://github.com/pkuzhd), [@beagin](https://github.com/beagin), [@bsdropD](https://github.com/bsdropD), [@ywwwwq](https://github.com/ywwwwq), [@YiCheng98](https://github.com/YiCheng98), [@efffff](https://github.com/efffff), [@zhangsr](https://github.com/AngelaEcho)
+### 后端
+
+[@pkuzhd](https://github.com/pkuzhd), [@beagin](https://github.com/beagin), [@ywwwwq](https://github.com/ywwwwq), [@efffff](https://github.com/efffff)
+
+### 前端
+
+[@bsdropD](https://github.com/bsdropD), [@YiCheng98](https://github.com/YiCheng98), [@zhangsr](https://github.com/AngelaEcho)
 
 
 
@@ -67,3 +73,4 @@
 感谢以下参与项目的人：
 
 [@kaname-madoka18](https://github.com/kaname-madoka18)
+
