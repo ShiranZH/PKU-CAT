@@ -1,6 +1,6 @@
 # PKU-CAT
 
-这是北大软工第七组的课程实践项目，基于`Python`和`Django 3.0`的`Android`应用——**燕园吸猫助手**。
+这是北大软工第七组的课程实践项目，基于`Python 3.6.9`和`Django 2.0.1`的`Android`应用——**燕园吸猫助手**。
 
 
 
@@ -36,7 +36,7 @@
 
 这个项目前端使用[Android Studio]( https://developer.android.google.cn/studio )，后端使用Django框架。
 
-使用pip安装Django：`pip install Django==3.0.7`
+使用pip安装Django：`pip install Django==2.0.1`
 
 
 
